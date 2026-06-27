@@ -218,6 +218,49 @@ kbd {
   margin-top: 0.35rem;
 }
 
+/* ----- "3 hudud" diagrammasi --------------------------------------------- */
+.areas {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 1.6rem 0;
+  flex-wrap: wrap;
+}
+.area {
+  flex: 1 1 0;
+  min-width: 128px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.8rem 0.6rem;
+  text-align: center;
+}
+.area h4 { margin: 0 0 0.15rem; font-size: 0.98rem; }
+.area .en {
+  display: block;
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.64rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.4rem;
+}
+.area .desc { font-size: 0.78rem; color: #444; line-height: 1.4; }
+.area-arrow {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0.5rem;
+  min-width: 62px;
+}
+.area-arrow .sym { font-size: 1.3rem; color: var(--accent); line-height: 1; }
+.area-arrow .lbl {
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.62rem;
+  color: var(--accent-ink);
+  margin-top: 0.2rem;
+}
+
 /* ----- Quiz (interaktiv, app.js bilan) ----------------------------------- */
 .quiz {
   border: 1px solid var(--rule);
@@ -412,6 +455,9 @@ kbd {
   h1 { font-size: 1.8rem; }
   .toc { columns: 1; }
   .snap .card { font-size: 0.58rem; }
+  .areas { flex-direction: column; }
+  .area-arrow { padding: 0.3rem 0; }
+  .area-arrow .sym { transform: rotate(90deg); }
 }
 
 /* ----- Chop etish (print) ------------------------------------------------- */

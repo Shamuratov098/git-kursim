@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DARS 02 — 3 hudud va commit aylanasi</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 02 · GIT ASOSLARI</p>
+  <h1>Git'ning yuragi: 3 hudud va commit aylanasi</h1>
+  <p class="lead">Bu darsdan keyin fayllaringiz Git ichida <b>qayerda</b> turishini bilasiz
+  va <code>tahrirla → add → commit</code> aylanasini ishonch bilan bajarasiz.</p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Jamoada har bir commit — bitta <b>mantiqiy o'zgarish</b> bo'lgani ma'qul (toza tarix).
+    Buning siri — <b>staging area</b>. Uni tushunsangiz, commitlaringiz tartibli va
+    hamkasblaringizga tushunarli bo'ladi.</p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Eslatma</span>
+    <p>O'tgan darsda siz haqiqiy <code>git commit</code> qildingiz (<code>e6a5f3b</code>)!
+    Aslida fayllaringiz uchta "hudud" orqali o'tdi. Keling, o'sha sirni ochamiz. 🔍</p>
+  </div>
+
+  <h2>Uchta hudud (the three areas)</h2>
+  <p>Git'da fayllaringiz uchta joyda "yashaydi". Bir marta commit qilganda, ular shu yo'lni
+  bosib o'tadi:</p>
+
+  <div class="areas">
+    <div class="area">
+      <h4>Ish papkasi</h4>
+      <span class="en">Working Directory</span>
+      <div class="desc">Siz tahrirlab turgan fayllar. Hozir ko'rinadigan papka.</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git add</span></div>
+    <div class="area">
+      <h4>Saralash joyi</h4>
+      <span class="en">Staging Area</span>
+      <div class="desc">Keyingi commitга <b>tanlangan</b> o'zgarishlar. "Oraliq savat".</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git commit</span></div>
+    <div class="area">
+      <h4>Ombor (tarix)</h4>
+      <span class="en">Repository</span>
+      <div class="desc">Doimiy saqlangan tarix — yashirin <code>.git</code> papkasi.</div>
+    </div>
+  </div>
+
+  <ul>
+    <li><b>Working Directory</b> — fayllarni yaratasiz va tahrirlaysiz.<a class="cite" href="#fn1">1</a></li>
+    <li><b>Staging Area</b> — <code>git add</code> bilan <b>qaysi</b> o'zgarishlarni keyingi
+    commitга qo'shishni tanlaysiz.</li>
+    <li><b>Repository</b> — <code>git commit</code> bilan tanlanganlar <b>doimiy</b> tarixга yoziladi.</li>
+  </ul>
+
+  <h2>Commit aylanasi (har kungi ish)</h2>
+  <p>Kundalik Git ishi shu oddiy aylanadan iborat:</p>
+  <ol>
+    <li>Faylni <b>tahrirla</b> &nbsp;→&nbsp; <span class="en" style="font-family:inherit;color:#777">Working Directory</span></li>
+    <li><code>git add &lt;fayl&gt;</code> — saralash joyiga qo'y &nbsp;→&nbsp; Staging</li>
+    <li><code>git commit -m "izoh"</code> — tarixга saqla &nbsp;→&nbsp; Repository</li>
+    <li>(keyinroq) <code>git push</code> — GitHub'ga yukla</li>
+  </ol>
+
+  <h2>Nega "saralash joyi" (staging) kerak?</h2>
+  <p>Tasavvur qiling: 3 ta faylni o'zgartirdingiz, lekin ulardan faqat 2 tasi bitta mavzuga
+  tegishli. <code>git add</code> bilan <b>aynan o'sha 2 tasini</b> tanlab, alohida, toza commit
+  qila olasiz.<a class="cite" href="#fn2">2</a> Bu — jamoada "har commit = bitta fikr" tartibini
+  saqlashga yordam beradi.</p>
+
+  <h2>Sizning ko'zoynagingiz: <code>git status</code> va <code>git log</code></h2>
+  <ul>
+    <li><code>git status</code> — hozir fayllar <b>qaysi hududda</b> (yangi? add qilingan? o'zgargan?).</li>
+    <li><code>git log</code> — shu paytgacha qilingan barcha <b>commitlar tarixi</b>.</li>
+  </ul>
+  <p>Chalkashib qolsangiz — doim <code>git status</code> deng. U sizga nima qilishni ham
+  aytib turadi. 🧭</p>
+
+  <h2>Amaliyot (buni birga qilamiz)</h2>
+  <p>Chatda men bilan birga <b>ikkinchi commitingizni</b> qilasiz. Qadamlar:</p>
+  <ol>
+    <li><code>git status</code> — yangi fayl <i>untracked</i> ko'rinadi</li>
+    <li><code>git add &lt;fayl&gt;</code> — saralash joyiga</li>
+    <li><code>git status</code> — endi <i>staged</i> ko'rinadi (hudud o'zgardi!)</li>
+    <li><code>git commit -m "..."</code> — tarixга saqlanadi</li>
+    <li><code>git log --oneline</code> — 2 ta commit ko'rinadi 🎉</li>
+  </ol>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> <code>git add</code> faylni qayerdan-qayerga o'tkazadi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Working directory'dan staging area'ga o'tkazadi</button></li>
+      <li><button class="quiz-option">Staging area'dan repository tarixiga o'tkazadi</button></li>
+      <li><button class="quiz-option">Repository'dan working directory papkasiga o'tkazadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <code>git add</code> o'zgarishni <b>ish papkasidan
+    saralash joyiga</b> qo'yadi. Repository'ga esa keyin <code>git commit</code> olib o'tadi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Nega staging area (saralash joyi) kerak?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Keyingi commitга qaysi o'zgarishlar kirishini tanlash uchun</button></li>
+      <li><button class="quiz-option">Kodni internetsiz avtomatik tarzda doimiy saqlash uchun</button></li>
+      <li><button class="quiz-option">Loyihadagi barcha eski commitlarni o'chirib tashlash uchun</button></li>
+    </ul>
+    <div class="quiz-explain">Aynan — staging sizga <b>tanlash</b> imkonini beradi: hamma narsani
+    emas, balki bitta mavzuga oid o'zgarishlarni toza commit qilasiz.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Holat va tarixni ko'rish uchun qaysi buyruqlar?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">git status va git log</button></li>
+      <li><button class="quiz-option">git push va git pull</button></li>
+      <li><button class="quiz-option">git init va git clone</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <code>git status</code> hozirgi holatni, <code>git log</code>
+    esa commitlar tarixini ko'rsatadi. Bular sizning "ko'zoynagingiz".</div>
+  </div>
+
+  <h2>Yodda tuting (checklist)</h2>
+  <ul class="checklist">
+    <li><input type="checkbox" id="d2c1"><label for="d2c1">Uchta hududni (working, staging, repository) ayta olaman</label></li>
+    <li><input type="checkbox" id="d2c2"><label for="d2c2"><code>git add</code> = working → staging ekanini bilaman</label></li>
+    <li><input type="checkbox" id="d2c3"><label for="d2c3"><code>git commit</code> = staging → repository ekanini bilaman</label></li>
+    <li><input type="checkbox" id="d2c4"><label for="d2c4">Chalkashsam, <code>git status</code> ishlataman</label></li>
+    <li><input type="checkbox" id="d2c5"><label for="d2c5">Ikkinchi commitимни qildim 🎉</label></li>
+  </ul>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 2.2-bo'lim — "Recording Changes to the Repository":
+    <a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">git-scm.com/book</a>.<br>
+    O'zbekcha amaliyot: <a href="https://gitustasi.uz">gitustasi.uz</a> (brauzerda terminal bilan).</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Tushunmagan joy bo'lsa — menga yozing.</b> "Staging nega kerak?", "untracked nima?",
+    "git add . nima?" — har qanday savol yaxshi. Amaliyotни ham birga qilamiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0001-git-nima-va-sozlash.html">Oldingi: Git nima va sozlash</a>
+    <a href="../reference/glossary.html">Atamalar lug'ati</a>
+    <a href="#">Keyingi dars: branch bilan ishlash (tez orada)</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Git Basics: Recording Changes to the Repository</a> (fayl hayotiy davri: untracked / modified / staged).</li>
+      <li id="fn2">Pro Git — <a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">What is Git? — uchta holat (modified, staged, committed)</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

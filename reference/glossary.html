@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Git atamalari lug'ati (Glossary)</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main class="lesson glossary">
+
+  <p class="kicker">REFERENCE · LUG'AT</p>
+  <h1>Git atamalari lug'ati</h1>
+  <p class="lead">Kursdagi barcha atamalar shu yerda izohlanadi. Inglizcha atama —
+  o'zbekcha tushuntirish — kichik misol. Darslar shu yerga havola beradi.</p>
+
+  <ul class="toc">
+    <li><a href="#repository">repository</a></li>
+    <li><a href="#working-directory">working directory</a></li>
+    <li><a href="#staging-area">staging area</a></li>
+    <li><a href="#commit">commit</a></li>
+    <li><a href="#snapshot">snapshot</a></li>
+    <li><a href="#commit-message">commit message</a></li>
+    <li><a href="#branch">branch</a></li>
+    <li><a href="#head">HEAD</a></li>
+    <li><a href="#main">main / master</a></li>
+    <li><a href="#merge">merge</a></li>
+    <li><a href="#conflict">merge conflict</a></li>
+    <li><a href="#remote">remote</a></li>
+    <li><a href="#origin">origin</a></li>
+    <li><a href="#clone">clone</a></li>
+    <li><a href="#push">push</a></li>
+    <li><a href="#pull">pull</a></li>
+    <li><a href="#fetch">fetch</a></li>
+    <li><a href="#pull-request">pull request</a></li>
+    <li><a href="#fork">fork</a></li>
+    <li><a href="#gitignore">.gitignore</a></li>
+    <li><a href="#hash">commit hash</a></li>
+  </ul>
+
+  <dl>
+    <div class="term" id="repository">
+      <dt>repository <span class="uz">(repo) — loyiha ombori</span></dt>
+      <dd>Loyihangiz va uning <b>butun tarixi</b> saqlanadigan joy. Texnik jihatdan —
+      loyiha papkasidagi yashirin <code>.git</code> papkasi. <span class="eg">git init → repo yaratiladi</span></dd>
+    </div>
+
+    <div class="term" id="working-directory">
+      <dt>working directory <span class="uz">(working tree) — ish papkasi</span></dt>
+      <dd>Siz hozir ko'rib, tahrirlab turgan fayllar. Git "kuzatadigan" papkaning
+      ko'rinadigan qismi. <span class="eg">papkadagi .py, .txt, .js fayllaringiz</span></dd>
+    </div>
+
+    <div class="term" id="staging-area">
+      <dt>staging area <span class="uz">(index) — saralash joyi</span></dt>
+      <dd>Keyingi <a href="#commit">commit</a>ga <b>aynan qaysi</b> o'zgarishlar kirishini
+      tanlaydigan "oraliq savat". <code>git add</code> fayllarni shu yerga qo'yadi.
+      <span class="eg">git add file.txt → staging'ga tushadi</span></dd>
+    </div>
+
+    <div class="term" id="commit">
+      <dt>commit <span class="uz">— saqlangan holat / "nuqta"</span></dt>
+      <dd>Loyihaning ma'lum bir ondagi <a href="#snapshot">snapshot</a>i: kim, qachon, nima
+      o'zgartirgani yozib qo'yiladi. Tarixning bir "qadami".
+      <span class="eg">git commit -m "Login sahifasi qo'shildi"</span></dd>
+    </div>
+
+    <div class="term" id="snapshot">
+      <dt>snapshot <span class="uz">— holat nusxasi</span></dt>
+      <dd>Git har commitda fayllaringizning o'sha ondagi <b>to'liq holatini</b> rasmga
+      olgandek saqlaydi (faqat farqni emas — shuning uchun tezda istalgan holatga qaytasiz).</dd>
+    </div>
+
+    <div class="term" id="commit-message">
+      <dt>commit message <span class="uz">— commit izohi</span></dt>
+      <dd>Har commitga yoziladigan qisqa tushuntirish: <b>nima va nega</b> o'zgardi.
+      Jamoada juda muhim. <span class="eg">"Fix: bo'sh email xatosi tuzatildi"</span></dd>
+    </div>
+
+    <div class="term" id="branch">
+      <dt>branch <span class="uz">— shox / tarmoq</span></dt>
+      <dd>Asosiy kodga tegmasdan, alohida ishlash uchun ajratilgan "yo'l". Tugagach
+      asosiyga <a href="#merge">merge</a> qilinadi. <span class="eg">git switch -c login-feature</span></dd>
+    </div>
+
+    <div class="term" id="head">
+      <dt>HEAD <span class="uz">— "men hozir qayerdaman"</span></dt>
+      <dd>Hozir qaysi branch/commitda turganingizni ko'rsatuvchi belgi (ko'rsatkich).</dd>
+    </div>
+
+    <div class="term" id="main">
+      <dt>main / master <span class="uz">— asosiy branch</span></dt>
+      <dd>Odatdagi asosiy branch nomi. Yangi loyihalarda <code>main</code>, eskilarda
+      ko'pincha <code>master</code>. Ikkalasi ham shunchaki nom.</dd>
+    </div>
+
+    <div class="term" id="merge">
+      <dt>merge <span class="uz">— birlashtirish</span></dt>
+      <dd>Bir <a href="#branch">branch</a>dagi o'zgarishlarni boshqasiga qo'shish.
+      <span class="eg">git merge login-feature</span></dd>
+    </div>
+
+    <div class="term" id="conflict">
+      <dt>merge conflict <span class="uz">— birlashtirish ziddiyati</span></dt>
+      <dd>Ikki kishi <b>bir joyni</b> har xil o'zgartirsa, Git qaysi birini olishni
+      bilmaydi va sizdan hal qilishni so'raydi. Normal holat — vahima emas.</dd>
+    </div>
+
+    <div class="term" id="remote">
+      <dt>remote <span class="uz">— masofaviy repo</span></dt>
+      <dd>Internetdagi nusxa (masalan GitHub'da). Jamoa shu orqali kod almashadi.</dd>
+    </div>
+
+    <div class="term" id="origin">
+      <dt>origin <span class="uz">— asosiy remote nomi</span></dt>
+      <dd><a href="#remote">remote</a>ning odatdagi nomi — odatda sizning GitHub repongiz.
+      <span class="eg">git push origin main</span></dd>
+    </div>
+
+    <div class="term" id="clone">
+      <dt>clone <span class="uz">— nusxa ko'chirib olish</span></dt>
+      <dd>Internetdagi repo'ni butun tarixi bilan kompyuteringizga ko'chirish.
+      <span class="eg">git clone https://github.com/user/repo.git</span></dd>
+    </div>
+
+    <div class="term" id="push">
+      <dt>push <span class="uz">— yuklash (yuqoriga)</span></dt>
+      <dd>Kompyuteringizdagi commitlarni <a href="#remote">remote</a>ga (GitHub'ga) jo'natish.
+      <span class="eg">git push</span></dd>
+    </div>
+
+    <div class="term" id="pull">
+      <dt>pull <span class="uz">— tortib olish (pastga)</span></dt>
+      <dd>Remote'dagi yangi o'zgarishlarni o'zingizga olib, qo'shib qo'yish
+      (<a href="#fetch">fetch</a> + <a href="#merge">merge</a>). <span class="eg">git pull</span></dd>
+    </div>
+
+    <div class="term" id="fetch">
+      <dt>fetch <span class="uz">— yangiliklarni keltirish</span></dt>
+      <dd>Remote'dagi o'zgarishlarni <b>ko'rib chiqish uchun</b> keltiradi, lekin
+      kodingizga hali qo'shmaydi. <code>pull</code> = fetch + merge.</dd>
+    </div>
+
+    <div class="term" id="pull-request">
+      <dt>pull request <span class="uz">(PR) — qo'shish so'rovi</span></dt>
+      <dd>GitHub'da: "mening branch'imdagi o'zgarishlarni asosiy kodga qo'shaylik" degan
+      taklif. Jamoa ko'rib chiqadi (review) va tasdiqlaydi. <b>Jamoa ishining yuragi.</b></dd>
+    </div>
+
+    <div class="term" id="fork">
+      <dt>fork <span class="uz">— o'z nusxangizga ko'chirish</span></dt>
+      <dd>Birovning GitHub repo'sini <b>o'z akkauntingizga</b> nusxalash. Open source'ga
+      hissa qo'shishda ishlatiladi.</dd>
+    </div>
+
+    <div class="term" id="gitignore">
+      <dt>.gitignore <span class="uz">— e'tibor bermaslik ro'yxati</span></dt>
+      <dd>Git <b>kuzatmasligi</b> kerak bo'lgan fayllar ro'yxati (masalan parollar,
+      <code>node_modules</code>, vaqtinchalik fayllar). <span class="eg">*.log</span></dd>
+    </div>
+
+    <div class="term" id="hash">
+      <dt>commit hash <span class="uz">(SHA) — commit "passporti"</span></dt>
+      <dd>Har commitning takrorlanmas uzun ID'si. Odatda dastlabki 7 belgisi yetarli.
+      <span class="eg">a1b2c3d</span></dd>
+    </div>
+  </dl>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="../lessons/0001-git-nima-va-sozlash.html">DARS 01: Git nima va sozlash</a>
+  </nav>
+
+</main>
+</body>
+</html>

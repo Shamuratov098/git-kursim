@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DARS 01 — Git nima va kompyuterni tayyorlash</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 01 · GIT ASOSLARI</p>
+  <h1>Git nima, nega kerak — va kompyuterni tayyorlash</h1>
+  <p class="lead">Bu darsdan keyin siz Git nimaligini bir jumlada tushuntira olasiz va
+  kompyuteringiz jamoada ishlashga <b>tayyor</b> bo'ladi — har bir commit aynan sizniki
+  ekanini Git biladi.</p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim (sizning maqsadingiz)</span>
+    <p>Jamoada bir nechta odam <b>bitta</b> loyiha ustida ishlaydi. Git bo'lmasa:
+    fayllar <code>loyiha_final_FINAL_v2.zip</code> ga aylanadi, kim nimani buzganini
+    bilib bo'lmaydi, va birovning ishi ustiga yozib yuborish oson. Git aynan shu
+    muammoni yo'qotadi — shuning uchun deyarli har bir ish joyida Git talab qilinadi.</p>
+  </div>
+
+  <h2>Git aslida nima qiladi?</h2>
+  <p>Git — bu <b>version control system</b> (versiyalarni boshqarish tizimi). Sodda qilib:
+  Git loyihangizning holatini vaqt-vaqti bilan <b>rasmga olib</b> (snapshot) saqlab boradi.
+  Har bir bunday saqlangan holat — <b>commit</b> deyiladi.<a class="cite" href="#fn1">1</a></p>
+
+  <div class="timeline" aria-hidden="true">
+    <div class="snap"><div class="dot"></div><div class="card">loyiha<br>boshlandi</div><div class="when">commit&nbsp;1</div></div>
+    <div class="snap"><div class="dot"></div><div class="card">login<br>qo'shildi</div><div class="when">commit&nbsp;2</div></div>
+    <div class="snap"><div class="dot"></div><div class="card">xato<br>tuzatildi</div><div class="when">commit&nbsp;3</div></div>
+    <div class="snap"><div class="dot"></div><div class="card">dizayn<br>yangilandi</div><div class="when">HEAD&nbsp;(hozir)</div></div>
+  </div>
+
+  <p>Har bir commit — loyihangizning <b>to'liq</b> holati (faqat farqi emas).<a class="cite" href="#fn2">2</a>
+  Shu sababli istalgan vaqtda ortga qaytib, "kecha hammasi ishlayotgan edi" degan holatga
+  bemalol borasiz. Git, qo'shimcha ravishda, har commitda <b>kim</b> va <b>qachon</b>
+  o'zgartirganini ham yozib qo'yadi.</p>
+
+  <div class="callout note">
+    <span class="label">Tarqoq (distributed) degani</span>
+    <p>Git'da <b>har bir</b> dasturchining kompyuterida loyihaning <b>butun tarixi</b>
+    to'liq bo'ladi. Internet bo'lmasa ham ishlayverasiz; GitHub esa shu nusxalarni
+    bir-biriga ulaydigan umumiy markaz vazifasini bajaradi (buni 4-darsda ko'ramiz).</p>
+  </div>
+
+  <h2>1-qadam: Git o'rnatilganini tekshirish</h2>
+  <p>Sizning kompyuteringizda Git allaqachon bor. Terminalni oching va yozing:</p>
+
+  <div class="cmd" data-cmd="git --version">git --version
+<span class="out">git version 2.43.0</span></div>
+
+  <p>Agar shunga o'xshash versiya raqami chiqsa — tayyor. (Chiqmasa, ayting, birga
+  o'rnatamiz.<a class="cite" href="#fn3">3</a>)</p>
+
+  <h2>2-qadam: Git'ga o'zingizni tanishtirish</h2>
+  <p>Git har bir commitga "muallif" sifatida sizning <b>ism</b> va <b>email</b>ingizni
+  yozadi. Buni bir marta sozlab qo'yamiz (<code>--global</code> = shu kompyuterdagi barcha
+  loyihalar uchun):<a class="cite" href="#fn3">3</a></p>
+
+  <div class="cmd" data-cmd='git config --global user.name "Ismingiz Familiyangiz"'>git config --global user.name "Ismingiz Familiyangiz"</div>
+  <div class="cmd" data-cmd='git config --global user.email "siz@example.com"'>git config --global user.email "siz@example.com"</div>
+
+  <div class="callout warning">
+    <span class="label">Jamoa uchun muhim nuqta</span>
+    <p>Bu yerdagi <b>email GitHub akkauntingiz email'i bilan bir xil</b> bo'lsin. Shunda
+    qilgan commitlaringiz GitHub'da sizning profilingizga bog'lanadi — ish/jamoada
+    "kim nima qildi" aniq ko'rinadi.<a class="cite" href="#fn4">4</a> (GitHub'ingiz hali
+    bo'lmasa — hech qisi yo'q, keyinroq ochamiz va shunda moslaymiz.)</p>
+  </div>
+
+  <p>Sozlamani tekshirib ko'rish:</p>
+  <div class="cmd" data-cmd="git config --global --list">git config --global --list
+<span class="out">user.name=Ismingiz Familiyangiz</span>
+<span class="out">user.email=siz@example.com</span></div>
+
+  <div class="callout tip">
+    <span class="label">Foydali (ixtiyoriy)</span>
+    <p>Yangi loyihalarda asosiy branch nomi <code>main</code> bo'lishi uchun:</p>
+    <div class="cmd" data-cmd="git config --global init.defaultBranch main">git config --global init.defaultBranch main</div>
+  </div>
+
+  <div class="callout win">
+    <span class="label">✓ Sizning g'alabangiz</span>
+    <p>Git o'rnatilgan, ishlayapti, va <b>endi sizni taniydi</b>. Bundan keyin qiladigan
+    har bir commit aniq sizning nomingiz bilan yoziladi. Bu — jamoada ishlashning birinchi
+    poydevori. 🎉</p>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+  <p>Eslab javob berish — bilimni mustahkamlaydigan eng yaxshi usul. Shoshilmang, o'ylab tanlang.</p>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Git loyihangizni qanday saqlaydi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Har qadamda loyihaning to'liq holatini (snapshot) saqlaydi</button></li>
+      <li><button class="quiz-option">Faqat oxirgi faylni saqlab eski versiyalarni o'chiradi</button></li>
+      <li><button class="quiz-option">Fayllarni avtomatik tarzda internetdagi bulutga zaxiralaydi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — har <b>commit</b> loyihaning o'sha ondagi to'liq
+    holati (snapshot). Shuning uchun istalgan eski holatga qaytish oson.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Nega jamoada (team) Git ayniqsa muhim?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Bir vaqtda ko'p kishi xavfsiz birga ishlay oladi</button></li>
+      <li><button class="quiz-option">Kompyuterni viruslardan himoya qilib turadi har doim</button></li>
+      <li><button class="quiz-option">Kodni avtomatik yozib dasturchi o'rnini bosadi tezda</button></li>
+    </ul>
+    <div class="quiz-explain">Aynan — Git ko'p kishining o'zgarishlarini yo'qotmasdan,
+    bir-birini buzmasdan birlashtirishga imkon beradi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> <code>git config user.email</code> nima uchun kerak?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Har bir commit kim qilganini belgilab beradi</button></li>
+      <li><button class="quiz-option">Internetga ulanish parolini xavfsiz saqlab qo'yadi</button></li>
+      <li><button class="quiz-option">Loyihadagi barcha xatolarni avtomatik topib tuzatadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — email commit muallifini belgilaydi. GitHub email'i
+    bilan bir xil bo'lsa, commitlar profilingizga bog'lanadi.</div>
+  </div>
+
+  <h2>Hozir bajaring (checklist)</h2>
+  <ul class="checklist">
+    <li><input type="checkbox" id="c1"><label for="c1">Terminalda <code>git --version</code> ni ishlatib, versiyani ko'rdim</label></li>
+    <li><input type="checkbox" id="c2"><label for="c2"><code>user.name</code> va <code>user.email</code> ni o'zimnikiga sozladim</label></li>
+    <li><input type="checkbox" id="c3"><label for="c3"><code>git config --global --list</code> bilan tekshirdim</label></li>
+    <li><input type="checkbox" id="c4"><label for="c4">Email'im GitHub email'imga mos (yoki GitHub'im yo'qligini bilaman)</label></li>
+  </ul>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba (o'qib/ko'rib chiqing)</span>
+    <p><b>Pro Git</b> kitobi, 1-bob — "Getting Started" (bepul, eng ishonchli):
+    <a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control">git-scm.com/book</a>.<br>
+    O'zbekcha amaliy mashq uchun: <b>Git Ustasi</b> —
+    <a href="https://gitustasi.uz">gitustasi.uz</a> (brauzerda terminal bilan).<a class="cite" href="#fn5">5</a></p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Men sizning o'qituvchingizman.</b> Biror joy tushunarsiz bo'lsa yoki buyruq
+    ishlamasa — shu yerda menga yozing. "Distributed nima?", "GitHub email'imni qayerdan
+    bilaman?", "branch nima?" — istalgan savol yaxshi savol. Keyingi darsni ham birga
+    boshlaymiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="../reference/glossary.html">Atamalar lug'ati (glossary)</a>
+    <a href="#">Keyingi dars: birinchi repository va commit (tez orada)</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control">Getting Started: About Version Control</a>.</li>
+      <li id="fn2">Pro Git — <a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">Getting Started: What is Git? (snapshots, not differences)</a>.</li>
+      <li id="fn3">Pro Git — <a href="https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup">First-Time Git Setup</a> (o'rnatish: <a href="https://git-scm.com/downloads">git-scm.com/downloads</a>).</li>
+      <li id="fn4">GitHub Docs — <a href="https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address">Setting your commit email address</a>.</li>
+      <li id="fn5">Git Ustasi (o'zbekcha, interaktiv) — <a href="https://gitustasi.uz">gitustasi.uz</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

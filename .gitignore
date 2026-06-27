@@ -1,0 +1,11 @@
+# Shaxsiy fayl — email manzillaringiz bor, public repo'da bo'lmasin
+NOTES.md
+
+# Ichki pedagogik eslatmalar (o'qituvchi uchun)
+learning-records/
+
+# Tizim / muharrir fayllari
+.DS_Store
+Thumbs.db
+*.swp
+*~

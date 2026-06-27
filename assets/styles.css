@@ -1,0 +1,429 @@
+/* ==========================================================================
+   Git kursi — umumiy stil (shared stylesheet)
+   Tufte ruhida: tinch, o'qishga qulay, chop etishga (print) mos.
+   Barcha darslar va reference hujjatlar shu faylga bog'lanadi.
+   ========================================================================== */
+
+:root {
+  --bg:        #fffff8;   /* iliq oq fon (Tufte) */
+  --ink:       #1a1a1a;   /* asosiy matn */
+  --ink-soft:  #5b5950;   /* ikkilamchi matn */
+  --rule:      #e7e3d6;   /* yengil chiziq */
+  --accent:    #f05133;   /* Git brendi (to'q sariq) — kam ishlatiladi */
+  --accent-ink:#b8341a;
+  --link:      #13507a;   /* havola ko'k */
+  --good:      #2e7d32;   --good-bg:#eef6ee;
+  --warn:      #9a6700;   --warn-bg:#fbf3e0;
+  --info:      #13507a;   --info-bg:#eef3f8;
+  --note-bg:   #f4f2e8;
+  --code-bg:   #f3f1e7;
+  --code-ink:  #20232a;
+  --maxw:      44rem;
+}
+
+/* ----- Asosiy tipografika ------------------------------------------------- */
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", "URW Palladio L",
+               P052, Palatino, Georgia, serif;
+  font-size: 19px;
+  line-height: 1.62;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.lesson {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 3.2rem 1.4rem 5rem;
+}
+
+p, ul, ol { margin: 0 0 1.05em; }
+ul, ol { padding-left: 1.3em; }
+li { margin: 0.25em 0; }
+b, strong { font-weight: 700; }
+
+a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+a:hover { color: var(--accent-ink); }
+
+/* ----- Sarlavhalar -------------------------------------------------------- */
+.kicker {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin: 0 0 0.6rem;
+}
+h1 {
+  font-size: 2.15rem;
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5rem;
+}
+h2 {
+  font-size: 1.4rem;
+  line-height: 1.2;
+  margin: 2.4rem 0 0.8rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--rule);
+}
+h3 { font-size: 1.12rem; margin: 1.7rem 0 0.5rem; }
+
+.lead {
+  font-size: 1.16rem;
+  line-height: 1.5;
+  color: #2c2a24;
+  margin: 0 0 1.6rem;
+}
+
+/* ----- Kod va buyruqlar --------------------------------------------------- */
+code, kbd, samp, pre, .cmd {
+  font-family: "JetBrains Mono", "SF Mono", "Fira Code", Menlo, Consolas,
+               "Liberation Mono", monospace;
+}
+code {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  padding: 0.08em 0.36em;
+  border-radius: 4px;
+  font-size: 0.86em;
+}
+kbd {
+  background: #fff;
+  border: 1px solid #cfcabb;
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 0.05em 0.45em;
+  font-size: 0.8em;
+}
+
+/* Buyruq bloki: terminalga yoziladigan qator(lar) */
+.cmd {
+  position: relative;
+  display: block;
+  background: var(--code-ink);
+  color: #eceff4;
+  border-radius: 8px;
+  padding: 0.85rem 3.2rem 0.85rem 2.1rem;
+  margin: 0.9rem 0;
+  font-size: 0.84rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.cmd::before {                 /* terminal '$' belgisi */
+  content: "$";
+  position: absolute;
+  left: 0.85rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+.cmd .out { color: #9aa3b2; }  /* terminal javobi (output) */
+.cmd-copy {
+  position: absolute;
+  top: 0.45rem; right: 0.45rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: #cdd3df;
+  background: #2e333d;
+  border: 1px solid #424955;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+}
+.cmd-copy:hover { background: #3a414d; color: #fff; }
+.cmd-copy.copied { color: #b7f0bd; border-color: #2e7d32; }
+
+/* ----- Callout qutilari --------------------------------------------------- */
+.callout {
+  margin: 1.4rem 0;
+  padding: 0.9rem 1.1rem 0.95rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--rule);
+  background: var(--note-bg);
+}
+.callout p:last-child { margin-bottom: 0; }
+.callout .label {
+  display: block;
+  font-family: system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+.why     { background: #fdf1ee; border-left-color: var(--accent); }
+.why     .label { color: var(--accent-ink); }
+.win     { background: var(--good-bg); border-left-color: var(--good); }
+.win     .label { color: var(--good); }
+.tip,
+.note    { background: var(--info-bg); border-left-color: var(--info); }
+.tip     .label, .note .label { color: var(--info); }
+.warning { background: var(--warn-bg); border-left-color: var(--warn); }
+.warning .label { color: var(--warn); }
+
+/* ----- "Snapshot" / vaqt chizig'i diagrammasi ----------------------------- */
+.timeline {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+.snap {
+  flex: 1 1 0;
+  min-width: 92px;
+  text-align: center;
+  position: relative;
+  padding: 0 0.2rem;
+}
+.snap .dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin: 0 auto 0.5rem;
+  position: relative;
+  z-index: 2;
+}
+.snap:not(:last-child)::after {     /* commitlarni bog'lovchi chiziq */
+  content: "";
+  position: absolute;
+  top: 7px; left: 50%; right: -50%;
+  height: 2px;
+  background: #d9b9ad;
+  z-index: 1;
+}
+.snap .card {
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.62rem;
+  line-height: 1.5;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.4rem 0.3rem;
+  color: #444;
+}
+.snap .when {
+  font-family: system-ui, sans-serif;
+  font-size: 0.66rem;
+  color: var(--ink-soft);
+  margin-top: 0.35rem;
+}
+
+/* ----- Quiz (interaktiv, app.js bilan) ----------------------------------- */
+.quiz {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem 1.2rem;
+  margin: 1.6rem 0;
+  background: #fffefb;
+}
+.quiz-q {
+  font-weight: 700;
+  margin: 0 0 0.8rem;
+}
+.quiz-q .num {
+  font-family: system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--accent-ink);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+.quiz-options { list-style: none; padding: 0; margin: 0; }
+.quiz-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: 0.94rem;
+  background: #fff;
+  border: 1px solid #d8d3c5;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin: 0.4rem 0;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.quiz-option:hover:not(:disabled) { background: #f6f4ec; border-color: #b9b3a2; }
+.quiz-option:disabled { cursor: default; }
+.quiz-option .mark { float: right; font-weight: 700; }
+.quiz-option.correct   { background: var(--good-bg); border-color: var(--good); color: #1c4e20; }
+.quiz-option.incorrect { background: #fbecea; border-color: #c0392b; color: #7d241a; }
+.quiz-explain {
+  display: none;
+  margin-top: 0.8rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--rule);
+  font-size: 0.92rem;
+  color: #2c2a24;
+}
+.quiz-explain.show { display: block; }
+
+/* ----- Vazifa ro'yxati (checklist) --------------------------------------- */
+.checklist { list-style: none; padding: 0; }
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+}
+.checklist input[type="checkbox"] {
+  margin-top: 0.35em;
+  width: 1.05em; height: 1.05em;
+  accent-color: var(--good);
+  flex: 0 0 auto;
+}
+.checklist label { cursor: pointer; }
+
+/* ----- Maxsus qutilar: asosiy manba, o'qituvchidan so'rash --------------- */
+.primary-source {
+  margin: 1.8rem 0;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  background: #fffdf6;
+}
+.primary-source .label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.ask-teacher {
+  margin: 1.8rem 0 0;
+  padding: 0.9rem 1.1rem;
+  border-radius: 8px;
+  background: var(--note-bg);
+  font-size: 0.95rem;
+}
+.ask-teacher b { color: var(--accent-ink); }
+
+/* ----- Iqtibos (citation) va izohlar ------------------------------------- */
+.cite {
+  font-family: system-ui, sans-serif;
+  font-size: 0.62em;
+  vertical-align: super;
+  line-height: 0;
+  text-decoration: none;
+  padding: 0 0.06em;
+}
+.footnotes {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+.footnotes ol { padding-left: 1.2em; }
+.footnotes a { word-break: break-all; }
+
+/* ----- Navigatsiya -------------------------------------------------------- */
+.lesson-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.4rem;
+  margin: 2.4rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+.lesson-nav a { text-decoration: none; }
+.lesson-nav a::before { content: "→ "; color: var(--accent); }
+.lesson-nav .prev::before { content: "← "; }
+
+/* ----- Reference / glossary jadvali --------------------------------------- */
+.glossary dl { margin: 0; }
+.term {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 1rem;
+}
+.term dt {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.term dt .uz {
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-left: 0.5rem;
+}
+.term dd { margin: 0.35rem 0 0; }
+.term dd .eg {
+  display: inline-block;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+.toc {
+  columns: 2;
+  column-gap: 1.6rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+  padding: 0;
+  list-style: none;
+}
+.toc a { text-decoration: none; }
+
+/* ----- Kurs bosh sahifasi (index) ---------------------------------------- */
+.lesson-index { list-style: none; padding: 0; margin: 1.5rem 0; }
+.lesson-index li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  padding: 0.7rem 0.2rem;
+  border-bottom: 1px solid var(--rule);
+}
+.lesson-index .n {
+  font-family: "JetBrains Mono", Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--accent-ink);
+  flex: 0 0 auto;
+  width: 2.2rem;
+}
+.lesson-index a { text-decoration: none; font-weight: 700; }
+.lesson-index a:hover { text-decoration: underline; }
+.lesson-index .soon { color: var(--ink-soft); }
+.lesson-index .tag {
+  margin-left: auto;
+  font-family: system-ui, sans-serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  flex: 0 0 auto;
+}
+
+/* ----- Responsiv ---------------------------------------------------------- */
+@media (max-width: 600px) {
+  body { font-size: 18px; }
+  .lesson { padding: 2rem 1.1rem 4rem; }
+  h1 { font-size: 1.8rem; }
+  .toc { columns: 1; }
+  .snap .card { font-size: 0.58rem; }
+}
+
+/* ----- Chop etish (print) ------------------------------------------------- */
+@media print {
+  :root { --bg: #fff; }
+  body { font-size: 11.5pt; }
+  .lesson { max-width: none; padding: 0; }
+  .cmd-copy, .lesson-nav, .ask-teacher { display: none !important; }
+  .cmd { background: #f4f2ea !important; color: #111 !important; border: 1px solid #ccc; }
+  .cmd::before { color: #888; }
+  .callout, .quiz, .primary-source, .snap .card { break-inside: avoid; }
+  .quiz-explain { display: block !important; }   /* javoblar bosmada ko'rinsin */
+  a { color: #000; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.7em; color: #555; }
+}

@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 04 — Remote va push: ishim GitHub'da</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 04 · MODUL B · GITHUB</p>
+  <h1>Remote va push: ishim GitHub'da</h1>
+  <p class="lead">Bu darsdan keyin siz kompyuteringizdagi commitlarni GitHub'ga
+  <b>o'z qo'lingiz bilan</b> chiqarasiz — va natijasini bir necha daqiqada
+  telefoningizda ko'rasiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 7 daqiqa</span>
+    <span>💻 Amaliyot ≈ 10 daqiqa</span>
+    <span>Kerak: <a href="0003-xatoni-qaytarish.html">Dars 03</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Shu paytgacha butun ishingiz <b>bitta</b> kompyuterda edi. Kompyuter buzilsa —
+    hammasi ketadi; hamkasbingiz ko'rmoqchi bo'lsa — ko'ra olmaydi. <code>push</code>
+    shu ikkala muammoni ham bir vaqtda yechadi. Va bu — <b>pull request</b>ning
+    (jamoa ishining yuragi) birinchi sharti.</p>
+  </div>
+
+  <h2>Rasm kengaymoqda: uchinchi emas, to'rtinchi joy</h2>
+  <p><a href="0002-uch-hudud-va-commit.html">2-darsdagi uchta hudud</a> esingizda.
+  GitHub — o'sha qatorning <b>to'rtinchi</b> bo'g'ini. Butun Git shu bitta rasmga sig'adi:</p>
+
+  <div class="areas wide">
+    <div class="area">
+      <h4>Ish papkasi</h4>
+      <span class="en">Working Directory</span>
+      <div class="desc">Tahrirlaysiz</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git add</span></div>
+    <div class="area">
+      <h4>Saralash joyi</h4>
+      <span class="en">Staging Area</span>
+      <div class="desc">Tanlaysiz</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git commit</span></div>
+    <div class="area">
+      <h4>Mahalliy ombor</h4>
+      <span class="en">Local Repository</span>
+      <div class="desc">Kompyuteringizdagi tarix</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git push</span></div>
+    <div class="area">
+      <h4>GitHub</h4>
+      <span class="en">Remote (origin)</span>
+      <div class="desc">Internetdagi nusxa</div>
+    </div>
+  </div>
+
+  <p>Chapdagi uchtasi — kompyuteringizda, oxirgisi — internetda. <code>git push</code>
+  aynan shu chegaradan o'tkazadi.</p>
+
+  <h2>Atamalar: <code>remote</code> va <code>origin</code></h2>
+  <ul>
+    <li><b>remote</b> — loyihangizning <b>internetdagi nusxasi</b> (bizda: GitHub'dagi
+    repo). Git'ga bir nechta remote qo'shish mumkin, lekin odatda bittasi
+    bo'ladi.<a class="cite" href="#fn1">1</a></li>
+    <li><b>origin</b> — o'sha remote'ning <b>nomi</b>. Sehrli so'z emas, shunchaki
+    kelishilgan odatiy nom: «asosiy manzil».</li>
+    <li><b><code>origin/main</code></b> — bu <b>siz oxirgi marta ko'rgan</b> GitHub
+    holatining xatcho'pi (belgisi). Git'ning GitHub'dagi <code>main</code> haqidagi
+    <i>xotirasi</i> — va u faqat siz aloqaga chiqqanda yangilanadi.</li>
+  </ul>
+
+  <div class="callout note">
+    <span class="label">Sizda allaqachon bor</span>
+    <p>Kurs repongiz GitHub'da: <code>Shamuratov098/git-kursim</code>. Ya'ni
+    <code>git init</code> ham, remote ulash ham allaqachon bajarilgan — bugun siz
+    faqat <b>push</b>ni o'rganasiz. Yangi loyihada remote'ni noldan ulash
+    <a href="../reference/yol-xaritasi.html">5-darsda</a> bo'ladi.</p>
+  </div>
+
+  <h2><code>git push</code> aslida nima jo'natadi?</h2>
+  <p>Bu yerda yangi boshlovchilar eng ko'p adashadigan nuqta bor:</p>
+
+  <div class="callout warning">
+    <span class="label">Eng muhim ogohlantirish</span>
+    <p><code>push</code> faqat <b>commit qilingan</b> narsani jo'natadi. Faylni
+    tahrirlab, <code>add</code> va <code>commit</code> qilmasdan <code>push</code>
+    qilsangiz — GitHub'da <b>hech narsa o'zgarmaydi</b>. Git sizga xato ham
+    ko'rsatmaydi, chunki uning nazarida jo'natadigan yangi commit yo'q.</p>
+    <p>Shuning uchun tartib doim bir xil: <code>add</code> → <code>commit</code> →
+    <code>push</code>.</p>
+  </div>
+
+  <p>Aniqroq aytganda, <code>push</code> — bu <b>«GitHub'da yo'q commitlarimni ol»</b>
+  degani. U butun faylni emas, faqat yetishmayotgan commitlarni jo'natadi.</p>
+
+  <h3>Buyruqning bo'laklari</h3>
+  <div class="cmd" data-cmd="git push">git push</div>
+  <p>Odatda shuncha. Lekin <b>birinchi marta</b> (yangi branch yoki yangi repo uchun)
+  Git qayerga jo'natishni bilmaydi va uzunroq shakl kerak bo'ladi:</p>
+  <div class="cmd" data-cmd="git push -u origin main">git push -u origin main</div>
+  <ul>
+    <li><code>origin</code> — qaysi remote'ga;</li>
+    <li><code>main</code> — qaysi branch'ni;</li>
+    <li><code>-u</code> — «buni eslab qol». Shundan keyin oddiy <code>git push</code>
+    yetarli bo'ladi.<a class="cite" href="#fn2">2</a></li>
+  </ul>
+  <p>Sizning <code>main</code> branch'ingizda <code>-u</code> allaqachon o'rnatilgan —
+  shuning uchun siz doim qisqa <code>git push</code> yozasiz.</p>
+
+  <div class="callout tip">
+    <span class="label">Parol so'ralmaydi</span>
+    <p>Kompyuteringizda <code>gh</code> (GitHub CLI) orqali kirish allaqachon sozlangan,
+    shuning uchun <code>git push</code> sizdan parol so'ramaydi. GitHub 2021-yildan beri
+    parolni qabul qilmaydi — uning o'rniga <b>token</b> ishlatiladi, va <code>gh</code>
+    buni siz uchun boshqaradi.<a class="cite" href="#fn3">3</a></p>
+  </div>
+
+  <h2>Push'dan keyin: <code>--amend</code> qilmang</h2>
+  <p><a href="0003-xatoni-qaytarish.html">3-darsda</a> <code>git commit --amend</code> ni
+  o'rgangan edik — u <b>oxirgi commitni almashtiradi</b>. Endi sababini tushunasiz:
+  commit push qilingandan keyin u <b>boshqalarda ham</b> bor. Uni almashtirsangiz,
+  sizning tarixingiz ular ko'rgan tarixdan farq qila boshlaydi va Git chalkashadi.</p>
+  <div class="callout win">
+    <span class="label">Sodda qoida</span>
+    <p><b>Push qilingunga qadar</b> — tarixni tuzatish mumkin (<code>--amend</code>).
+    <b>Push qilingandan keyin</b> — tuzatmaymiz, ustiga <b>yangi commit</b> qo'shamiz.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: o'z commitlaringizni GitHub'ga chiqaring</h2>
+    <p><a href="0003-xatoni-qaytarish.html">3-darsda</a> qilgan commitlaringiz hozircha
+    faqat kompyuteringizda. Ularni GitHub'ga chiqaramiz — va sayt yangilanganini
+    telefoningizda ko'rasiz.</p>
+    <div class="cmd" data-cmd="cd ~/Projects/Learn/Git">cd ~/Projects/Learn/Git</div>
+
+    <ol class="steps">
+      <li>
+        <p>Remote kimligini ko'ring</p>
+        <p class="why-step">Git qayerga jo'natishini bilamizmi?</p>
+        <div class="cmd" data-cmd="git remote -v">git remote -v
+<span class="out">origin  https://github.com/Shamuratov098/git-kursim.git (fetch)</span>
+<span class="out">origin  https://github.com/Shamuratov098/git-kursim.git (push)</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ikki qator — biri olish (fetch),
+        biri jo'natish (push) uchun. Manzil bir xil.</p>
+      </li>
+
+      <li>
+        <p>Nechta commit «kutib turibdi»?</p>
+        <p class="why-step">Git o'zi aytib beradi: siz GitHub'dan qancha oldindasiz.</p>
+        <div class="cmd" data-cmd="git status">git status
+<span class="out">On branch main</span>
+<span class="out">Your branch is ahead of 'origin/main' by 2 commits.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «ahead of 'origin/main' by N commits».
+        Bu N ta commit hali faqat sizda.</p>
+      </li>
+
+      <li>
+        <p>Xatcho'pni ko'z bilan ko'ring</p>
+        <p class="why-step">Tarixda <code>origin/main</code> qayerda turganini ko'rish —
+        push nima qilishini oldindan tushunishning eng yaxshi yo'li.</p>
+        <div class="cmd" data-cmd="git log --oneline -4">git log --oneline -4
+<span class="out">9f8e7d6 (HEAD -&gt; main) Mashq fayliga uchinchi qator qo'shildi</span>
+<span class="out">3c4d5e6 Amaliyot fayli qo'shildi</span>
+<span class="out">1a2b3c4 (origin/main) DARS 03 va 04 qo'shildi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>HEAD -&gt; main</code> yuqorida,
+        <code>origin/main</code> esa <b>pastroqda</b>. Ana shu farq — jo'natiladigan commitlar.</p>
+      </li>
+
+      <li>
+        <p>Jo'nating</p>
+        <p class="why-step">Mana shu — darsning asosiy buyrug'i.</p>
+        <div class="cmd" data-cmd="git push">git push
+<span class="out">Enumerating objects: 8, done.</span>
+<span class="out">To https://github.com/Shamuratov098/git-kursim.git</span>
+<span class="out">   1a2b3c4..9f8e7d6  main -&gt; main</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> oxirgi qatorda
+        <code>main -&gt; main</code>. Parol so'ralmaydi. <b>G'alaba!</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Xatcho'p ko'chganini tekshiring</p>
+        <p class="why-step">Endi <code>origin/main</code> sizning oxirgi commitingizga
+        yetib oldi — GitHub va kompyuteringiz bir xil holatda.</p>
+        <div class="cmd" data-cmd="git log --oneline -3">git log --oneline -3
+<span class="out">9f8e7d6 (HEAD -&gt; main, origin/main) Mashq fayliga uchinchi qator...</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>HEAD -&gt; main</code> va
+        <code>origin/main</code> endi <b>bir qatorda</b>.</p>
+      </li>
+
+      <li>
+        <p>Git ham tasdiqlasin</p>
+        <div class="cmd" data-cmd="git status">git status
+<span class="out">Your branch is up to date with 'origin/main'.</span>
+<span class="out">nothing to commit, working tree clean</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «up to date». Hammasi joyida. 😌</p>
+      </li>
+
+      <li>
+        <p>GitHub'da o'z ko'zingiz bilan ko'ring</p>
+        <p class="why-step">Commitlaringiz endi internetda — muallif sifatida siz
+        ko'rinasiz (1-darsdagi email sozlamasi shuning uchun kerak edi).</p>
+        <div class="cmd" data-cmd="xdg-open https://github.com/Shamuratov098/git-kursim/commits/main">xdg-open https://github.com/Shamuratov098/git-kursim/commits/main</div>
+        <p class="expect"><b>Kutilgan natija:</b> brauzerda commitlar ro'yxati ochiladi —
+        yozgan izohlaringiz va yoningizda avataringiz.</p>
+      </li>
+
+      <li>
+        <p>📱 Telefoningizda tekshiring</p>
+        <p class="why-step">GitHub Pages saytni 1–2 daqiqada qayta quradi. Bu — push'ning
+        real natijasi.</p>
+        <div class="cmd" data-cmd="https://shamuratov098.github.io/git-kursim/">https://shamuratov098.github.io/git-kursim/</div>
+        <p class="expect"><b>Kutilgan natija:</b> telefoningizda kurs sayti ochiladi va
+        yangi darslar ko'rinadi. <b>Siz push qilganingiz uchun.</b> 🎉📱</p>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <span class="label">Bundan keyingi odatingiz</span>
+      <p>Kompyuterda biror ish qilganingizdan keyin uch buyruq — va ishingiz
+      xavfsiz hamda telefoningizda:</p>
+      <div class="cmd" data-cmd='git add . && git commit -m "izoh" && git push'>git add . &amp;&amp; git commit -m "izoh" &amp;&amp; git push</div>
+      <p>Boshida uchtasini <b>alohida</b> yozgan ma'qul — <code>git status</code> bilan
+      har qadamni ko'rib boring.</p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d4c1"><label for="d4c1"><code>git remote -v</code> bilan origin manzilini ko'rdim</label></li>
+      <li><input type="checkbox" id="d4c2"><label for="d4c2"><code>git log</code> da <code>origin/main</code> xatcho'pini topdim</label></li>
+      <li><input type="checkbox" id="d4c3"><label for="d4c3">O'z qo'lim bilan <code>git push</code> qildim 🎉</label></li>
+      <li><input type="checkbox" id="d4c4"><label for="d4c4">GitHub'da commitlarimni ko'rdim</label></li>
+      <li><input type="checkbox" id="d4c5"><label for="d4c5">Telefonimda yangilangan saytni ochdim 📱</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda <code>git remote -v</code> bilan origin'ni ko'rasiz,
+    <code>git log</code> da <code>origin/main</code> xatcho'pi qayerda turganini
+    topasiz, keyin <code>git push</code> qilasiz va xatcho'p ko'chganini kuzatasiz.
+    Oxirida — GitHub'da commitlaringizni va telefoningizda yangilangan saytni ko'rasiz.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Faylni tahrirlab, darrov <code>git push</code> qildingiz. GitHub'da nima o'zgaradi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Hech narsa — push faqat commitlarni jo'natadi</button></li>
+      <li><button class="quiz-option">Fayl yangilanadi — push barcha o'zgarishni oladi</button></li>
+      <li><button class="quiz-option">Git xato beradi va commit qilishni talab qiladi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — bu eng ko'p uchraydigan chalkashlik.
+    <code>push</code> faqat <b>commit qilingan</b> narsani ko'radi. Tartib doim:
+    <code>add</code> → <code>commit</code> → <code>push</code>.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> <code>origin</code> nima?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Remote'ning odatiy nomi — internetdagi nusxa manzili</button></li>
+      <li><button class="quiz-option">Loyihadagi eng birinchi commit — tarixning boshi</button></li>
+      <li><button class="quiz-option">Asosiy branch nomi — odatda <code>main</code> bilan bir xil</button></li>
+    </ul>
+    <div class="quiz-explain">Aynan — <code>origin</code> shunchaki <b>nom</b>. U sizning
+    GitHub'dagi repongizga ishora qiladi. Sehrli so'z emas, kelishuv.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Commitni push qildingiz, keyin izohida xato ko'rdingiz. Nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Qoldiraman va tuzatishni yangi commit bilan qo'shaman</button></li>
+      <li><button class="quiz-option"><code>git commit --amend</code> bilan izohni almashtiraman</button></li>
+      <li><button class="quiz-option"><code>git restore --staged</code> bilan commitni qaytaraman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Push qilingan commit boshqalarda ham bor —
+    uni almashtirish tarixni ikkiga bo'lib yuboradi. Qoida: <b>push'gacha tuzat,
+    push'dan keyin ustiga qo'sh.</b></div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> <code>origin/main</code> nimani bildiradi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">GitHub'ni oxirgi ko'rganimdagi holat xatcho'pi</button></li>
+      <li><button class="quiz-option">Kompyuterimdagi asosiy branch — men ishlayotgan joy</button></li>
+      <li><button class="quiz-option">GitHub'dagi hozirgi holat — har soniyada yangilanadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — bu <b>xotira</b>, jonli aloqa emas. U faqat siz
+    <code>push</code>, <code>pull</code> yoki <code>fetch</code> qilganingizda yangilanadi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.
+    Oxirgi ikkitasi — oldingi darslarni takrorlash.</p>
+
+    <details class="recall">
+      <summary>To'liq rasm: to'rt joy va uch buyruq?</summary>
+      <div class="answer"><p>Working Directory →<code>git add</code>→ Staging Area
+      →<code>git commit</code>→ Local Repository →<code>git push</code>→ GitHub (remote).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>push</code> nimani jo'natadi — va nimani jo'natmaydi?</summary>
+      <div class="answer"><p>Faqat <b>commit qilingan</b> narsani jo'natadi. Tahrirlangan,
+      lekin commit qilinmagan o'zgarishlarni <b>ko'rmaydi ham</b> — GitHub'da hech narsa
+      o'zgarmaydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>origin</code> va <code>origin/main</code> farqi?</summary>
+      <div class="answer"><p><code>origin</code> — <b>remote'ning nomi</b> (manzil).
+      <code>origin/main</code> — o'sha remote'dagi <code>main</code> branch'ini
+      <b>oxirgi ko'rganingizdagi</b> holat xatcho'pi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>-u</code> (yoki <code>--set-upstream</code>) nima uchun?</summary>
+      <div class="answer"><p>«Bu branch qayerga push bo'lishini eslab qol» degani.
+      Bir marta <code>git push -u origin main</code> deysiz, keyin doim qisqa
+      <code>git push</code> yetarli.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Push'dan keyin commit izohini tuzatsa bo'ladimi?</summary>
+      <div class="answer"><p>Yo'q. <code>--amend</code> — faqat <b>push'gacha</b>.
+      Push'dan keyin tuzatishni <b>yangi commit</b> bilan qo'shasiz.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: ish papkasidagi xatoni qanday qaytarasiz?</summary>
+      <div class="answer"><p><code>git restore fayl</code> — lekin avval
+      <code>git diff</code> bilan ko'ring, chunki o'zgarish yo'qoladi.
+      (<a href="0003-xatoni-qaytarish.html">Dars 03</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: nega commit email'i GitHub email'iga mos bo'lishi kerak?</summary>
+      <div class="answer"><p>Shunda commitlar GitHub'da <b>sizning profilingizga</b>
+      bog'lanadi — jamoada «kim nima qildi» aniq ko'rinadi.
+      (<a href="0001-git-nima-va-sozlash.html">Dars 01</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li>To'liq yo'l: Working →<code>add</code>→ Staging →<code>commit</code>→
+      Local repo →<code>push</code>→ GitHub.</li>
+      <li><b>remote</b> = internetdagi nusxa · <b>origin</b> = uning odatiy nomi.</li>
+      <li><code>origin/main</code> = GitHub'ni oxirgi ko'rgan holatingiz <b>xatcho'pi</b>.</li>
+      <li><code>push</code> faqat <b>commit qilingan</b> narsani jo'natadi.</li>
+      <li>Birinchi marta: <code>git push -u origin main</code> · keyin doim: <code>git push</code>.</li>
+      <li><code>--amend</code> — faqat push'gacha. Keyin: <b>yangi commit</b>.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 2.5-bo'lim — "Working with Remotes":
+    <a href="https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes">git-scm.com/book</a>.<br>
+    Vizual tushunish uchun juda tavsiya qilaman: <b>Learn Git Branching</b> —
+    <a href="https://learngitbranching.js.org/">learngitbranching.js.org</a>
+    («Remote» bo'limi: push/pull'ni jonli daraxt bilan ko'rsatadi).</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Push'da xato chiqsa — darrov menga yozing.</b> «rejected», «failed to push»,
+    «authentication» kabi so'zlar chiqsa, terminal matnini ko'chirib tashlang.
+    Bular normal holatlar va hammasining aniq yechimi bor.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0003-xatoni-qaytarish.html">Oldingi: Xatoni qaytarish</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes">Git Basics: Working with Remotes</a>.</li>
+      <li id="fn2">Git hujjatlari — <a href="https://git-scm.com/docs/git-push">git-push</a>
+      (<code>-u</code> / <code>--set-upstream</code>).</li>
+      <li id="fn3">GitHub Docs — <a href="https://docs.github.com/en/get-started/git-basics/caching-your-github-credentials-in-git">Caching your GitHub credentials in Git</a>
+      (GitHub CLI orqali).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

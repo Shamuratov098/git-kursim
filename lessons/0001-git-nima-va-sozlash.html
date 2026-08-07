@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>DARS 01 — Git nima va kompyuterni tayyorlash</title>
   <link rel="stylesheet" href="../assets/styles.css">
   <script defer src="../assets/app.js"></script>
@@ -15,6 +16,12 @@
   <p class="lead">Bu darsdan keyin siz Git nimaligini bir jumlada tushuntira olasiz va
   kompyuteringiz jamoada ishlashga <b>tayyor</b> bo'ladi — har bir commit aynan sizniki
   ekanini Git biladi.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 6 daqiqa</span>
+    <span>💻 Amaliyot ≈ 8 daqiqa</span>
+    <span>Daraja: boshlang'ich</span>
+  </p>
 
   <div class="callout why">
     <span class="label">Nega bu muhim (sizning maqsadingiz)</span>
@@ -38,50 +45,138 @@
 
   <p>Har bir commit — loyihangizning <b>to'liq</b> holati (faqat farqi emas).<a class="cite" href="#fn2">2</a>
   Shu sababli istalgan vaqtda ortga qaytib, "kecha hammasi ishlayotgan edi" degan holatga
-  bemalol borasiz. Git, qo'shimcha ravishda, har commitda <b>kim</b> va <b>qachon</b>
-  o'zgartirganini ham yozib qo'yadi.</p>
+  bemalol borasiz.</p>
+
+  <h3>Bitta commit ichida nima saqlanadi?</h3>
+  <p>Commit — shunchaki fayllar nusxasi emas. Uning ichida to'rt narsa bor:</p>
+  <ul>
+    <li><b>Snapshot</b> — o'sha ondagi barcha fayllar holati.</li>
+    <li><b>Muallif</b> — <i>kim</i> qildi (ism + email). Buni hozir sozlaymiz.</li>
+    <li><b>Vaqt</b> — <i>qachon</i> qilindi.</li>
+    <li><b>Izoh (message)</b> — <i>nima va nega</i> o'zgardi.</li>
+  </ul>
+  <p>Mana shu to'rtlik tufayli, oradan olti oy o'tib ham <code>git log</code> ga qarab
+  "bu qatorni kim, qachon va nega yozgan?" degan savolga javob topasiz. Jamoada bu —
+  oltin qiymatga ega.</p>
 
   <div class="callout note">
     <span class="label">Tarqoq (distributed) degani</span>
     <p>Git'da <b>har bir</b> dasturchining kompyuterida loyihaning <b>butun tarixi</b>
-    to'liq bo'ladi. Internet bo'lmasa ham ishlayverasiz; GitHub esa shu nusxalarni
-    bir-biriga ulaydigan umumiy markaz vazifasini bajaradi (buni 4-darsda ko'ramiz).</p>
+    to'liq bo'ladi — faqat oxirgi versiya emas, hamma commitlar. Shuning uchun internet
+    bo'lmasa ham ishlayverasiz: commit qilasiz, tarixni ko'rasiz, ortga qaytasiz.
+    GitHub esa shu nusxalarni bir-biriga ulaydigan umumiy markaz vazifasini bajaradi
+    (buni <a href="../index.html">4-darsda</a> ko'ramiz).</p>
   </div>
 
-  <h2>1-qadam: Git o'rnatilganini tekshirish</h2>
-  <p>Sizning kompyuteringizda Git allaqachon bor. Terminalni oching va yozing:</p>
+  <h2>Kompyuterni tayyorlash: 2 ta narsa</h2>
+  <p>Git ishga tushishi uchun jami ikkita narsa kerak: (1) Git o'rnatilgan bo'lsin,
+  (2) Git sizning <b>ismingiz va email</b>ingizni bilsin. Bo'ldi. Quyida shu ikkisini
+  qilamiz.</p>
+
+  <h3>1 — Git o'rnatilganini tekshirish</h3>
+  <p>Terminalda <code>git --version</code> yozasiz. Agar versiya raqami chiqsa —
+  Git bor va ishlayapti.<a class="cite" href="#fn3">3</a></p>
 
   <div class="cmd" data-cmd="git --version">git --version
 <span class="out">git version 2.43.0</span></div>
 
-  <p>Agar shunga o'xshash versiya raqami chiqsa — tayyor. (Chiqmasa, ayting, birga
-  o'rnatamiz.<a class="cite" href="#fn3">3</a>)</p>
-
-  <h2>2-qadam: Git'ga o'zingizni tanishtirish</h2>
+  <h3>2 — Git'ga o'zingizni tanishtirish</h3>
   <p>Git har bir commitga "muallif" sifatida sizning <b>ism</b> va <b>email</b>ingizni
-  yozadi. Buni bir marta sozlab qo'yamiz (<code>--global</code> = shu kompyuterdagi barcha
-  loyihalar uchun):<a class="cite" href="#fn3">3</a></p>
+  yozadi. Buni bir marta sozlab qo'yamiz:<a class="cite" href="#fn3">3</a></p>
 
   <div class="cmd" data-cmd='git config --global user.name "Ismingiz Familiyangiz"'>git config --global user.name "Ismingiz Familiyangiz"</div>
   <div class="cmd" data-cmd='git config --global user.email "siz@example.com"'>git config --global user.email "siz@example.com"</div>
+
+  <p>Bu yerda har bir bo'lakning ma'nosi bor:</p>
+  <ul>
+    <li><code>git config</code> — Git sozlamalarini o'zgartirish buyrug'i.</li>
+    <li><code>--global</code> — "shu kompyuterdagi <b>barcha</b> loyihalar uchun".
+    Bu sozlama uy papkangizdagi <code>~/.gitconfig</code> fayliga yoziladi. Agar
+    <code>--global</code> yozmasangiz, sozlama faqat <b>shu bitta loyiha</b> uchun
+    bo'ladi — ish va shaxsiy loyihalarda turli email ishlatish uchun qulay.</li>
+    <li><code>user.name</code> / <code>user.email</code> — sozlamaning nomi.</li>
+  </ul>
 
   <div class="callout warning">
     <span class="label">Jamoa uchun muhim nuqta</span>
     <p>Bu yerdagi <b>email GitHub akkauntingiz email'i bilan bir xil</b> bo'lsin. Shunda
     qilgan commitlaringiz GitHub'da sizning profilingizga bog'lanadi — ish/jamoada
-    "kim nima qildi" aniq ko'rinadi.<a class="cite" href="#fn4">4</a> (GitHub'ingiz hali
-    bo'lmasa — hech qisi yo'q, keyinroq ochamiz va shunda moslaymiz.)</p>
+    "kim nima qildi" aniq ko'rinadi.<a class="cite" href="#fn4">4</a> Email mos kelmasa,
+    commit baribir saqlanadi, lekin GitHub uni "noma'lum odam" deb ko'rsatadi.
+    (GitHub'ingiz hali bo'lmasa — hech qisi yo'q, keyinroq ochamiz va shunda moslaymiz.)</p>
   </div>
 
-  <p>Sozlamani tekshirib ko'rish:</p>
-  <div class="cmd" data-cmd="git config --global --list">git config --global --list
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: hozir terminalda bajaring</h2>
+    <p>Terminalni oching (Ubuntu'da <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd>) va
+    quyidagilarni birma-bir bajaring. Har buyruqning o'ng tomonidagi <b>Copy</b> tugmasi
+    bilan nusxa oling — terish xatolari bo'lmaydi.</p>
+
+    <ol class="steps">
+      <li>
+        <p>Git borligini tekshiring</p>
+        <p class="why-step">Nima uchun: keyingi hamma narsa shunga tayanadi.</p>
+        <div class="cmd" data-cmd="git --version">git --version</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>git version 2.43.0</code> kabi qator.
+        Agar "command not found" chiqsa — menga ayting, birga o'rnatamiz.</p>
+      </li>
+
+      <li>
+        <p>Ismingizni yozing</p>
+        <p class="why-step">Tirnoq ichidagi matnni o'zingiznikiga almashtiring.</p>
+        <div class="cmd" data-cmd='git config --global user.name "Ismingiz Familiyangiz"'>git config --global user.name "Ismingiz Familiyangiz"</div>
+        <p class="expect"><b>Kutilgan natija:</b> hech qanday javob chiqmaydi.
+        Git'da <b>jimlik — bu muvaffaqiyat</b> belgisi. 🙂</p>
+      </li>
+
+      <li>
+        <p>Email'ingizni yozing</p>
+        <p class="why-step">Iloji bo'lsa GitHub akkauntingizdagi email bilan bir xil bo'lsin.</p>
+        <div class="cmd" data-cmd='git config --global user.email "siz@example.com"'>git config --global user.email "siz@example.com"</div>
+        <p class="expect"><b>Kutilgan natija:</b> yana jimlik.</p>
+      </li>
+
+      <li>
+        <p>Sozlamani tekshiring</p>
+        <p class="why-step">Ishonch hosil qilamiz: Git haqiqatan sizni eslab qoldimi?</p>
+        <div class="cmd" data-cmd="git config --global --list">git config --global --list
 <span class="out">user.name=Ismingiz Familiyangiz</span>
 <span class="out">user.email=siz@example.com</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ro'yxatda o'z ism va email'ingizni
+        ko'rasiz. Uzun ro'yxat chiqsa — chiqish uchun <kbd>q</kbd> tugmasini bosing.</p>
+      </li>
 
-  <div class="callout tip">
-    <span class="label">Foydali (ixtiyoriy)</span>
-    <p>Yangi loyihalarda asosiy branch nomi <code>main</code> bo'lishi uchun:</p>
-    <div class="cmd" data-cmd="git config --global init.defaultBranch main">git config --global init.defaultBranch main</div>
+      <li>
+        <p>(Ixtiyoriy) Asosiy branch nomini <code>main</code> qiling</p>
+        <p class="why-step">Yangi loyihalarda hozirgi standart nom — <code>main</code>.
+        Bu sozlamasiz Git eski <code>master</code> nomini ishlatadi.</p>
+        <div class="cmd" data-cmd="git config --global init.defaultBranch main">git config --global init.defaultBranch main</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik. Bundan keyin <code>git init</code>
+        avtomatik <code>main</code> branch yaratadi.</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="c1"><label for="c1">Terminalda <code>git --version</code> ni ishlatib, versiyani ko'rdim</label></li>
+      <li><input type="checkbox" id="c2"><label for="c2"><code>user.name</code> va <code>user.email</code> ni o'zimnikiga sozladim</label></li>
+      <li><input type="checkbox" id="c3"><label for="c3"><code>git config --global --list</code> bilan tekshirdim</label></li>
+      <li><input type="checkbox" id="c4"><label for="c4">Email'im GitHub email'imga mos (yoki GitHub'im yo'qligini bilaman)</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Bu darsning amaliyoti — yuqoridagi <b>3 ta buyruq</b>ni terminalda yozish
+    (<code>git --version</code>, keyin ikkita <code>git config</code>). Kompyuterda
+    ochganingizda qadam-baqadam yo'riqnoma, Copy tugmasi va kutilgan natijalar chiqadi.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
   </div>
 
   <div class="callout win">
@@ -127,13 +222,59 @@
     bilan bir xil bo'lsa, commitlar profilingizga bog'lanadi.</div>
   </div>
 
-  <h2>Hozir bajaring (checklist)</h2>
-  <ul class="checklist">
-    <li><input type="checkbox" id="c1"><label for="c1">Terminalda <code>git --version</code> ni ishlatib, versiyani ko'rdim</label></li>
-    <li><input type="checkbox" id="c2"><label for="c2"><code>user.name</code> va <code>user.email</code> ni o'zimnikiga sozladim</label></li>
-    <li><input type="checkbox" id="c3"><label for="c3"><code>git config --global --list</code> bilan tekshirdim</label></li>
-    <li><input type="checkbox" id="c4"><label for="c4">Email'im GitHub email'imga mos (yoki GitHub'im yo'qligini bilaman)</label></li>
-  </ul>
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari (telefonda barmoq bilan)
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval <b>o'zingiz javob bering</b> (ovoz chiqarib bo'lsa ham),
+    keyin ochib tekshiring. Javobni ko'rishdan oldin eslab ko'rish — xotirani eng
+    kuchli mustahkamlaydigan usul.</p>
+
+    <details class="recall">
+      <summary>Git nima qiladi — bir jumlada?</summary>
+      <div class="answer"><p>Loyihaning holatini vaqt-vaqti bilan <b>snapshot</b> qilib
+      saqlaydi va har bir snapshot'da <b>kim, qachon, nima, nega</b> o'zgartirganini
+      yozib qo'yadi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Bitta commit ichida qaysi 4 narsa bor?</summary>
+      <div class="answer"><p>Snapshot (fayllar holati) · muallif (ism + email) ·
+      vaqt · izoh (message).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>--global</code> nimani anglatadi?</summary>
+      <div class="answer"><p>"Shu kompyuterdagi <b>barcha</b> loyihalar uchun". Sozlama
+      <code>~/.gitconfig</code> faylida saqlanadi. <code>--global</code>siz esa sozlama
+      faqat joriy loyihaga tegishli bo'ladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Buyruq yozdim, hech qanday javob chiqmadi. Xatomi?</summary>
+      <div class="answer"><p>Yo'q — Git'da <b>jimlik = muvaffaqiyat</b>. Xato bo'lsa,
+      Git albatta xabar yozadi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Sozlamani qaysi buyruq bilan tekshiraman?</summary>
+      <div class="answer"><p><code>git config --global --list</code> — ro'yxatda
+      <code>user.name</code> va <code>user.email</code> ko'rinadi.</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Git</b> = loyihaning snapshot'lari + kim/qachon/nega yozuvi.</li>
+      <li><b>commit</b> = bitta saqlangan holat (tarixning bir qadami).</li>
+      <li><b>Distributed</b> = butun tarix har bir kompyuterda; internetsiz ham ishlaydi.</li>
+      <li><code>git --version</code> → Git bormi?</li>
+      <li><code>git config --global user.name / user.email</code> → Git meni tanisin.</li>
+      <li>Email GitHub email'iga mos bo'lsin → commitlar profilingizga bog'lanadi.</li>
+    </ul>
+  </div>
 
   <div class="primary-source">
     <span class="label">Asosiy manba (o'qib/ko'rib chiqing)</span>
@@ -151,7 +292,9 @@
   </div>
 
   <nav class="lesson-nav">
-    <a class="prev" href="../reference/glossary.html">Atamalar lug'ati (glossary)</a>
+    <a class="prev" href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/glossary.html">Atamalar lug'ati</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
     <a href="0002-uch-hudud-va-commit.html">Keyingi dars: 3 hudud va commit aylanasi</a>
   </nav>
 

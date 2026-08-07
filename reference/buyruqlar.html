@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Git buyruqlari varaqasi (cheat sheet)</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">REFERENCE · BUYRUQLAR VARAQASI</p>
+  <h1>Git buyruqlari — cho'ntak varaqasi</h1>
+  <p class="lead">Faqat <b>o'rganilgan</b> buyruqlar. Amaliyot paytida shu sahifani ochib
+  qo'ying. Kurs o'sgani sari bu varaqa ham to'ldirib boriladi.</p>
+
+  <p class="lesson-meta">
+    <span>💻 Amaliyot yonida ochib turing</span>
+    <span>🖨️ Bosib olsa ham bo'ladi</span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0004-remote-va-push.html">04</a></span>
+  </p>
+
+  <div class="callout tip">
+    <span class="label">Oltin qoida</span>
+    <p>Nima qilishni bilmasangiz — <code>git status</code>. U hech narsani buzmaydi,
+    hozirgi holatni ko'rsatadi va keyingi qadamni maslahat beradi.</p>
+  </div>
+
+  <h2>Kunlik aylana</h2>
+  <div class="areas">
+    <div class="area">
+      <h4>Tahrirla</h4>
+      <span class="en">Working Directory</span>
+      <div class="desc">Faylni yozasiz / o'zgartirasiz</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git add</span></div>
+    <div class="area">
+      <h4>Tanla</h4>
+      <span class="en">Staging Area</span>
+      <div class="desc">Commitga nima kirishini tanlaysiz</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git commit</span></div>
+    <div class="area">
+      <h4>Saqla</h4>
+      <span class="en">Repository</span>
+      <div class="desc">Tarixga doimiy yoziladi</div>
+    </div>
+  </div>
+
+  <h2>1. Sozlash (bir marta)</h2>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git --version</code></td>
+        <td>Git o'rnatilganini va versiyasini ko'rsatadi.</td>
+      </tr>
+      <tr>
+        <td><code>git config --global user.name "Ism"</code></td>
+        <td>Commit muallifining <b>ismi</b>ni belgilaydi.</td>
+      </tr>
+      <tr>
+        <td><code>git config --global user.email "siz@..."</code></td>
+        <td>Commit muallifining <b>email</b>ini belgilaydi.
+        <span class="note-cell">GitHub email'ingiz bilan bir xil bo'lsin.</span></td>
+      </tr>
+      <tr>
+        <td><code>git config --global init.defaultBranch main</code></td>
+        <td>Yangi repolarda asosiy branch nomi <code>main</code> bo'lsin.</td>
+      </tr>
+      <tr>
+        <td><code>git config --global --list</code></td>
+        <td>Barcha global sozlamalarni ko'rish. <span class="note-cell">Chiqish: <kbd>q</kbd></span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>2. Repo boshlash</h2>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git init</code></td>
+        <td>Joriy papkani Git repo'siga aylantiradi (yashirin <code>.git</code> yaratiladi).</td>
+      </tr>
+      <tr>
+        <td><code>git init -b main</code></td>
+        <td>Xuddi shu, lekin asosiy branch nomi darhol <code>main</code> bo'ladi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. Kuzatish va tarix — «ko'zoynagingiz»</h2>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git status</code></td>
+        <td>Fayllar qaysi hududda: untracked / modified / staged.</td>
+      </tr>
+      <tr>
+        <td><code>git status -s</code></td>
+        <td>Qisqa ko'rinish.
+        <span class="note-cell"><code>??</code> untracked · <code>A</code> added · <code>M</code> modified</span></td>
+      </tr>
+      <tr>
+        <td><code>git log</code></td>
+        <td>Commitlar tarixi (to'liq: hash, muallif, sana, izoh).</td>
+      </tr>
+      <tr>
+        <td><code>git log --oneline</code></td>
+        <td>Tarix qisqa ko'rinishda — har commit bitta qatorda.</td>
+      </tr>
+      <tr>
+        <td><code>git diff</code></td>
+        <td>Hali <code>add</code> qilinmagan o'zgarishlar (working ↔ staging farqi).</td>
+      </tr>
+      <tr>
+        <td><code>git diff --staged</code></td>
+        <td>Allaqachon <code>add</code> qilingan o'zgarishlar (staging ↔ oxirgi commit).</td>
+      </tr>
+      <tr>
+        <td><code>git show</code></td>
+        <td>Oxirgi commit ichida nima bo'lgani (ma'lumot + satrma-satr farq).</td>
+      </tr>
+      <tr>
+        <td><code>git show a1b2c3d</code></td>
+        <td>Aniq bir commitning ichini ko'rish.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label"><code>diff</code> chiqishini o'qish</span>
+    <p><code>+</code> — qo'shilgan qator (yashil) · <code>-</code> — o'chirilgan qator (qizil).
+    Uzun chiqishdan <kbd>q</kbd> bilan chiqasiz.</p>
+  </div>
+
+  <h2>4. Saqlash: add va commit</h2>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git add fayl.txt</code></td>
+        <td>Bitta faylni saralash joyiga qo'yadi.</td>
+      </tr>
+      <tr>
+        <td><code>git add .</code></td>
+        <td>Joriy papkadagi <b>hamma</b> o'zgarishni qo'shadi.
+        <span class="note-cell">Tez, lekin avval <code>git status</code> bilan tekshiring.</span></td>
+      </tr>
+      <tr>
+        <td><code>git commit -m "izoh"</code></td>
+        <td>Saralangan o'zgarishlarni tarixga yozadi.</td>
+      </tr>
+      <tr>
+        <td><code>git commit -am "izoh"</code></td>
+        <td><code>add</code> + <code>commit</code> birga.
+        <span class="note-cell">Faqat <b>allaqachon kuzatilayotgan</b> fayllar uchun — yangi fayl tushmaydi.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. «Xato qildim» — orqaga qaytarish</h2>
+  <p>Qoida: <b>xato qaysi hududda bo'lsa — o'sha hududning buyrug'i</b>. Va har doim
+  avval <code>git diff</code> bilan ko'ring.
+  (<a href="../lessons/0003-xatoni-qaytarish.html">Dars 03</a>)</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git restore fayl.txt</code></td>
+        <td><b>Ish papkasi.</b> Fayldagi <b>saqlanmagan</b> o'zgarishlarni bekor qiladi.
+        <span class="note-cell">⚠️ <b>Yagona xavfli buyruq</b> — o'zgarishlar butunlay
+        yo'qoladi. Avval <code>git diff</code>!</span></td>
+      </tr>
+      <tr>
+        <td><code>git restore --staged fayl.txt</code></td>
+        <td><b>Staging.</b> Noto'g'ri <code>add</code> qilingan faylni podnosdan qaytaradi.
+        <span class="note-cell">✓ Xavfsiz — matn joyida qoladi, faqat holati
+        <i>staged</i> → <i>modified</i>.</span></td>
+      </tr>
+      <tr>
+        <td><code>git commit --amend -m "yangi izoh"</code></td>
+        <td><b>Oxirgi commit.</b> Izohini tuzatadi yoki unutilgan faylni qo'shadi
+        (avval <code>git add</code>).
+        <span class="note-cell">✓ Xavfsiz — lekin faqat hali <code>push</code>
+        qilinmagan commit uchun.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>6. GitHub bilan ishlash</h2>
+  <p>To'liq yo'l: Working →<code>add</code>→ Staging →<code>commit</code>→ Local repo
+  →<code>push</code>→ GitHub.
+  (<a href="../lessons/0004-remote-va-push.html">Dars 04</a>)</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git remote -v</code></td>
+        <td>Qaysi internetdagi manzil bilan bog'langanini ko'rsatadi.</td>
+      </tr>
+      <tr>
+        <td><code>git push</code></td>
+        <td>Mahalliy commitlarni GitHub'ga jo'natadi.
+        <span class="note-cell">⚠️ Faqat <b>commit qilingan</b> narsani jo'natadi —
+        tahrirlangan, commit qilinmagan fayl ketmaydi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git push -u origin main</code></td>
+        <td><b>Birinchi marta</b> uchun: qayerga push qilishni eslab qoladi.
+        <span class="note-cell">Keyin doim qisqa <code>git push</code> yetarli.</span></td>
+      </tr>
+      <tr>
+        <td><code>git status</code></td>
+        <td>«ahead of 'origin/main' by N commits» — nechta commit hali jo'natilmagani.</td>
+      </tr>
+      <tr>
+        <td><code>git log --oneline</code></td>
+        <td>Tarixda <code>origin/main</code> xatcho'pi qayerda turganini ko'rsatadi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Push'dan keyin</span>
+    <p><code>--amend</code> — faqat <b>push'gacha</b>. Push qilingan commit boshqalarda
+    ham bor; uni almashtirsangiz tarix ikkiga bo'linadi. Push'dan keyin tuzatishni
+    <b>yangi commit</b> bilan qo'shasiz.</p>
+  </div>
+
+  <h2>Yaxshi commit izohi qanday bo'ladi?</h2>
+  <ul>
+    <li>Buyruq shaklida va qisqa: <code>"Login sahifasi qo'shildi"</code>,
+    <code>"Bo'sh email xatosi tuzatildi"</code>.</li>
+    <li><b>Nima</b> o'zgargani ko'rinsin — <code>"update"</code>, <code>"fix"</code>,
+    <code>"asdf"</code> kabi izohlar hamkasbingizga hech narsa aytmaydi.</li>
+    <li>Bir commit = bir fikr. Ikki xil ish qilgan bo'lsangiz — ikki commit.</li>
+  </ul>
+
+  <div class="callout note">
+    <span class="label">Keyingi darslarda qo'shiladi</span>
+    <p><code>git clone</code>, <code>git pull</code>, <code>git fetch</code> (Dars 05) ·
+    <code>git branch</code>, <code>git switch</code>, <code>git merge</code>
+    (Dars 06–07) · merge conflict belgilarini hal qilish (Dars 08) ·
+    <code>.gitignore</code> (Dars 11). To'liq reja:
+    <a href="yol-xaritasi.html">yo'l xaritasi</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 Bu varaqada topa olmagan buyruq bo'lsa — menga yozing. Kerak bo'lsa qo'shib qo'yaman.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="../index.html">Kurs bosh sahifasi</a>
+    <a href="yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="glossary.html">Atamalar lug'ati</a>
+    <a href="../lessons/0004-remote-va-push.html">Dars 04: Remote va push</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li>Buyruqlarning to'liq ta'rifi: <a href="https://git-scm.com/docs">git-scm.com/docs</a>
+      (terminalda ham: <code>git help &lt;buyruq&gt;</code>).</li>
+      <li>Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Git Basics: Recording Changes</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>Git &amp; GitHub — shaxsiy kurs</title>
   <link rel="stylesheet" href="assets/styles.css">
   <script defer src="assets/app.js"></script>
@@ -15,27 +16,81 @@
   <p class="lead">Ish va jamoada kod ustida <b>ishonchli</b> ishlash uchun qadam-baqadam,
   amaliy darslar. Har bir dars qisqa va bitta aniq natija beradi.</p>
 
-  <div class="callout note">
-    <span class="label">📱 Istalgan joyda</span>
-    <p>Bu sahifa va barcha darslar telefon, planshet va kompyuterda ochiladi.
-    O'qish/takrorlashni telefonda, amaliyot (terminalda yozish)ni kompyuterda qilish qulay.</p>
+  <h2>Kurs ikki rejimda ishlaydi</h2>
+  <p>Yuqoridagi tugmalar bilan rejimni almashtirasiz. Tanlovingiz eslab qolinadi va
+  barcha darslarga tarqaladi — telefonda bir marta <b>O'qish</b>ni tanlasangiz, kifoya.</p>
+
+  <div class="mode-cards">
+    <div class="mode-card">
+      <h4>📱 O'qish</h4>
+      <p>Telefon uchun. Kattaroq shrift, tushuntirishlar, quiz va «eslab ayting»
+      kartalari. Terminal qadamlari yashiriladi — yo'lda ularning keragi yo'q.
+      Tunda qorong'i rejim avtomatik yoqiladi.</p>
+    </div>
+    <div class="mode-card">
+      <h4>💻 Amaliyot</h4>
+      <p>Kompyuter uchun. Qadam-baqadam yo'riqnoma, <b>Copy</b> tugmasi, kutilgan
+      natijalar va belgilab boriladigan checklist. Terminal yonida ochib ishlaysiz.</p>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Har bir dars bir xil tuzilishga ega</span>
+    <p>1) Nega kerak → 2) Tushuncha va diagramma → 3) Buyruqlar izohi →
+    4) <b>Amaliyot</b> (💻) yoki <b>Eslab ayting</b> (📱) → 5) Quiz →
+    6) Cho'ntak xulosasi → 7) Asosiy manba. Shu tartib hech qachon o'zgarmaydi,
+    shuning uchun qayerda nima turishini bilib olasiz.</p>
   </div>
 
   <h2>Darslar</h2>
+  <p>Kurs <b>4 ta modul, 11 ta darsdan</b> iborat: yakka ishlashdan boshlab jamoada
+  ishlashgacha. Nega aynan shu tartibda ekanini
+  <a href="reference/yol-xaritasi.html">yo'l xaritasida</a> tushuntirdim.</p>
+
+  <h3>Modul A — Poydevor (yakka ishlash)</h3>
   <ol class="lesson-index">
-    <li><span class="n">01</span> <a href="lessons/0001-git-nima-va-sozlash.html">Git nima va kompyuterni sozlash</a> <span class="tag">Tayyor</span></li>
-    <li><span class="n">02</span> <a href="lessons/0002-uch-hudud-va-commit.html">3 hudud va commit aylanasi</a> <span class="tag">Tayyor</span></li>
-    <li><span class="n">03</span> <span class="soon">Branch bilan ishlash</span> <span class="tag">Tez orada</span></li>
-    <li><span class="n">04</span> <span class="soon">GitHub: remote va push</span> <span class="tag">Tez orada</span></li>
-    <li><span class="n">05</span> <span class="soon">Jamoa: pull request</span> <span class="tag">Tez orada</span></li>
-    <li><span class="n">06</span> <span class="soon">Merge conflict'ni hal qilish</span> <span class="tag">Tez orada</span></li>
-    <li><span class="n">07</span> <span class="soon">.gitignore, commit message, undo</span> <span class="tag">Tez orada</span></li>
+    <li><span class="n">01</span> <a href="lessons/0001-git-nima-va-sozlash.html">Git nima va kompyuterni sozlash</a> <span class="tag ok">Tayyor</span></li>
+    <li><span class="n">02</span> <a href="lessons/0002-uch-hudud-va-commit.html">3 hudud va commit aylanasi</a> <span class="tag ok">Tayyor</span></li>
+    <li><span class="n">03</span> <a href="lessons/0003-xatoni-qaytarish.html">Xato qildim: ko'rish va ortga qaytarish</a> <span class="tag ok">Yangi</span></li>
+  </ol>
+
+  <h3>Modul B — GitHub (ishimni chiqarish)</h3>
+  <ol class="lesson-index">
+    <li><span class="n">04</span> <a href="lessons/0004-remote-va-push.html">Remote va push: ishim GitHub'da</a> <span class="tag ok">Yangi</span></li>
+    <li><span class="n">05</span> <span class="soon">Clone va pull: ishimni qaytarib olish</span> <span class="tag">Rejada</span></li>
+  </ol>
+
+  <h3>Modul C — Branch (parallel ishlash)</h3>
+  <ol class="lesson-index">
+    <li><span class="n">06</span> <span class="soon">Branch: alohida yo'lda ishlash</span> <span class="tag">Rejada</span></li>
+    <li><span class="n">07</span> <span class="soon">Merge: ishni asosiyga qo'shish</span> <span class="tag">Rejada</span></li>
+    <li><span class="n">08</span> <span class="soon">Merge conflict'ni hal qilish</span> <span class="tag">Rejada</span></li>
+  </ol>
+
+  <h3>Modul D — Jamoa (odamlar bilan ishlash)</h3>
+  <ol class="lesson-index">
+    <li><span class="n">09</span> <span class="soon">Pull request: taklif, review, merge</span> <span class="tag">Rejada</span></li>
+    <li><span class="n">10</span> <span class="soon">Kundalik jamoa ritmi</span> <span class="tag">Rejada</span></li>
+    <li><span class="n">11</span> <span class="soon">Professional odatlar</span> <span class="tag">Rejada</span></li>
   </ol>
 
   <h2>Yordamchi materiallar</h2>
   <ul>
-    <li><a href="reference/glossary.html">Atamalar lug'ati (glossary)</a> — repo, commit, branch, merge va boshqalar.</li>
+    <li><a href="reference/yol-xaritasi.html">Yo'l xaritasi</a> —
+    butun kurs arxitekturasi: 4 modul, 11 dars, har birining natijasi va ketma-ketlik sababi.</li>
+    <li><a href="reference/glossary.html">Atamalar lug'ati (glossary)</a> —
+    repo, commit, branch, merge va boshqalar. 📱 telefonda o'qishga mos.</li>
+    <li><a href="reference/buyruqlar.html">Buyruqlar varaqasi (cheat sheet)</a> —
+    o'rganilgan barcha buyruqlar bitta jadvalda. 💻 amaliyot paytida yonida tursin.</li>
   </ul>
+
+  <div class="callout note">
+    <span class="label">📱 + 💻 Ikkalasida ham</span>
+    <p>Bu sayt telefon, planshet va kompyuterda bir xil ochiladi. Odatiy tartib:
+    <b>yo'lda telefonda o'qib</b> tushunchani egallaysiz, <b>uyda kompyuterda</b>
+    o'sha darsni amalda bajarasiz. Ikki marta uchrashish — bilim uzoq saqlanishining
+    eng ishonchli yo'li.</p>
+  </div>
 
   <div class="ask-teacher">
     📣 <b>Savolingiz bormi?</b> Claude (o'qituvchingiz) bilan suhbatda istalgan vaqt

@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 03 — Xato qildim: ko'rish va ortga qaytarish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 03 · MODUL A · POYDEVOR</p>
+  <h1>Xato qildim: ko'rish va ortga qaytarish</h1>
+  <p class="lead">Bu darsdan keyin siz Git'dan <b>qo'rqmaysiz</b>. Uch hududning
+  har birida qilingan xatoni qanday qaytarishni bilasiz — va qaytarishdan oldin
+  nima o'zgarganini o'z ko'zingiz bilan ko'rasiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 7 daqiqa</span>
+    <span>💻 Amaliyot ≈ 12 daqiqa</span>
+    <span>Kerak: <a href="0002-uch-hudud-va-commit.html">Dars 02</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu dars aynan hozir</span>
+    <p>Missiyangizning birinchi jumlasi — jamoada <b>qo'rqmasdan</b> ishlash. Qo'rquv
+    esa bitta savoldan tug'iladi: <i>"buzib qo'ysam-chi?"</i> Orqaga qaytishni bilsangiz,
+    bu savol kuchini yo'qotadi. Shundan keyin bemalol tajriba qilasiz — o'rganish ham
+    ana shunda tezlashadi.</p>
+  </div>
+
+  <h2>Asosiy haqiqat: commit qilingan narsa xavfsiz</h2>
+  <p>Git haqida eslab qolishingiz kerak bo'lgan eng muhim gap:</p>
+  <div class="callout win">
+    <span class="label">Oltin qoida</span>
+    <p><b>Commit qilingan narsani yo'qotish juda qiyin.</b> Commit qilinmagan narsani
+    yo'qotish esa oson.<a class="cite" href="#fn1">1</a></p>
+  </div>
+  <p>Ya'ni: <code>git commit</code> — bu shunchaki "saqlash" emas, bu <b>xavfsizlik
+  yostig'i</b>. Qanchalik tez-tez commit qilsangiz, shunchalik kam xavf ostidasiz.
+  Bugundan boshlab qoidangiz shu bo'lsin: <i>biror narsa ishlab turibdimi — commit qiling.</i></p>
+
+  <h2>1-qadam har doim bir xil: avval KO'RING</h2>
+  <p>Hech qachon "ko'r-ko'rona" qaytarmang. Git'da ko'rish uchun to'rtta asbob bor —
+  <b>ularning hech biri hech narsani o'zgartirmaydi</b>, shuning uchun xohlagancha
+  ishlatavering:</p>
+
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nimani ko'rsatadi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git status</code></td>
+        <td>Fayllar <b>qaysi hududda</b> — ya'ni xato qayerda sodir bo'lgan.</td>
+      </tr>
+      <tr>
+        <td><code>git diff</code></td>
+        <td>Hali <code>add</code> qilinmagan o'zgarishlar — <b>satrma-satr</b> nima
+        o'zgargani.<a class="cite" href="#fn2">2</a></td>
+      </tr>
+      <tr>
+        <td><code>git diff --staged</code></td>
+        <td><code>add</code> qilingan, lekin hali commit qilinmagan o'zgarishlar.</td>
+      </tr>
+      <tr>
+        <td><code>git show</code></td>
+        <td><b>Oxirgi commit</b> ichida nima bo'lganini. <code>git show a1b2c3d</code> —
+        aniq bir commitni.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label"><code>git diff</code> chiqishini o'qish</span>
+    <p><code>-</code> bilan boshlangan qator — <b>o'chirilgan</b> (qizil).
+    <code>+</code> bilan boshlangani — <b>qo'shilgan</b> (yashil). Boshqa qatorlar
+    shunchaki atrofdagi kontekst. Uzun bo'lsa <kbd>q</kbd> bilan chiqasiz.</p>
+  </div>
+
+  <h2>2-qadam: xato qaysi hududda?</h2>
+  <p>Mana darsning yuragi. <a href="0002-uch-hudud-va-commit.html">2-darsdagi uch hudud</a>
+  esingizdami? <b>Qaytarish usuli ham aynan shu uchtaga bo'linadi.</b> Xato qayerda
+  bo'lsa — o'sha hududning buyrug'ini ishlatasiz:</p>
+
+  <div class="areas">
+    <div class="area">
+      <h4>Ish papkasi</h4>
+      <span class="en">Working Directory</span>
+      <div class="desc">Faylni tahrirlab xato qildim, hali <code>add</code> qilmadim<br><br>
+      <b>↩︎ <code>git restore fayl</code></b></div>
+    </div>
+    <div class="area">
+      <h4>Saralash joyi</h4>
+      <span class="en">Staging Area</span>
+      <div class="desc">Keraksiz faylni <code>add</code> qilib yubordim<br><br>
+      <b>↩︎ <code>git restore --staged fayl</code></b></div>
+    </div>
+    <div class="area">
+      <h4>Ombor (tarix)</h4>
+      <span class="en">Repository</span>
+      <div class="desc">Commit qildim, lekin izohi xato<br><br>
+      <b>↩︎ <code>git commit --amend</code></b></div>
+    </div>
+  </div>
+
+  <h3>Uchtasining farqi — batafsil</h3>
+
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git restore fayl.txt</code></td>
+        <td>Fayldagi <b>saqlanmagan</b> o'zgarishlarni o'chirib, uni oxirgi saqlangan
+        holatiga qaytaradi.
+        <span class="note-cell">⚠️ <b>Xavfli:</b> bu o'zgarishlar butunlay yo'qoladi —
+        Git ularni hech qayerda saqlamagan edi. Avval <code>git diff</code> bilan
+        ko'ring!</span></td>
+      </tr>
+      <tr>
+        <td><code>git restore --staged fayl.txt</code></td>
+        <td>Faylni saralash joyidan chiqaradi — «podnosdan qaytarib olish».
+        <span class="note-cell">✓ <b>Xavfsiz:</b> faylning o'zi va o'zgarishlaringiz
+        joyida qoladi, faqat holati <i>staged</i> dan <i>modified</i> ga qaytadi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git commit --amend -m "yangi izoh"</code></td>
+        <td><b>Oxirgi</b> commitni almashtiradi: izohini tuzatadi, yoki unutilgan
+        faylni qo'shib qo'yadi (avval <code>git add</code> qiling).
+        <span class="note-cell">✓ Xavfsiz — lekin faqat hali <code>push</code>
+        qilinmagan commit uchun. Nega — <a href="../reference/yol-xaritasi.html">4-darsda</a>
+        ko'ramiz.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Ikkalasi ham «restore», lekin bittasi xavfli</span>
+    <p><code>git restore fayl</code> va <code>git restore --staged fayl</code> —
+    nomi bir xil, ta'siri butunlay boshqa. Farqni eslab qolishning yo'li:
+    <b><code>--staged</code> bo'lsa — faqat holat o'zgaradi, matn tegilmaydi</b>
+    (xavfsiz). <b><code>--staged</code> bo'lmasa — matnning o'zi qaytariladi</b>
+    (o'zgarishlar yo'qoladi).</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: uch xil xatoni o'zingiz qaytaring</h2>
+    <p>Bu safar biz <b>ataylab xato qilamiz</b> va uchalasini ham qaytaramiz. Hech narsa
+    buzilmaydi — hammasi <code>mashq.txt</code> fayli ustida bo'ladi.</p>
+    <p>Terminalda kurs papkangizga o'ting:</p>
+    <div class="cmd" data-cmd="cd ~/Projects/Learn/Git">cd ~/Projects/Learn/Git</div>
+
+    <ol class="steps">
+      <li>
+        <p>Avval 2-darsning qarzini uzamiz</p>
+        <p class="why-step"><code>mashq.txt</code> hali commit qilinmagan edi. Qaytarish
+        mashqi uchun fayl <b>kuzatilayotgan</b> bo'lishi shart.</p>
+        <div class="cmd" data-cmd='git add mashq.txt && git commit -m "Amaliyot fayli qo&apos;shildi"'>git add mashq.txt &amp;&amp; git commit -m "Amaliyot fayli qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>1 file changed, 1 insertion(+)</code>.
+        Endi <code>mashq.txt</code> tarixda. ✅</p>
+      </li>
+
+      <li>
+        <p>Ataylab «xato» qiling</p>
+        <p class="why-step"><code>&gt;&gt;</code> — faylga yangi qator <b>qo'shadi</b>
+        (mavjud matnni o'chirmaydi). Matn muharririda qo'lda yozsangiz ham bo'ladi.</p>
+        <div class="cmd" data-cmd='echo "Bu qator xato edi." >> mashq.txt'>echo "Bu qator xato edi." &gt;&gt; mashq.txt</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik. Faylga bitta qator qo'shildi.</p>
+      </li>
+
+      <li>
+        <p>Qaytarishdan OLDIN ko'ring</p>
+        <p class="why-step">Bu odatni birinchi kundan shakllantiring: avval ko'r, keyin qaytar.</p>
+        <div class="cmd" data-cmd="git diff">git diff
+<span class="out">--- a/mashq.txt</span>
+<span class="out">+++ b/mashq.txt</span>
+<span class="out"> Salom! Bu mening birinchi Git amaliyot faylim.</span>
+<span class="out">+Bu qator xato edi.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>+</code> belgili yashil qator —
+        aynan siz qo'shgan matn. Chiqish uchun <kbd>q</kbd>.</p>
+      </li>
+
+      <li>
+        <p>🔴 1-xato: ish papkasidagi o'zgarishni qaytaring</p>
+        <p class="why-step">Bu — «xavfli» variant. Ammo hozir aynan shuni xohlaymiz:
+        o'zgarish keraksiz edi.</p>
+        <div class="cmd" data-cmd="git restore mashq.txt">git restore mashq.txt</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik. Endi <code>git diff</code> deng —
+        <b>bo'sh</b> chiqadi. Qator yo'qoldi, fayl asl holiga qaytdi. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>🟠 2-xato: keraksiz narsani <code>add</code> qiling</p>
+        <p class="why-step">Endi ikkinchi hudud — saralash joyidagi xato.</p>
+        <div class="cmd" data-cmd='echo "Bu ham keraksiz." >> mashq.txt && git add mashq.txt'>echo "Bu ham keraksiz." &gt;&gt; mashq.txt &amp;&amp; git add mashq.txt</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik. <code>git status</code> deng —
+        «Changes to be committed» ko'rinadi. Fayl <i>staging</i>da.</p>
+      </li>
+
+      <li>
+        <p>Podnosdan qaytarib oling</p>
+        <p class="why-step">Diqqat: bu buyruq matnni <b>o'chirmaydi</b>, faqat holatini qaytaradi.</p>
+        <div class="cmd" data-cmd="git restore --staged mashq.txt">git restore --staged mashq.txt</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>git status</code> endi
+        «Changes not staged for commit» deydi — fayl <i>staged</i> dan <i>modified</i> ga
+        qaytdi, matn esa joyida. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Tozalab qo'ying</p>
+        <p class="why-step">Keyingi mashq uchun fayl toza bo'lsin — 1-usulni yana ishlatamiz.</p>
+        <div class="cmd" data-cmd="git restore mashq.txt">git restore mashq.txt</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>git status</code> →
+        «working tree clean».</p>
+      </li>
+
+      <li>
+        <p>🟡 3-xato: yomon izoh bilan commit qiling</p>
+        <p class="why-step">Ataylab foydasiz izoh yozamiz — keyin tuzatamiz.</p>
+        <div class="cmd" data-cmd='echo "Uchinchi mashq qatori." >> mashq.txt && git commit -am "asdf"'>echo "Uchinchi mashq qatori." &gt;&gt; mashq.txt &amp;&amp; git commit -am "asdf"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>[main ...] asdf</code>.
+        <code>-am</code> = <code>add</code> + <code>commit</code> birga
+        (faqat kuzatilayotgan fayllar uchun ishlaydi).</p>
+      </li>
+
+      <li>
+        <p>Oxirgi commit izohini tuzating</p>
+        <p class="why-step">Tarix — hamkasblaringiz o'qiydigan hujjat. «asdf» hech kimga
+        hech narsa aytmaydi.</p>
+        <div class="cmd" data-cmd='git commit --amend -m "Mashq fayliga uchinchi qator qo&apos;shildi"'>git commit --amend -m "Mashq fayliga uchinchi qator qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>git log --oneline</code> deng —
+        «asdf» <b>yo'q</b>, o'rnida yangi izoh turibdi. <b>3-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Nima qilganingizni ko'ring</p>
+        <p class="why-step"><code>git show</code> — oxirgi commit ichidagi aniq o'zgarish.</p>
+        <div class="cmd" data-cmd="git show">git show</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit ma'lumoti (muallif, sana, izoh)
+        va ostida <code>+Uchinchi mashq qatori.</code> Chiqish: <kbd>q</kbd>.</p>
+      </li>
+    </ol>
+
+    <div class="callout warning">
+      <span class="label">Bilib qo'ying</span>
+      <p><code>git restore</code> — Git 2.23 dan beri bor. Internetdagi eski maqolalarda
+      shu ish uchun <code>git checkout -- fayl</code> va <code>git reset HEAD fayl</code>
+      yozilgan bo'ladi. Ular hamon ishlaydi, lekin <code>restore</code> ancha
+      tushunarliroq — biz shuni ishlatamiz.<a class="cite" href="#fn3">3</a></p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d3c1"><label for="d3c1">Qaytarishdan oldin doim <code>git diff</code> bilan ko'raman</label></li>
+      <li><input type="checkbox" id="d3c2"><label for="d3c2">Ish papkasidagi xato → <code>git restore fayl</code> (⚠️ yo'qoladi)</label></li>
+      <li><input type="checkbox" id="d3c3"><label for="d3c3">Staging'dagi xato → <code>git restore --staged fayl</code> (xavfsiz)</label></li>
+      <li><input type="checkbox" id="d3c4"><label for="d3c4">Oxirgi commit izohi → <code>git commit --amend</code></label></li>
+      <li><input type="checkbox" id="d3c5"><label for="d3c5">Uchala qaytarishni ham o'z qo'lim bilan bajardim 🎉</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda <code>mashq.txt</code> ustida <b>ataylab uch xil xato</b> qilasiz va
+    uchalasini ham qaytarasiz: ish papkasidagi o'zgarish → <code>git restore</code>,
+    keraksiz <code>add</code> → <code>git restore --staged</code>, yomon commit izohi →
+    <code>git commit --amend</code>. 10 qadam, hammasi xavfsiz.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Qaytarishdan oldin birinchi navbatda nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Nima o'zgarganini ko'raman — <code>git diff</code></button></li>
+      <li><button class="quiz-option">Barcha fayllarni zaxira nusxaga ko'chirib qo'yaman</button></li>
+      <li><button class="quiz-option">Git'ni qaytadan o'rnatib, sozlamalarni tiklayman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — avval <b>ko'r</b>, keyin qaytar. <code>git diff</code>
+    va <code>git status</code> hech narsani o'zgartirmaydi, shuning uchun xavfsiz.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Keraksiz faylni <code>add</code> qilib yubordingiz. Nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git restore --staged fayl</code> — podnosdan qaytaraman</button></li>
+      <li><button class="quiz-option"><code>git restore fayl</code> — o'zgarishni butunlay o'chiraman</button></li>
+      <li><button class="quiz-option"><code>git commit --amend</code> — oxirgi commitni almashtiraman</button></li>
+    </ul>
+    <div class="quiz-explain">Aynan — <code>--staged</code> faylni <b>staging'dan</b>
+    chiqaradi. Matningiz va o'zgarishlaringiz butunlay saqlanib qoladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Qaysi buyruq o'zgarishlaringizni butunlay yo'qotishi mumkin?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git restore fayl</code> — saqlanmagan matn o'chadi</button></li>
+      <li><button class="quiz-option"><code>git restore --staged fayl</code> — holatini qaytaradi</button></li>
+      <li><button class="quiz-option"><code>git status</code> — hozirgi holatni ko'rsatadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. <code>--staged</code>siz <code>restore</code> —
+    <b>yagona xavfli</b> buyruq: commit qilinmagan o'zgarish qaytmaydi. Shuning uchun
+    undan oldin <code>git diff</code>.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Git'da nimani yo'qotish eng qiyin?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Commit qilingan narsani — u tarixda saqlanadi</button></li>
+      <li><button class="quiz-option">Tahrirlangan, hali commit qilinmagan o'zgarishni</button></li>
+      <li><button class="quiz-option">Saralash joyiga endigina qo'yilgan yangi faylni</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <b>commit qilingan narsa xavfsiz</b>. Shuning uchun
+    tez-tez commit qiling: har commit — orqaga qaytish nuqtasi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.
+    Oxirgi ikkitasi — oldingi darslarni takrorlash.</p>
+
+    <details class="recall">
+      <summary>Git'ning «oltin qoidasi» nima edi?</summary>
+      <div class="answer"><p><b>Commit qilingan narsani yo'qotish juda qiyin, commit
+      qilinmaganini esa oson.</b> Shuning uchun tez-tez commit qiling.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Uch hudud, uch qaytarish — qaysi biri qaysiga?</summary>
+      <div class="answer"><p>Working directory → <code>git restore fayl</code> ·
+      Staging → <code>git restore --staged fayl</code> ·
+      Oxirgi commit → <code>git commit --amend</code>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Bu uchtadan qaysi biri xavfli — va nega?</summary>
+      <div class="answer"><p><code>git restore fayl</code> (<code>--staged</code>siz).
+      Chunki u <b>commit qilinmagan</b> o'zgarishni o'chiradi — Git uni hech qayerda
+      saqlamagan, demak qaytarib bo'lmaydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>git diff</code> va <code>git diff --staged</code> farqi?</summary>
+      <div class="answer"><p><code>git diff</code> — hali <code>add</code>
+      <b>qilinmagan</b> o'zgarishlar. <code>git diff --staged</code> — <code>add</code>
+      qilingan, lekin hali commit qilinmagan o'zgarishlar.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>git diff</code> chiqishida <code>+</code> va <code>-</code> nima?</summary>
+      <div class="answer"><p><code>+</code> — qo'shilgan qator (yashil),
+      <code>-</code> — o'chirilgan qator (qizil).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: uchta hudud qaysilar — tartibi bilan?</summary>
+      <div class="answer"><p>Working Directory → Staging Area → Repository.
+      (<a href="0002-uch-hudud-va-commit.html">Dars 02</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: commit ichida qaysi 4 narsa saqlanadi?</summary>
+      <div class="answer"><p>Snapshot · muallif (ism + email) · vaqt · izoh.
+      (<a href="0001-git-nima-va-sozlash.html">Dars 01</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Oltin qoida:</b> commit qilingan narsa xavfsiz. Tez-tez commit qiling.</li>
+      <li><b>Avval ko'r:</b> <code>git status</code> · <code>git diff</code> ·
+      <code>git diff --staged</code> · <code>git show</code> — hech biri hech narsani buzmaydi.</li>
+      <li><b>Keyin qaytar</b> — xato qaysi hududda bo'lsa, o'sha hududning buyrug'i bilan:</li>
+      <li>Ish papkasi → <code>git restore fayl</code> &nbsp;⚠️ o'zgarish yo'qoladi</li>
+      <li>Staging → <code>git restore --staged fayl</code> &nbsp;✓ xavfsiz</li>
+      <li>Oxirgi commit → <code>git commit --amend -m "..."</code> &nbsp;✓ xavfsiz (push'dan oldin)</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 2.4-bo'lim — "Undoing Things":
+    <a href="https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things">git-scm.com/book</a>.
+    (Kitobning o'zi ham aynan shu jumla bilan boshlanadi: commit qilingan ish deyarli
+    har doim qaytariladi.)<br>
+    O'zbekcha amaliyot: <a href="https://gitustasi.uz">gitustasi.uz</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Xato qilishdan qo'rqmang — men shu yerdaman.</b> Biror buyruq kutilmagan narsa
+    qilsa, terminal chiqishini menga ko'chirib tashlang, birga tushunamiz. «Men allaqachon
+    <code>restore</code> qilib yubordim, qaytarib bo'ladimi?» — bu ham yaxshi savol.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0002-uch-hudud-va-commit.html">Oldingi: 3 hudud va commit</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="0004-remote-va-push.html">Keyingi dars: Remote va push</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things">Git Basics: Undoing Things</a>
+      («commit qilingan ishni deyarli har doim qaytarish mumkin»).</li>
+      <li id="fn2">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Viewing Your Staged and Unstaged Changes</a>.</li>
+      <li id="fn3">Git hujjatlari — <a href="https://git-scm.com/docs/git-restore">git-restore</a>
+      (Git 2.23+ da <code>checkout</code>ning ikki vazifasi <code>restore</code> va
+      <code>switch</code>ga ajratilgan).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

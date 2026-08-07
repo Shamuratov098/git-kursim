@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>Git atamalari lug'ati (Glossary)</title>
   <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
 </head>
 <body>
 <main class="lesson glossary">
@@ -14,10 +16,21 @@
   <p class="lead">Kursdagi barcha atamalar shu yerda izohlanadi. Inglizcha atama —
   o'zbekcha tushuntirish — kichik misol. Darslar shu yerga havola beradi.</p>
 
+  <p class="lesson-meta">
+    <span>📱 Telefonda o'qishga mos</span>
+    <span>Atamalar: 30 ta</span>
+    <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
+    <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
+  </p>
+
   <ul class="toc">
     <li><a href="#repository">repository</a></li>
     <li><a href="#working-directory">working directory</a></li>
     <li><a href="#staging-area">staging area</a></li>
+    <li><a href="#untracked">untracked</a></li>
+    <li><a href="#modified">modified</a></li>
+    <li><a href="#staged">staged</a></li>
+    <li><a href="#committed">committed</a></li>
     <li><a href="#commit">commit</a></li>
     <li><a href="#snapshot">snapshot</a></li>
     <li><a href="#commit-message">commit message</a></li>
@@ -36,6 +49,11 @@
     <li><a href="#fork">fork</a></li>
     <li><a href="#gitignore">.gitignore</a></li>
     <li><a href="#hash">commit hash</a></li>
+    <li><a href="#config">git config</a></li>
+    <li><a href="#diff">diff</a></li>
+    <li><a href="#restore">restore</a></li>
+    <li><a href="#amend">amend</a></li>
+    <li><a href="#upstream">upstream</a></li>
   </ul>
 
   <dl>
@@ -56,6 +74,31 @@
       <dd>Keyingi <a href="#commit">commit</a>ga <b>aynan qaysi</b> o'zgarishlar kirishini
       tanlaydigan "oraliq savat". <code>git add</code> fayllarni shu yerga qo'yadi.
       <span class="eg">git add file.txt → staging'ga tushadi</span></dd>
+    </div>
+
+    <div class="term" id="untracked">
+      <dt>untracked <span class="uz">— kuzatilmayotgan fayl</span></dt>
+      <dd>Yangi yaratilgan fayl: Git uni ko'radi, lekin <b>hali kuzatmaydi</b> —
+      tarixga kiritmagan. <code>git add</code> qilinsa kuzatiladigan bo'ladi.
+      <span class="eg">git status → "Untracked files"</span></dd>
+    </div>
+
+    <div class="term" id="modified">
+      <dt>modified <span class="uz">— o'zgargan fayl</span></dt>
+      <dd>Git kuzatadigan fayl tahrirlangan, lekin hali <a href="#staging-area">staging</a>ga
+      qo'yilmagan. <span class="eg">git status → "Changes not staged for commit"</span></dd>
+    </div>
+
+    <div class="term" id="staged">
+      <dt>staged <span class="uz">— saralangan / tayyorlangan</span></dt>
+      <dd>Fayl <code>git add</code> qilingan va <b>keyingi commitga kirishga tayyor</b>.
+      Hali tarixga yozilmagan. <span class="eg">git status → "Changes to be committed"</span></dd>
+    </div>
+
+    <div class="term" id="committed">
+      <dt>committed <span class="uz">— tarixga yozilgan</span></dt>
+      <dd>O'zgarish repository'ga <b>doimiy</b> saqlandi. Bunda ish papkangiz "toza"
+      bo'ladi. <span class="eg">git status → "working tree clean"</span></dd>
     </div>
 
     <div class="term" id="commit">
@@ -164,10 +207,56 @@
       <dd>Har commitning takrorlanmas uzun ID'si. Odatda dastlabki 7 belgisi yetarli.
       <span class="eg">a1b2c3d</span></dd>
     </div>
+
+    <div class="term" id="config">
+      <dt>git config <span class="uz">— sozlamalar</span></dt>
+      <dd>Git'ning xulq-atvorini sozlash buyrug'i. <code>--global</code> = shu
+      kompyuterdagi barcha loyihalar uchun (<code>~/.gitconfig</code> fayliga yoziladi);
+      <code>--global</code>siz = faqat joriy loyiha uchun.
+      <span class="eg">git config --global user.name "Ism"</span></dd>
+    </div>
+
+    <div class="term" id="diff">
+      <dt>diff <span class="uz">— farq</span></dt>
+      <dd>Ikki holat orasidagi <b>satrma-satr</b> farq. <code>+</code> qo'shilgan qator,
+      <code>-</code> o'chirilgan qator. <code>git diff</code> — hali
+      <a href="#staged">staged</a> bo'lmagan o'zgarishlar; <code>git diff --staged</code> —
+      staged bo'lganlari. <span class="eg">git diff mashq.txt</span></dd>
+    </div>
+
+    <div class="term" id="restore">
+      <dt>restore <span class="uz">— qaytarish</span></dt>
+      <dd>Ikki xil vazifasi bor: <code>git restore fayl</code> — fayldagi
+      <b>saqlanmagan</b> o'zgarishni bekor qiladi (⚠️ yo'qoladi);
+      <code>git restore --staged fayl</code> — faylni staging'dan chiqaradi (✓ xavfsiz,
+      matn qoladi). <span class="eg">Git 2.23+ · eskisi: checkout / reset</span></dd>
+    </div>
+
+    <div class="term" id="amend">
+      <dt>amend <span class="uz">— oxirgi commitni tuzatish</span></dt>
+      <dd><b>Oxirgi</b> commitni yangisi bilan almashtiradi — izohini tuzatish yoki
+      unutilgan faylni qo'shish uchun. Faqat hali <a href="#push">push</a> qilinmagan
+      commitda ishlatiladi. <span class="eg">git commit --amend -m "to'g'ri izoh"</span></dd>
+    </div>
+
+    <div class="term" id="upstream">
+      <dt>upstream <span class="uz">— branch'ning «uyi»</span></dt>
+      <dd>Mahalliy branch qaysi <a href="#remote">remote</a> branch bilan bog'langani.
+      Bir marta <code>-u</code> bilan o'rnatiladi, keyin qisqa <code>git push</code> /
+      <code>git pull</code> yetarli bo'ladi.
+      <span class="eg">git push -u origin main</span></dd>
+    </div>
   </dl>
 
+  <div class="ask-teacher">
+    📣 Bu lug'atda yo'q atama uchrasa — menga yozing, izohlab qo'shib qo'yaman.
+  </div>
+
   <nav class="lesson-nav">
-    <a class="prev" href="../lessons/0001-git-nima-va-sozlash.html">DARS 01: Git nima va sozlash</a>
+    <a class="prev" href="../index.html">Kurs bosh sahifasi</a>
+    <a href="buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01: Git nima va sozlash</a>
+    <a href="../lessons/0002-uch-hudud-va-commit.html">Dars 02: 3 hudud va commit</a>
   </nav>
 
 </main>

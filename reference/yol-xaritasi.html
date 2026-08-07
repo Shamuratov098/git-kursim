@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Kurs yo'l xaritasi — Git &amp; GitHub</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">REFERENCE · ARXITEKTURA</p>
+  <h1>Kurs yo'l xaritasi</h1>
+  <p class="lead">Qayerdan boshlab qayerga boryapmiz — <b>11 ta dars, 4 ta modul</b>.
+  Har bir dars bitta aniq ko'nikma beradi va o'zidan oldingisiga tayanadi.</p>
+
+  <p class="lesson-meta">
+    <span>Hozirgi o'rningiz: <b>Modul A · Dars 03</b></span>
+    <span>Tayyor darslar: 4 / 11</span>
+    <span>📱 O'qishga mos</span>
+  </p>
+
+  <h2>Ketma-ketlik qanday tuzilgan?</h2>
+  <p>Tartib tasodifiy emas. U <a href="../index.html">missiyangizdan</a> kelib chiqadi:
+  <b>ishda/jamoada qo'rqmasdan ishlash</b>. Uchta qoidaga amal qilindi:</p>
+
+  <ol>
+    <li><b>Qo'rquvni erta yo'qotish.</b> «Xatoni qaytarish» darsi boshida turadi —
+    orqaga qaytishni bilsangiz, tajriba qilishdan qo'rqmaysiz.</li>
+    <li><b>Har bir dars oldingisining ustiga quriladi.</b> Hech qachon o'rganilmagan
+    narsani ishlatmayman. Masalan <code>merge conflict</code> darsi <code>merge</code>dan
+    keyin, <code>merge</code> esa <code>branch</code>dan keyin keladi — boshqacha bo'lishi
+    mumkin emas.</li>
+    <li><b>Yakkadan jamoaga.</b> Avval o'zingiz bilan o'zingiz (Modul A), keyin
+    internet bilan (B), keyin parallel ishlash (C), oxirida odamlar bilan (D).
+    Jamoa qiyinchiliklari — eng oxirida, chunki ular qolgan hammasini talab qiladi.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">Har bir dars ikki marta uchraydi</span>
+    <p>📱 telefonda <b>o'qiysiz</b> (tushuncha) → 💻 kompyuterda <b>bajarasiz</b> (ko'nikma).
+    Bir mavzuga ikki xil holatda qaytish — bilimni uzoq saqlashning eng ishonchli yo'li.</p>
+  </div>
+
+  <!-- ================= MODUL A ================= -->
+  <section class="module is-current">
+    <div class="module-head">
+      <span class="module-tag">Modul A</span>
+      <h3>Poydevor — yakka ishlash</h3>
+      <p class="module-goal">Maqsad: Git'ni o'z kompyuteringizda ishonch bilan boshqarasiz.
+      Internet ham, jamoa ham hali kerak emas.</p>
+    </div>
+    <ol class="road">
+      <li class="done">
+        <span class="road-n">01</span>
+        <div class="road-body">
+          <a href="../lessons/0001-git-nima-va-sozlash.html">Git nima va kompyuterni sozlash</a>
+          <span class="road-win">Git meni taniydi — har commit mening nomimda</span>
+          <span class="road-cmds">git --version · git config --global</span>
+        </div>
+        <span class="road-state">Tayyor</span>
+      </li>
+      <li class="done">
+        <span class="road-n">02</span>
+        <div class="road-body">
+          <a href="../lessons/0002-uch-hudud-va-commit.html">3 hudud va commit aylanasi</a>
+          <span class="road-win">O'zgarishni tanlab, toza commit qila olaman</span>
+          <span class="road-cmds">git init · git status · git add · git commit · git log</span>
+        </div>
+        <span class="road-state">Tayyor</span>
+      </li>
+      <li class="now">
+        <span class="road-n">03</span>
+        <div class="road-body">
+          <a href="../lessons/0003-xatoni-qaytarish.html">Xato qildim: ko'rish va ortga qaytarish</a>
+          <span class="road-win">Qo'rqmayman — har uch hududdagi xatoni qaytara olaman</span>
+          <span class="road-cmds">git diff · git show · git restore · git commit --amend</span>
+        </div>
+        <span class="road-state">Yangi</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ================= MODUL B ================= -->
+  <section class="module">
+    <div class="module-head">
+      <span class="module-tag">Modul B</span>
+      <h3>GitHub — ishimni internetga chiqarish</h3>
+      <p class="module-goal">Maqsad: kompyuteringizdagi tarix GitHub bilan bog'lanadi.
+      Ish yo'qolmaydi va istalgan joydan yetib boradi.</p>
+    </div>
+    <ol class="road">
+      <li class="now">
+        <span class="road-n">04</span>
+        <div class="road-body">
+          <a href="../lessons/0004-remote-va-push.html">Remote va push: ishim GitHub'da</a>
+          <span class="road-win">O'z ishimni GitHub'ga chiqara olaman</span>
+          <span class="road-cmds">git remote · git push · git push -u origin main</span>
+        </div>
+        <span class="road-state">Yangi</span>
+      </li>
+      <li>
+        <span class="road-n">05</span>
+        <div class="road-body">
+          <span class="t">Clone va pull: ishimni qaytarib olish</span>
+          <span class="road-win">Boshqa kompyuterda ham xuddi shu loyihada ishlayman</span>
+          <span class="road-cmds">git clone · git pull · git fetch</span>
+        </div>
+        <span class="road-state">Rejada</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ================= MODUL C ================= -->
+  <section class="module">
+    <div class="module-head">
+      <span class="module-tag">Modul C</span>
+      <h3>Branch — parallel ishlash</h3>
+      <p class="module-goal">Maqsad: asosiy kodga tegmasdan yangi ish qilish va uni
+      xavfsiz qaytarib qo'shish. Jamoa workflow'ining texnik poydevori.</p>
+    </div>
+    <ol class="road">
+      <li>
+        <span class="road-n">06</span>
+        <div class="road-body">
+          <span class="t">Branch: alohida yo'lda ishlash</span>
+          <span class="road-win">Asosiy kodni buzmasdan yangi narsa sinayman</span>
+          <span class="road-cmds">git branch · git switch -c · git switch</span>
+        </div>
+        <span class="road-state">Rejada</span>
+      </li>
+      <li>
+        <span class="road-n">07</span>
+        <div class="road-body">
+          <span class="t">Merge: ishni asosiyga qo'shish</span>
+          <span class="road-win">Tugagan ishimni <code>main</code>ga qo'sha olaman</span>
+          <span class="road-cmds">git merge · git branch -d</span>
+        </div>
+        <span class="road-state">Rejada</span>
+      </li>
+      <li>
+        <span class="road-n">08</span>
+        <div class="road-body">
+          <span class="t">Merge conflict: ziddiyatni hal qilish</span>
+          <span class="road-win">Konflikt chiqsa vahima qilmayman — hal qilaman</span>
+          <span class="road-cmds">&lt;&lt;&lt;&lt;&lt;&lt;&lt; belgilar · git merge --abort</span>
+        </div>
+        <span class="road-state">Rejada</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ================= MODUL D ================= -->
+  <section class="module">
+    <div class="module-head">
+      <span class="module-tag">Modul D</span>
+      <h3>Jamoa — odamlar bilan ishlash</h3>
+      <p class="module-goal">Maqsad: missiyaning yakuniy nuqtasi. Ish joyidagi kundalik
+      tartibda, hamkasblar bilan birga ishlaysiz.</p>
+    </div>
+    <ol class="road">
+      <li>
+        <span class="road-n">09</span>
+        <div class="road-body">
+          <span class="t">Pull request: taklif, review, merge</span>
+          <span class="road-win">PR ocha olaman va boshqalarnikini ko'rib chiqaman</span>
+          <span class="road-cmds">GitHub'da: Compare &amp; pull request · Review · Merge</span>
+        </div>
+        <span class="road-state">Rejada</span>
+      </li>
+      <li>
+        <span class="road-n">10</span>
+        <div class="road-body">
+          <span class="t">Kundalik jamoa ritmi</span>
+          <span class="road-win">pull → branch → commit → push → PR ni avtomatik bajaraman</span>
+          <span class="road-cmds">to'liq aylana + hamkasbning ishini olish</span>
+        </div>
+        <span class="road-state">Rejada</span>
+      </li>
+      <li>
+        <span class="road-n">11</span>
+        <div class="road-body">
+          <span class="t">Professional odatlar</span>
+          <span class="road-win">Toza tarix, toza repo — hamkasblarim minnatdor</span>
+          <span class="road-cmds">.gitignore · yaxshi commit message · README</span>
+        </div>
+        <span class="road-state">Rejada</span>
+      </li>
+    </ol>
+  </section>
+
+  <h2>Kursdan tashqarida qoladigan mavzular</h2>
+  <p>Bular <b>kerak emas</b> degani emas — <b>hozir kerak emas</b> degani. Missiyangiz
+  (jamoada ishonchli ishlash) uchun yuqoridagi 11 dars yetarli. Bularni keyinroq,
+  poydevor mustahkam bo'lgach qo'shamiz:</p>
+  <ul>
+    <li><code>rebase</code>, <code>cherry-pick</code>, <code>stash</code>, <code>reflog</code>
+    — kuchli, lekin xavfliroq asboblar.</li>
+    <li>Git internals (blob / tree / object modeli) — qiziq, lekin amaliyotga ta'sir qilmaydi.</li>
+    <li>CI/CD, GitHub Actions, o'z Git serveri — bular Git emas, ular <i>Git ustiga</i> quriladi.</li>
+  </ul>
+
+  <div class="callout tip">
+    <span class="label">Xarita o'zgarishi mumkin</span>
+    <p>Amaliyotda biror joy qiyin bo'lsa yoki ishingizda boshqa narsa kerak bo'lib qolsa —
+    ayting, xaritani qayta tuzamiz. Bu tosh emas, reja.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 Ketma-ketlik bo'yicha savolingiz bormi? «Nega branch pushdan keyin?», «menga
+    <code>stash</code> kerak bo'lib qoldi» — istalgan vaqt yozing.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="../index.html">Kurs bosh sahifasi</a>
+    <a href="glossary.html">Atamalar lug'ati</a>
+    <a href="buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../lessons/0003-xatoni-qaytarish.html">Dars 03: Xatoni qaytarish</a>
+  </nav>
+
+</main>
+</body>
+</html>

@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0004-remote-va-push.html">04</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0005-clone-va-pull.html">05</a></span>
   </p>
 
   <div class="callout tip">
@@ -225,6 +225,34 @@
     </tbody>
   </table>
 
+  <h3>GitHub'dan olish (Dars 05)</h3>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git clone &lt;url&gt;</code></td>
+        <td>Loyiha sizda <b>yo'q</b> edi — noldan oladi. Papka + butun tarix +
+        <code>origin</code> + bog'lanish, hammasi birdan.
+        <span class="note-cell">Papkaga nom berish: <code>git clone &lt;url&gt; yangi-nom</code></span></td>
+      </tr>
+      <tr>
+        <td><code>git fetch</code></td>
+        <td><code>origin/main</code> xatcho'pini yangilaydi.
+        <span class="note-cell">✓ Xavfsiz — fayllaringizga <b>tegmaydi</b>.</span></td>
+      </tr>
+      <tr>
+        <td><code>git pull</code></td>
+        <td><code>fetch</code> + <code>merge</code>. Yangiliklarni olib, ishingizga qo'shadi.
+        <span class="note-cell">Kundalik odat: ish boshlashdan oldin commit → pull.</span></td>
+      </tr>
+      <tr>
+        <td><code>git log --oneline main..origin/main</code></td>
+        <td><code>fetch</code> dan keyin: sizda yo'q, GitHub'da bor commitlar —
+        ya'ni <b>nima kelayotgani</b>.</td>
+      </tr>
+    </tbody>
+  </table>
+
   <div class="callout warning">
     <span class="label">Push'dan keyin</span>
     <p><code>--amend</code> — faqat <b>push'gacha</b>. Push qilingan commit boshqalarda
@@ -243,10 +271,9 @@
 
   <div class="callout note">
     <span class="label">Keyingi darslarda qo'shiladi</span>
-    <p><code>git clone</code>, <code>git pull</code>, <code>git fetch</code> (Dars 05) ·
-    <code>git branch</code>, <code>git switch</code>, <code>git merge</code>
+    <p><code>git branch</code>, <code>git switch</code>, <code>git merge</code>
     (Dars 06–07) · merge conflict belgilarini hal qilish (Dars 08) ·
-    <code>.gitignore</code> (Dars 11). To'liq reja:
+    pull request (Dars 09) · <code>.gitignore</code> (Dars 11). To'liq reja:
     <a href="yol-xaritasi.html">yo'l xaritasi</a>.</p>
   </div>
 

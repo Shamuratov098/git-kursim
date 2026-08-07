@@ -430,6 +430,11 @@ body.mode-read .cmd { padding-right: 1.1rem; font-size: 0.9rem; }
   margin-top: 0.2rem;
 }
 
+/* Ikki yo'nalishli o'q (push ↑ / pull ↓) — bitta ustunda ikkita belgi */
+.area-arrow.both { gap: 0; }
+.area-arrow.both .lbl { margin-bottom: 0.6rem; }
+.area-arrow.both .lbl:last-child { margin-bottom: 0; }
+
 /* 4 bo'g'inli variant (Working → Staging → Local → GitHub): bir qatorga sig'sin */
 .areas.wide .area { min-width: 92px; padding: 0.7rem 0.4rem; }
 .areas.wide .area h4 { font-size: 0.86rem; }

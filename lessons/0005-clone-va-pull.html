@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 05 — Clone va pull: ishimni qaytarib olish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 05 · MODUL B · GITHUB</p>
+  <h1>Clone va pull: ishimni qaytarib olish</h1>
+  <p class="lead">Bu darsdan keyin siz GitHub'dagi loyihani istalgan kompyuterga
+  <b>ko'chirib olasiz</b> va boshqalar qo'shgan yangiliklarni o'zingizga
+  <b>tortib olasiz</b>. Ko'prik endi ikki tomonlama ishlaydi.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 7 daqiqa</span>
+    <span>💻 Amaliyot ≈ 12 daqiqa</span>
+    <span>Kerak: <a href="0004-remote-va-push.html">Dars 04</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Jamoaga qo'shilishning <b>birinchi qadami</b> aynan shu: sizga repo havolasi
+    beriladi, siz uni <code>clone</code> qilasiz va ishga kirishasiz. Keyin esa har kuni
+    hamkasblaringiz o'z ishlarini push qilib turadi — <code>pull</code> bo'lmasa, siz
+    eskirgan kod ustida ishlaysiz va oxirida chalkashlik chiqadi.</p>
+  </div>
+
+  <h2>Ko'prik ikki tomonlama</h2>
+  <p><a href="0004-remote-va-push.html">O'tgan darsda</a> siz <b>yuqoriga</b> jo'natishni
+  o'rgandingiz. Bugun — <b>pastga</b> olish:</p>
+
+  <div class="areas">
+    <div class="area">
+      <h4>Kompyuteringiz</h4>
+      <span class="en">Local Repository</span>
+      <div class="desc">Siz ishlaydigan nusxa</div>
+    </div>
+    <div class="area-arrow both">
+      <span class="sym">→</span><span class="lbl">git push</span>
+      <span class="sym">←</span><span class="lbl">git pull</span>
+    </div>
+    <div class="area">
+      <h4>GitHub</h4>
+      <span class="en">Remote (origin)</span>
+      <div class="desc">Jamoaning umumiy nusxasi</div>
+    </div>
+  </div>
+
+  <p>Uchta yangi buyruq shu yo'nalishga tegishli — lekin ular bir xil emas:</p>
+  <ul>
+    <li><b><code>git clone</code></b> — loyiha sizda <b>umuman yo'q</b>. Noldan olasiz.
+    Bir marta bajariladi.</li>
+    <li><b><code>git fetch</code></b> — loyiha bor. Yangiliklarni <b>keltiradi</b>, lekin
+    fayllaringizga tegmaydi.</li>
+    <li><b><code>git pull</code></b> — loyiha bor. Yangiliklarni keltiradi
+    <b>va</b> ishingizga qo'shadi.</li>
+  </ul>
+
+  <h2><code>git clone</code> — bitta buyruqda to'rt ish</h2>
+  <div class="cmd" data-cmd="git clone https://github.com/foydalanuvchi/loyiha.git">git clone https://github.com/foydalanuvchi/loyiha.git</div>
+  <p>Bu buyruq sirtdan oddiy ko'rinadi, lekin ichida to'rtta ish birdan
+  bajariladi:<a class="cite" href="#fn1">1</a></p>
+  <ol>
+    <li>Yangi <b>papka</b> yaratadi (odatda repo nomi bilan).</li>
+    <li>Loyihaning <b>butun tarixini</b> — hamma commitlarni — ko'chiradi.
+    Faqat oxirgi holatni emas!</li>
+    <li><code>origin</code> nomli <b>remote'ni avtomatik sozlaydi</b>.</li>
+    <li>Mahalliy <code>main</code> ni <code>origin/main</code> ga <b>bog'laydi</b>.</li>
+  </ol>
+
+  <div class="callout tip">
+    <span class="label">Shuning uchun clone'da <code>-u</code> kerak emas</span>
+    <p><a href="0004-remote-va-push.html">4-darsda</a> <code>git push -u origin main</code>
+    ni ko'rgan edik — «qayerga push qilishni eslab qol». Clone qilingan loyihada bu
+    allaqachon bajarilgan (4-band). Shuning uchun u yerda birinchi kundan qisqa
+    <code>git push</code> ishlaydi.</p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">«Distributed» degani shu edi</span>
+    <p><a href="0001-git-nima-va-sozlash.html">1-darsda</a> Git tarqoq (distributed)
+    tizim deganmiz. Mana isboti: <code>clone</code> sizga <b>butun tarixni</b> beradi.
+    Internet uzilsa ham eski commitlarni ko'rasiz, taqqoslaysiz, ortga qaytasiz —
+    hech kimdan so'ramasdan.</p>
+  </div>
+
+  <p>Papkaga boshqa nom bermoqchi bo'lsangiz, oxiriga yozasiz:</p>
+  <div class="cmd" data-cmd="git clone https://github.com/foydalanuvchi/loyiha.git yangi-nom">git clone https://github.com/foydalanuvchi/loyiha.git yangi-nom</div>
+
+  <h2><code>pull</code> = <code>fetch</code> + <code>merge</code></h2>
+  <p>Bu darsning eng muhim jumlasi. Tushunish uchun
+  <a href="0004-remote-va-push.html">4-darsdagi xatcho'p</a> tushunchasini eslaylik:
+  <code>origin/main</code> — bu GitHub'ni <b>oxirgi ko'rganingizdagi</b> holat.
+  U o'zi yangilanmaydi.</p>
+
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git fetch</code></td>
+        <td>GitHub bilan aloqaga chiqadi va <code>origin/main</code> <b>xatcho'pini
+        yangilaydi</b>. Sizning fayllaringizga <b>tegmaydi</b>.
+        <span class="note-cell">✓ Butunlay xavfsiz — «avval ko'ray-chi» uchun.</span></td>
+      </tr>
+      <tr>
+        <td><code>git merge</code></td>
+        <td>Xatcho'pdagi yangi commitlarni <b>sizning ishingizga qo'shadi</b> —
+        fayllaringiz o'zgaradi.</td>
+      </tr>
+      <tr>
+        <td><code>git pull</code></td>
+        <td><b>Ikkalasi birga.</b> Kundalik ishda odatda shuni ishlatasiz.<a class="cite" href="#fn2">2</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Ya'ni <code>fetch</code> — <i>«xabarni olib kel»</i>, <code>merge</code> —
+  <i>«olib kelinganini ishimga qo'sh»</i>. <code>pull</code> shu ikkisini bitta
+  buyruqda bajaradi.</p>
+
+  <div class="callout win">
+    <span class="label">Nega bu farq muhim</span>
+    <p>Ishonchingiz komil bo'lmasa — avval <code>git fetch</code>, keyin
+    <code>git log --oneline main..origin/main</code> bilan <b>nima kelayotganini
+    ko'ring</b>, keyin qo'shing. Bu — 3-darsdagi «avval ko'r, keyin qil» odatining
+    davomi.</p>
+  </div>
+
+  <h2>Kundalik qoida: ish boshlashdan oldin <code>pull</code></h2>
+  <p>Jamoada bitta oddiy odat ko'p muammoni oldini oladi:</p>
+  <div class="callout warning">
+    <span class="label">Har kuni, ishni boshlashdan oldin</span>
+    <p><b>1.</b> O'z ishingizni <code>commit</code> qiling (yoki hech narsa
+    o'zgartirmagan bo'ling) → <b>2.</b> <code>git pull</code> → <b>3.</b> endi ishlang.</p>
+    <p>Sabab: eskirgan kod ustida ishlasangiz, oxirida sizning va hamkasbingizning
+    o'zgarishlari to'qnashadi — bu <b>merge conflict</b> deyiladi
+    (<a href="../reference/yol-xaritasi.html">8-darsda</a> uni hal qilishni o'rganamiz).
+    Muntazam <code>pull</code> to'qnashuvlarni kichik va oson saqlaydi.</p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Agar terminal g'alati tahrirlagichga o'tib qolsa</span>
+    <p><code>git pull</code> ba'zan merge izohini so'rab, matn tahrirlagichni ochadi.
+    Vahima qilmang: <kbd>Ctrl</kbd>+<kbd>X</kbd> (nano) yoki <kbd>Esc</kbd> keyin
+    <code>:wq</code> va <kbd>Enter</kbd> (vim) bilan chiqasiz. Bunday holat bo'lsa —
+    menga yozing, birga ko'ramiz.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: «ikkinchi kompyuter» yasab ko'ramiz</h2>
+    <p>Ikkinchi kompyuter kerak emas — kurs repongizni <b>ikkinchi papkaga</b> clone
+    qilamiz. U «hamkasbingizning kompyuteri» rolini o'ynaydi. Keyin bir papkada
+    o'zgarish qilib push qilasiz va ikkinchisida <code>pull</code> bilan olasiz.</p>
+
+    <div class="callout note">
+      <span class="label">Ikki papka — chalkashmang</span>
+      <p><code>~/Projects/Learn/Git</code> — <b>asl</b> papkangiz (kurs shu yerda).<br>
+      <code>~/Projects/Learn/Git-nusxa</code> — bugun yasaydigan <b>nusxa</b>.<br>
+      Har qadamda qaysi papkada ekaningizga e'tibor bering — buyruqlarda yozib qo'ydim.</p>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <p>Nusxa yasaladigan joyga o'ting</p>
+        <p class="why-step">Clone joriy papka <b>ichida</b> yangi papka yaratadi.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn">cd ~/Projects/Learn</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik. <code>pwd</code> deng —
+        <code>/home/dostonbek/Projects/Learn</code> chiqishi kerak.</p>
+      </li>
+
+      <li>
+        <p>Clone qiling</p>
+        <p class="why-step">Oxiridagi <code>Git-nusxa</code> — yaratiladigan papka nomi.</p>
+        <div class="cmd" data-cmd="git clone https://github.com/Shamuratov098/git-kursim.git Git-nusxa">git clone https://github.com/Shamuratov098/git-kursim.git Git-nusxa
+<span class="out">Cloning into 'Git-nusxa'...</span>
+<span class="out">Receiving objects: 100% ... done.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Cloning into 'Git-nusxa'...» va
+        «done». Yangi papka paydo bo'ldi. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Nusxaga kirib, nima kelganini ko'ring</p>
+        <p class="why-step">Diqqat: <b>butun tarix</b> keldi — faqat oxirgi holat emas.</p>
+        <div class="cmd" data-cmd="cd Git-nusxa && git log --oneline">cd Git-nusxa &amp;&amp; git log --oneline
+<span class="out">4c20049 Kurs arxitekturasi va DARS 03-04 qo'shildi</span>
+<span class="out">08ade4d DARS 02 qo'shildi: 3 hudud va commit aylanasi</span>
+<span class="out">e6a5f3b Birinchi commit: kurs sayti va DARS 01</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> barcha commitlar — birinchisidan
+        oxirgisigacha. Chiqish: <kbd>q</kbd>.</p>
+      </li>
+
+      <li>
+        <p>Remote avtomatik sozlanganini tekshiring</p>
+        <p class="why-step">Siz <code>git remote add</code> qilmadingiz — clone o'zi qildi.</p>
+        <div class="cmd" data-cmd="git remote -v && git status">git remote -v &amp;&amp; git status
+<span class="out">origin  https://github.com/Shamuratov098/git-kursim.git (fetch)</span>
+<span class="out">Your branch is up to date with 'origin/main'.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>origin</code> joyida va
+        <code>main</code> allaqachon <code>origin/main</code> ga bog'langan.</p>
+      </li>
+
+      <li>
+        <p>Endi «hamkasb» rolini o'ynang — ASL papkaga qayting</p>
+        <p class="why-step">Bu — boshqa odam o'z kompyuterida ish qilgani.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git">cd ~/Projects/Learn/Git</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik. Endi asl papkadasiz.</p>
+      </li>
+
+      <li>
+        <p>«Hamkasb» o'zgarish qilib push qilsin</p>
+        <p class="why-step">Tanish uchlik: <code>add</code> → <code>commit</code> →
+        <code>push</code> (Dars 02 va 04).</p>
+        <div class="cmd" data-cmd='echo "Bu qatorni hamkasbim qo&apos;shdi." > hamkasb.txt && git add hamkasb.txt && git commit -m "Hamkasb fayli qo&apos;shildi" && git push'>echo "Bu qatorni hamkasbim qo'shdi." &gt; hamkasb.txt &amp;&amp; git add hamkasb.txt &amp;&amp; git commit -m "Hamkasb fayli qo'shildi" &amp;&amp; git push</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit ma'lumoti va oxirida
+        <code>main -&gt; main</code>. O'zgarish endi GitHub'da.</p>
+      </li>
+
+      <li>
+        <p>Nusxaga qayting — u hali bexabar</p>
+        <p class="why-step">Eng qiziq qadam: nusxa hali <b>bexabar</b>.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git-nusxa && git status">cd ~/Projects/Learn/Git-nusxa &amp;&amp; git status
+<span class="out">Your branch is up to date with 'origin/main'.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «up to date» — <b>lekin bu yolg'on!</b>
+        GitHub'da yangi commit bor. Git shunchaki <b>eski xatcho'pga</b> qarab turibdi.</p>
+      </li>
+
+      <li>
+        <p><code>fetch</code> bilan xatcho'pni yangilang</p>
+        <p class="why-step">Mana shu — fetch nima qilishini ko'rsatadigan qadam.
+        Fayllaringizga hali tegilmaydi.</p>
+        <div class="cmd" data-cmd="git fetch && git status">git fetch &amp;&amp; git status
+<span class="out">Your branch is behind 'origin/main' by 1 commit,</span>
+<span class="out">and can be fast-forwarded.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> endi «behind by 1 commit» deydi!
+        Xatcho'p yangilandi. <code>ls</code> deng — <code>hamkasb.txt</code>
+        <b>hali yo'q</b>. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Nima kelayotganini oldindan ko'ring</p>
+        <p class="why-step">«Avval ko'r, keyin qil» — 3-darsdagi odat.</p>
+        <div class="cmd" data-cmd="git log --oneline main..origin/main">git log --oneline main..origin/main
+<span class="out">7a8b9c0 Hamkasb fayli qo'shildi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> sizda yo'q, lekin GitHub'da bor
+        commitlar ro'yxati. Hozir bitta.</p>
+      </li>
+
+      <li>
+        <p>Endi qo'shing</p>
+        <p class="why-step"><code>pull</code> = shu paytgacha qilganingiz
+        (<code>fetch</code>) + qo'shish (<code>merge</code>).</p>
+        <div class="cmd" data-cmd="git pull">git pull
+<span class="out">Updating 4c20049..7a8b9c0</span>
+<span class="out">Fast-forward</span>
+<span class="out"> hamkasb.txt | 1 +</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Fast-forward» — ya'ni sizda ziddiyat
+        yo'q edi, Git shunchaki oldinga siljidi. Endi <code>ls</code> deng —
+        <code>hamkasb.txt</code> paydo bo'ldi! <b>3-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Faylni o'qing va yakunlang</p>
+        <div class="cmd" data-cmd="cat hamkasb.txt && git status">cat hamkasb.txt &amp;&amp; git status
+<span class="out">Bu qatorni hamkasbim qo'shdi.</span>
+<span class="out">Your branch is up to date with 'origin/main'.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> matn ko'rinadi va endi «up to date» —
+        bu safar <b>rostdan</b>. 😌</p>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <span class="label">Nusxa papkani nima qilaman?</span>
+      <p>Hozircha <b>qoldiring</b> — 6-darsda (branch) yana asqotadi. Keyinroq kerak
+      bo'lmasa, o'chirishni birga qilamiz: papka o'chirish buyruqlari qaytarib
+      bo'lmaydigan buyruqlar, shuning uchun uni yolg'iz bajarmang.</p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d5c1"><label for="d5c1"><code>git clone</code> bilan ikkinchi nusxa yaratdim</label></li>
+      <li><input type="checkbox" id="d5c2"><label for="d5c2">Clone butun <b>tarixni</b> olib kelganini <code>git log</code> da ko'rdim</label></li>
+      <li><input type="checkbox" id="d5c3"><label for="d5c3"><code>fetch</code> dan keyin «behind by 1 commit» chiqqanini ko'rdim</label></li>
+      <li><input type="checkbox" id="d5c4"><label for="d5c4"><code>pull</code> dan keyin fayl paydo bo'lganini ko'rdim 🎉</label></li>
+      <li><input type="checkbox" id="d5c5"><label for="d5c5"><code>pull</code> = <code>fetch</code> + <code>merge</code> ekanini ayta olaman</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda kurs repongizni ikkinchi papkaga (<code>Git-nusxa</code>) clone
+    qilasiz — u «hamkasbingizning kompyuteri» bo'ladi. Keyin asl papkada o'zgarish
+    qilib push qilasiz, nusxaga qaytib <code>git status</code> ning «up to date»
+    deb <b>aldashini</b> ko'rasiz, <code>fetch</code> bilan xatcho'pni yangilaysiz va
+    <code>pull</code> bilan faylni olasiz. 11 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> <code>git pull</code> aslida qaysi ikki buyruqning yig'indisi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git fetch</code> va <code>git merge</code></button></li>
+      <li><button class="quiz-option"><code>git clone</code> va <code>git merge</code></button></li>
+      <li><button class="quiz-option"><code>git fetch</code> va <code>git commit</code></button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <code>fetch</code> yangiliklarni <b>keltiradi</b>,
+    <code>merge</code> ularni <b>ishingizga qo'shadi</b>. <code>pull</code> ikkalasini
+    bitta buyruqda bajaradi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> <code>git fetch</code> qilsangiz, fayllaringizga nima bo'ladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Hech narsa — faqat <code>origin/main</code> xatcho'pi yangilanadi</button></li>
+      <li><button class="quiz-option">Yangi o'zgarishlar darhol fayllarimga qo'shiladi</button></li>
+      <li><button class="quiz-option">Fayllarim GitHub'dagi holat bilan almashtiriladi</button></li>
+    </ul>
+    <div class="quiz-explain">Aynan — shuning uchun <code>fetch</code> butunlay xavfsiz.
+    U «xabarni olib keladi», lekin ishingizga tegmaydi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> <code>git clone</code> loyihaning nimasini olib keladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Butun tarixni — barcha commitlarni boshidan oxirigacha</button></li>
+      <li><button class="quiz-option">Faqat oxirgi holatni — eski commitlar qolib ketadi</button></li>
+      <li><button class="quiz-option">Faqat men o'zgartirgan fayllarni — qolgani qolaveradi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — bu Git'ning <b>tarqoq (distributed)</b> tabiati.
+    Har bir nusxada to'liq tarix bor, shuning uchun internetsiz ham ishlaysiz.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Jamoada ish kunini qanday boshlaysiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Avval <code>git pull</code> — eng yangi kod ustida ishlayman</button></li>
+      <li><button class="quiz-option">Avval <code>git push</code> — o'z ishimni birinchi jo'nataman</button></li>
+      <li><button class="quiz-option">Avval <code>git clone</code> — loyihani qaytadan olaman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Eskirgan kod ustida ishlash — <b>merge conflict</b>ning
+    asosiy sababi. Muntazam <code>pull</code> to'qnashuvlarni kichik saqlaydi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.
+    Oxirgi ikkitasi — oldingi darslarni takrorlash.</p>
+
+    <details class="recall">
+      <summary><code>pull</code> = ... + ... ?</summary>
+      <div class="answer"><p><code>git fetch</code> (yangiliklarni keltirish) +
+      <code>git merge</code> (ularni ishingizga qo'shish).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>clone</code> bitta buyruqda qaysi 4 ishni qiladi?</summary>
+      <div class="answer"><p>1) Papka yaratadi · 2) butun tarixni ko'chiradi ·
+      3) <code>origin</code> remote'ni sozlaydi · 4) <code>main</code> ni
+      <code>origin/main</code> ga bog'laydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Nega clone qilingan loyihada <code>git push -u</code> kerak emas?</summary>
+      <div class="answer"><p>Chunki clone bog'lanishni (upstream) allaqachon
+      o'rnatib bergan. Birinchi kundan qisqa <code>git push</code> ishlaydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>git status</code> «up to date» dedi. Bu har doim rostmi?</summary>
+      <div class="answer"><p>Yo'q! U <b>xatcho'pga</b> (<code>origin/main</code>) qarab
+      gapiradi, GitHub'ga emas. Xatcho'p esa faqat <code>fetch</code>/<code>pull</code>
+      qilganda yangilanadi. Ishonch uchun avval <code>git fetch</code>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Jamoada har kuni ishni nimadan boshlaysiz?</summary>
+      <div class="answer"><p>O'z ishingizni commit qilib, keyin <code>git pull</code>.
+      Shunda eng yangi kod ustida ishlaysiz va to'qnashuvlar kichik qoladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: <code>push</code> nimani jo'natmaydi?</summary>
+      <div class="answer"><p>Commit qilinmagan o'zgarishlarni. <code>push</code> faqat
+      <b>commit qilingan</b> narsani ko'radi.
+      (<a href="0004-remote-va-push.html">Dars 04</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: staging'ga xato qo'ygan faylni qanday qaytarasiz?</summary>
+      <div class="answer"><p><code>git restore --staged fayl</code> — xavfsiz, matn
+      joyida qoladi. (<a href="0003-xatoni-qaytarish.html">Dars 03</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><code>git clone &lt;url&gt;</code> — loyiha sizda <b>yo'q</b> edi. Bir marta.
+      Papka + butun tarix + <code>origin</code> + bog'lanish, hammasi birdan.</li>
+      <li><code>git fetch</code> — xatcho'pni yangilaydi, fayllarga <b>tegmaydi</b> (xavfsiz).</li>
+      <li><code>git merge</code> — kelgan commitlarni ishingizga qo'shadi.</li>
+      <li><code>git pull</code> = <code>fetch</code> + <code>merge</code>. Kundalik buyruq.</li>
+      <li><code>git status</code> ning «up to date»i — <b>xatcho'pga</b> qarab aytilgan gap.</li>
+      <li><b>Kundalik odat:</b> commit → <code>pull</code> → keyin ishla.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 2.1 va 2.5-bo'limlar — "Getting a Git Repository" va
+    "Working with Remotes":
+    <a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository">git-scm.com/book</a>.<br>
+    Vizual tushunish uchun juda tavsiya qilaman: <b>Learn Git Branching</b> →
+    <a href="https://learngitbranching.js.org/">Remote</a> bo'limi. U yerda
+    <code>fetch</code> va <code>pull</code> farqi jonli daraxt bilan ko'rsatiladi —
+    bu darsdan keyin aynan o'sha bo'limni o'ynab chiqing.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Ikki papka bilan ishlash boshida chalkash tuyulishi mumkin</b> — bu normal.
+    Adashib qolsangiz <code>pwd</code> (qayerdaman?) va <code>git status</code> deng,
+    natijani menga tashlang. «Nusxani o'chirsam bo'ladimi?» degan savol ham yaxshi savol.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0004-remote-va-push.html">Oldingi: Remote va push</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository">Git Basics: Getting a Git Repository</a>
+      (<code>clone</code> butun tarixni oladi).</li>
+      <li id="fn2">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes">Fetching and Pulling from Your Remotes</a>
+      · Git hujjatlari: <a href="https://git-scm.com/docs/git-pull">git-pull</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

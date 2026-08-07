@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 06 — Branch: alohida yo'lda ishlash</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 06 · MODUL C · BRANCH</p>
+  <h1>Branch: alohida yo'lda ishlash</h1>
+  <p class="lead">Bu darsdan keyin siz asosiy kodga <b>umuman tegmasdan</b> yangi ish
+  boshlaysiz, istalgan vaqt yo'llar orasida almashasiz — va nima bo'lganda ham
+  <code>main</code> ishlab turaveradi.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 12 daqiqa</span>
+    <span>Kerak: <a href="0005-clone-va-pull.html">Dars 05</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Jamoada hamma bitta <code>main</code> ustida ishlasa — har kim bir-birining
+    yarim tayyor kodini oladi va hech narsa ishlamaydi. Shuning uchun qoida:
+    <b><code>main</code> doim ishlaydigan holatda turadi</b>, har bir yangi ish esa
+    o'z <b>branch</b>ida bajariladi. Bu — <a href="../reference/yol-xaritasi.html">pull
+    request</a>ning ham shartli poydevori: PR aslida «mening branch'imni ko'rib
+    chiqing» degani.</p>
+  </div>
+
+  <h2>Branch nima — va nima EMAS</h2>
+  <p>Ko'pchilik boshida branch'ni «kodning nusxasi» yoki «alohida papka» deb tasavvur
+  qiladi. Bu <b>noto'g'ri</b>, va aynan shu tasavvur keyinchalik chalkashlik keltiradi.</p>
+
+  <div class="callout win">
+    <span class="label">To'g'ri tasavvur</span>
+    <p><b>Branch — bu bitta commitga ishora qiluvchi, ko'chib yuruvchi yorliq
+    (pointer).</b><a class="cite" href="#fn1">1</a> Xolos. Hech qanday nusxa
+    ko'chirilmaydi.</p>
+  </div>
+
+  <p>Shuning uchun Git'da branch yaratish <b>bir zumda</b> bo'ladi — u atigi bitta
+  kichik fayl yozadi. 10 000 fayllik loyihada ham shunday. Boshqa eski tizimlarda
+  branch yaratish butun papkani ko'chirishni anglatardi va daqiqalab vaqt olardi.</p>
+
+  <h3>Buni rasmda ko'ramiz</h3>
+  <p>Faraz qilaylik, sizda uchta commit bor va siz <code>main</code>dasiz:</p>
+
+  <div class="cgraph">
+    <div class="cnode"><span class="cdot"></span><span class="chash">c1</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c2</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c3</span>
+      <span class="clabel br">main</span><span class="clabel head">HEAD</span></div>
+  </div>
+  <p class="cgraph-cap">1-holat: <code>main</code> c3 ga ishora qilyapti, siz shu yerdasiz.</p>
+
+  <p>Endi <code>git switch -c login</code> deysiz. Nima o'zgaradi? <b>Deyarli hech
+  narsa</b> — shunchaki yangi yorliq paydo bo'ladi, o'sha commitning ustida:</p>
+
+  <div class="cgraph">
+    <div class="cnode"><span class="cdot"></span><span class="chash">c1</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c2</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c3</span>
+      <span class="clabel br">main</span><span class="clabel br">login</span><span class="clabel head">HEAD</span></div>
+  </div>
+  <p class="cgraph-cap">2-holat: ikkala yorliq ham c3 da. Fayllaringiz o'zgarmadi —
+  hali hech qanday farq yo'q.</p>
+
+  <p>Endi <code>login</code> branch'ida ishlab, bitta commit qilasiz. Mana endi yo'llar
+  ajraladi — lekin faqat <b>sizning</b> yorlig'ingiz siljiydi:</p>
+
+  <div class="cgraph">
+    <div class="cnode"><span class="cdot"></span><span class="chash">c1</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c2</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c3</span>
+      <span class="clabel br">main</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c4</span>
+      <span class="clabel br">login</span><span class="clabel head">HEAD</span></div>
+  </div>
+  <p class="cgraph-cap">3-holat: <code>login</code> oldinga ketdi, <code>main</code>
+  esa <b>joyida qoldi</b> — ya'ni buzilmadi.</p>
+
+  <div class="callout note">
+    <span class="label"><code>HEAD</code> — «men hozir qayerdaman»</span>
+    <p>Yana bitta yorliq bor: <code>HEAD</code>. U <b>siz turgan branch</b>ni
+    ko'rsatadi. <code>git switch</code> aslida shu <code>HEAD</code>ni bir branch'dan
+    boshqasiga ko'chiradi.<a class="cite" href="#fn1">1</a></p>
+  </div>
+
+  <h2>Uchta buyruq — hammasi shu</h2>
+
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git branch</code></td>
+        <td>Branch'lar ro'yxati. Yulduzcha <code>*</code> — hozir qaysi birida
+        turganingiz. <span class="note-cell">✓ Xavfsiz, faqat ko'rsatadi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git switch -c login</code></td>
+        <td><b>Yaratadi va darhol o'tadi.</b> <code>-c</code> = create.
+        <span class="note-cell">Eng ko'p ishlatiladigan shakl.</span></td>
+      </tr>
+      <tr>
+        <td><code>git switch main</code></td>
+        <td>Mavjud branch'ga o'tadi. <code>-c</code> yo'q — chunki yaratmaymiz.</td>
+      </tr>
+      <tr>
+        <td><code>git switch -</code></td>
+        <td>Oldingi branch'ga qaytadi. <span class="note-cell">Ikki branch orasida
+        tez almashish uchun qulay.</span></td>
+      </tr>
+      <tr>
+        <td><code>git branch -d login</code></td>
+        <td>Branch yorlig'ini o'chiradi (ishi tugagach).
+        <span class="note-cell">Buni <a href="../reference/yol-xaritasi.html">7-darsda</a>,
+        merge'dan keyin ishlatamiz.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Eski maqolalarda <code>checkout</code> ko'rasiz</span>
+    <p><code>git checkout login</code> — xuddi shu ish, eski usul. Muammosi:
+    <code>checkout</code> juda ko'p turli ishni bajarardi va boshlovchini chalkashtirardi.
+    Git 2.23 dan beri u ikkiga bo'lingan: <b><code>switch</code></b> (branch almashish)
+    va <b><code>restore</code></b> (faylni qaytarish — <a href="0003-xatoni-qaytarish.html">3-darsda</a>
+    ko'rgan edik). Biz yangi, tushunarli usulni ishlatamiz.<a class="cite" href="#fn2">2</a></p>
+  </div>
+
+  <h2>Diqqat: switch qilganda fayllaringiz o'zgaradi</h2>
+  <p>Bu — darsning eng kutilmagan qismi, shuning uchun oldindan aytib qo'yaman.</p>
+
+  <div class="callout warning">
+    <span class="label">«Fayllarim yo'qoldi!» — yo'q, yo'qolmadi</span>
+    <p><code>git switch main</code> deganingizda, papkangiz <b>o'sha branch'dagi
+    holatga aylanadi</b>. <code>login</code> branch'ida yaratgan fayl ko'rinmay
+    qoladi — chunki <code>main</code> u haqda hech narsa bilmaydi.</p>
+    <p>Bu <b>xato emas, xususiyat</b>. <code>git switch login</code> desangiz, fayl
+    o'sha zahoti qaytadi. Fayllar Git ichida bexatar turibdi.</p>
+  </div>
+
+  <p>Shundan kelib chiqadigan oddiy qoida:</p>
+  <div class="callout win">
+    <span class="label">Branch almashishdan oldin</span>
+    <p><b>Ishingizni <code>commit</code> qiling.</b> Commit qilinmagan o'zgarish bo'lsa,
+    Git ba'zan almashishga ruxsat bermaydi (ish yo'qolmasligi uchun). Commit qilingan
+    narsa esa har doim xavfsiz — <a href="0003-xatoni-qaytarish.html">3-darsdagi
+    oltin qoida</a>.</p>
+  </div>
+
+  <h2>Branch nomini qanday tanlash kerak</h2>
+  <ul>
+    <li><b>Probel bo'lmasin</b> — chiziqcha ishlating: <code>login-sahifasi</code>.</li>
+    <li><b>Nima qilayotganingizni ayting:</b> <code>login-sahifasi</code>,
+    <code>email-xatosini-tuzatish</code>. <code>test</code>, <code>yangi</code>,
+    <code>branch2</code> — hamkasbingizga hech narsa aytmaydi.</li>
+    <li>Ko'p jamoalarda old qo'shimcha ishlatiladi: <code>feature/login</code>,
+    <code>fix/email-xatosi</code>. Ish joyingizdagi odatga qarab moslashasiz.</li>
+  </ul>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: branch yasab, ichida ishlab, qaytib keling</h2>
+    <p>Mashqni <b>nusxa papkada</b> qilamiz — <a href="0005-clone-va-pull.html">5-darsda</a>
+    yasagan <code>Git-nusxa</code>da. Shunda asl kurs papkangiz toza qoladi.</p>
+
+    <div class="callout note">
+      <span class="label">Nusxa papkangiz yo'qmi?</span>
+      <p>Agar <code>~/Projects/Learn/Git-nusxa</code> yo'q bo'lsa, avval
+      <a href="0005-clone-va-pull.html">5-darsning</a> 1–2-qadamini bajaring
+      (bitta <code>git clone</code> buyrug'i). Yoki menga ayting — birga qilamiz.</p>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <p>Nusxa papkaga o'ting va hozirgi holatni ko'ring</p>
+        <p class="why-step">Yulduzcha <code>*</code> — siz turgan branch.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git-nusxa && git branch">cd ~/Projects/Learn/Git-nusxa &amp;&amp; git branch
+<span class="out">* main</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> bitta branch — <code>main</code>,
+        yulduzcha bilan. Hozircha yolg'iz yo'l.</p>
+      </li>
+
+      <li>
+        <p>Yangi branch yarating va unga o'ting</p>
+        <p class="why-step"><code>-c</code> = create. Ikki ish bitta buyruqda.</p>
+        <div class="cmd" data-cmd="git switch -c mashq-branch">git switch -c mashq-branch
+<span class="out">Switched to a new branch 'mashq-branch'</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Switched to a new branch». Bir zumda —
+        hech narsa ko'chirilmadi. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Ikkala yorliq ham bir joyda ekanini ko'ring</p>
+        <p class="why-step">Rasmdagi <b>2-holat</b> — ajralish hali boshlanmadi.</p>
+        <div class="cmd" data-cmd="git branch && git log --oneline -1">git branch &amp;&amp; git log --oneline -1
+<span class="out">  main</span>
+<span class="out">* mashq-branch</span>
+<span class="out">f1fb65f (HEAD -&gt; mashq-branch, origin/main, main) DARS 05...</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> yulduzcha endi <code>mashq-branch</code>da,
+        va oxirgi commitda <b>uchala yorliq ham</b> ko'rinadi.</p>
+      </li>
+
+      <li>
+        <p>Branch ichida ish qiling</p>
+        <p class="why-step">Bu fayl <b>faqat shu branch'da</b> bo'ladi.</p>
+        <div class="cmd" data-cmd='echo "Bu fayl faqat mashq-branch da bor." > branch-mashq.txt && git add branch-mashq.txt && git commit -m "Branch mashq fayli qo&apos;shildi"'>echo "Bu fayl faqat mashq-branch da bor." &gt; branch-mashq.txt &amp;&amp; git add branch-mashq.txt &amp;&amp; git commit -m "Branch mashq fayli qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>1 file changed, 1 insertion(+)</code>.</p>
+      </li>
+
+      <li>
+        <p>Yo'llar ajralganini ko'ring</p>
+        <p class="why-step">Rasmdagi <b>3-holat</b>: sizning yorlig'ingiz oldinga ketdi,
+        <code>main</code> joyida qoldi.</p>
+        <div class="cmd" data-cmd="git log --oneline -2">git log --oneline -2
+<span class="out">a1b2c3d (HEAD -&gt; mashq-branch) Branch mashq fayli qo'shildi</span>
+<span class="out">f1fb65f (origin/main, main) DARS 05 qo'shildi: clone va pull</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>mashq-branch</code> yuqorida,
+        <code>main</code> bir pog'ona <b>pastda</b>. Ajralish sodir bo'ldi. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>🪄 Endi eng qiziq qismi: <code>main</code>ga qayting</p>
+        <p class="why-step">Diqqat bilan kuzating — papkangiz o'zgaradi.</p>
+        <div class="cmd" data-cmd="git switch main && ls">git switch main &amp;&amp; ls
+<span class="out">Switched to branch 'main'</span>
+<span class="out">assets  index.html  lessons  reference  ...</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>branch-mashq.txt</code>
+        ro'yxatda <b>YO'Q</b>! U yo'qolmadi — shunchaki <code>main</code> u haqda
+        bilmaydi. Vahima qilmang. 😄</p>
+      </li>
+
+      <li>
+        <p>Faylni qaytarib oling</p>
+        <p class="why-step"><code>-</code> = «oldingi branch'ga qayt» (qulay qisqartma).</p>
+        <div class="cmd" data-cmd="git switch - && ls">git switch - &amp;&amp; ls
+<span class="out">Switched to branch 'mashq-branch'</span>
+<span class="out">assets  branch-mashq.txt  index.html  lessons  ...</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>branch-mashq.txt</code>
+        <b>qaytdi</b>. Fayl hech qayerga ketmagan edi. <b>3-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Ikki branch farqini bitta buyruqda ko'ring</p>
+        <p class="why-step">«Mening branch'imda main'da yo'q nima bor?»</p>
+        <div class="cmd" data-cmd="git log --oneline main..mashq-branch">git log --oneline main..mashq-branch
+<span class="out">a1b2c3d Branch mashq fayli qo'shildi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> faqat sizning yangi commitingiz.
+        Bu — keyingi darsda <code>main</code>ga qo'shiladigan ish.</p>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <span class="label">Mashqni shu holda qoldiring</span>
+      <p><code>mashq-branch</code>ni <b>o'chirmang</b> va <code>main</code>ga
+      qo'shmang — <a href="../reference/yol-xaritasi.html">7-darsda</a> (merge) aynan
+      shu branch bilan ishlaymiz. Tayyor mashq holati qolgani ma'qul.</p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d6c1"><label for="d6c1">Branch — <b>ko'chib yuruvchi yorliq</b>, nusxa emas</label></li>
+      <li><input type="checkbox" id="d6c2"><label for="d6c2"><code>git switch -c nom</code> bilan branch yaratdim</label></li>
+      <li><input type="checkbox" id="d6c3"><label for="d6c3">Branch'da commit qilib, <code>main</code> joyida qolganini ko'rdim</label></li>
+      <li><input type="checkbox" id="d6c4"><label for="d6c4">Switch qilganda fayl <b>yo'qolib, qaytganini</b> ko'rdim 🪄</label></li>
+      <li><input type="checkbox" id="d6c5"><label for="d6c5">Branch almashishdan oldin commit qilish kerakligini bilaman</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda <code>Git-nusxa</code> papkada <code>mashq-branch</code> yaratasiz,
+    unda fayl yaratib commit qilasiz, keyin <code>main</code>ga o'tib
+    <b>faylning yo'qolganini</b> — va qaytganingizda <b>qaytganini</b> ko'rasiz.
+    Aynan shu qadam «branch nima» degan savolni bir umrga yopadi. 8 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Git'da branch aslida nima?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Bitta commitga ishora qiluvchi, ko'chib yuruvchi yorliq</button></li>
+      <li><button class="quiz-option">Loyihaning to'liq nusxasi — alohida papkaga ko'chiriladi</button></li>
+      <li><button class="quiz-option">Fayllarning zaxira nusxasi — xato bo'lsa qaytariladi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — shuning uchun branch yaratish <b>bir zumda</b>
+    bo'ladi. Hech narsa ko'chirilmaydi, atigi kichik yorliq yoziladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Branch'da commit qilsangiz, <code>main</code>ga nima bo'ladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Hech narsa — u eski commitda joyida qoladi</button></li>
+      <li><button class="quiz-option">U ham birga siljiydi — ikkalasi bir joyda turadi</button></li>
+      <li><button class="quiz-option">U yangilanadi va o'zgarishlarni avtomatik oladi</button></li>
+    </ul>
+    <div class="quiz-explain">Aynan — faqat <b>siz turgan</b> branch siljiydi.
+    <code>main</code> tegilmaydi, shuning uchun u ishlaydigan holatda qoladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Branch almashdingiz va faylingiz ko'rinmay qoldi. Nima bo'ldi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Normal holat — fayl boshqa branch'da, qaytsangiz ko'rinadi</button></li>
+      <li><button class="quiz-option">Fayl o'chib ketdi — uni qaytadan yaratish kerak</button></li>
+      <li><button class="quiz-option">Git buzildi — repo'ni qaytadan clone qilish kerak</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri, va bu darsdagi eng muhim tinchlantiruvchi gap.
+    Papka <b>siz turgan branch holatiga</b> aylanadi. <code>git switch -</code> desangiz
+    hammasi qaytadi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Branch almashishdan oldin nima qilish kerak?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Ishimni commit qilish — saqlanmagan o'zgarish qolmasin</button></li>
+      <li><button class="quiz-option">Fayllarni boshqa papkaga nusxa qilib qo'yish</button></li>
+      <li><button class="quiz-option">Avval GitHub'ga push qilib, keyin almashish</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Commit qilingan narsa xavfsiz
+    (<a href="0003-xatoni-qaytarish.html">3-dars, oltin qoida</a>). Saqlanmagan
+    o'zgarish bo'lsa, Git ba'zan almashishga ruxsat ham bermaydi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.
+    Oxirgi ikkitasi — oldingi darslarni takrorlash.</p>
+
+    <details class="recall">
+      <summary>Branch nima — bir jumlada?</summary>
+      <div class="answer"><p>Bitta commitga ishora qiluvchi <b>ko'chib yuruvchi
+      yorliq</b>. Nusxa emas — shuning uchun yaratish bir zumda bo'ladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>HEAD</code> nimani ko'rsatadi?</summary>
+      <div class="answer"><p>Siz <b>hozir turgan branch</b>ni. <code>git switch</code>
+      aslida <code>HEAD</code>ni bir branch'dan boshqasiga ko'chiradi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Yaratish + o'tish uchun qaysi buyruq? Faqat o'tish uchun-chi?</summary>
+      <div class="answer"><p>Yaratish + o'tish: <code>git switch -c nom</code>
+      (<code>-c</code> = create). Mavjudiga o'tish: <code>git switch nom</code>.
+      Oldingisiga qaytish: <code>git switch -</code>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Branch'da commit qildingiz. <code>main</code> qayerda qoladi?</summary>
+      <div class="answer"><p>Joyida — eski commitda. Faqat siz turgan branch siljiydi.
+      Shuning uchun <code>main</code> hech qachon buzilmaydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Switch qildingiz, fayl ko'rinmay qoldi. Xatomi?</summary>
+      <div class="answer"><p>Yo'q — papka o'sha branch holatiga aylandi. Fayl Git
+      ichida bexatar. Qaytib o'tsangiz darrov ko'rinadi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: <code>pull</code> = ... + ... ?</summary>
+      <div class="answer"><p><code>git fetch</code> + <code>git merge</code>.
+      (<a href="0005-clone-va-pull.html">Dars 05</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: Git'ning oltin qoidasi nima edi?</summary>
+      <div class="answer"><p><b>Commit qilingan narsani yo'qotish juda qiyin</b>,
+      commit qilinmaganini esa oson. (<a href="0003-xatoni-qaytarish.html">Dars 03</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Branch = ko'chib yuruvchi yorliq</b> (pointer), nusxa emas. Yaratish bir zumda.</li>
+      <li><code>HEAD</code> = siz turgan branch.</li>
+      <li><code>git branch</code> — ro'yxat (<code>*</code> = hozirgi joy).</li>
+      <li><code>git switch -c nom</code> — yarat va o't · <code>git switch nom</code> — o't ·
+      <code>git switch -</code> — oldingisiga qayt.</li>
+      <li>Branch'da commit qilsangiz — <b>faqat o'sha branch siljiydi</b>,
+      <code>main</code> joyida qoladi.</li>
+      <li>Switch qilganda <b>fayllar o'zgaradi</b> — bu normal. Avval commit qiling.</li>
+      <li>Nom: probelsiz va mazmunli — <code>login-sahifasi</code>, <code>fix/email-xatosi</code>.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 3.1-bo'lim — "Branches in a Nutshell":
+    <a href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">git-scm.com/book</a>.
+    Rasmlari juda yaxshi — yorliqlar qanday siljishini ko'rsatadi.<br>
+    <b>Buni albatta o'ynang:</b> <a href="https://learngitbranching.js.org/">Learn Git
+    Branching</a> — «Introduction» bo'limining 1–3 darslari aynan shu mavzu. Commit
+    daraxti jonli harakatlanadi va branch tushunchasi 10 daqiqada o'tirib qoladi.
+    Bu darsdan keyin qilinadigan eng foydali ish.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Branch boshida chalkash tuyuladi — bu butunlay normal.</b> «Hozir qaysi
+    branch'daman?» degan savol tug'ilsa: <code>git branch</code> yoki
+    <code>git status</code>. Natijani menga tashlang, birga o'qiymiz. «Noto'g'ri
+    branch'da commit qilib qo'ydim» — bu ham hal bo'ladigan holat, so'rang.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0005-clone-va-pull.html">Oldingi: Clone va pull</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell">Git Branching: Branches in a Nutshell</a>
+      («a branch in Git is simply a lightweight movable pointer to one of these commits»).</li>
+      <li id="fn2">Git hujjatlari — <a href="https://git-scm.com/docs/git-switch">git-switch</a>
+      (Git 2.23+ da <code>checkout</code> ikkiga bo'lingan).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

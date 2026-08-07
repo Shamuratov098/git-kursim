@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0005-clone-va-pull.html">05</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0006-branch.html">06</a></span>
   </p>
 
   <div class="callout tip">
@@ -260,6 +260,49 @@
     <b>yangi commit</b> bilan qo'shasiz.</p>
   </div>
 
+  <h2>7. Branch bilan ishlash (Dars 06)</h2>
+  <p>Branch — bitta commitga ishora qiluvchi <b>ko'chib yuruvchi yorliq</b>, nusxa emas.
+  Shuning uchun yaratish bir zumda bo'ladi.</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git branch</code></td>
+        <td>Branch'lar ro'yxati. <code>*</code> — hozir qaysi birida turganingiz.
+        <span class="note-cell">✓ Xavfsiz, faqat ko'rsatadi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git switch -c login</code></td>
+        <td>Yaratadi <b>va</b> darhol o'tadi (<code>-c</code> = create).</td>
+      </tr>
+      <tr>
+        <td><code>git switch main</code></td>
+        <td>Mavjud branch'ga o'tadi.
+        <span class="note-cell">⚠️ Papkangiz o'sha branch holatiga aylanadi — fayllar
+        ko'rinmay qolishi mumkin. Bu normal.</span></td>
+      </tr>
+      <tr>
+        <td><code>git switch -</code></td>
+        <td>Oldingi branch'ga qaytadi.</td>
+      </tr>
+      <tr>
+        <td><code>git branch -d login</code></td>
+        <td>Branch yorlig'ini o'chiradi (merge qilingandan keyin).</td>
+      </tr>
+      <tr>
+        <td><code>git log --oneline main..mening-branch</code></td>
+        <td>«Mening branch'imda <code>main</code>da yo'q nima bor?»</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Branch almashishdan oldin</span>
+    <p><b>Ishingizni commit qiling.</b> Saqlanmagan o'zgarish bo'lsa, Git ba'zan
+    almashishga ruxsat bermaydi. Eski maqolalardagi <code>git checkout &lt;branch&gt;</code>
+    — xuddi shu ish, eski usul.</p>
+  </div>
+
   <h2>Yaxshi commit izohi qanday bo'ladi?</h2>
   <ul>
     <li>Buyruq shaklida va qisqa: <code>"Login sahifasi qo'shildi"</code>,
@@ -271,9 +314,9 @@
 
   <div class="callout note">
     <span class="label">Keyingi darslarda qo'shiladi</span>
-    <p><code>git branch</code>, <code>git switch</code>, <code>git merge</code>
-    (Dars 06–07) · merge conflict belgilarini hal qilish (Dars 08) ·
-    pull request (Dars 09) · <code>.gitignore</code> (Dars 11). To'liq reja:
+    <p><code>git merge</code>, <code>git branch -d</code> (Dars 07) · merge conflict
+    belgilarini hal qilish (Dars 08) · pull request (Dars 09) ·
+    <code>.gitignore</code> (Dars 11). To'liq reja:
     <a href="yol-xaritasi.html">yo'l xaritasi</a>.</p>
   </div>
 

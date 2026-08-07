@@ -387,6 +387,75 @@ body.mode-read .cmd { padding-right: 1.1rem; font-size: 0.9rem; }
   margin-top: 0.35rem;
 }
 
+/* ----- Commit grafigi: branch ko'rsatkichlarini ko'rsatish ---------------- */
+/* <div class="cgraph">
+     <div class="cnode"><span class="cdot"></span><span class="chash">c1</span></div>
+     <div class="cnode"><span class="cdot"></span><span class="chash">c3</span>
+       <span class="clabel br">main</span><span class="clabel head">HEAD</span></div>
+   </div>                                                                     */
+.cgraph {
+  display: flex;
+  align-items: flex-start;
+  margin: 1.4rem 0;
+  padding: 0.9rem 0.4rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--card);
+  overflow-x: auto;
+}
+.cgraph .cnode {
+  flex: 1 1 0;
+  min-width: 74px;
+  text-align: center;
+  position: relative;
+  padding-top: 3px;
+}
+.cgraph .cdot {
+  display: block;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin: 0 auto 0.4rem;
+  position: relative;
+  z-index: 2;
+}
+.cgraph .cnode.pale .cdot { background: var(--rule-firm); }
+.cgraph .cnode:not(:last-child)::after {   /* commitlarni bog'lovchi chiziq */
+  content: "";
+  position: absolute;
+  top: 9px; left: 50%; right: -50%;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0.35;
+  z-index: 1;
+}
+.cgraph .chash {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.35rem;
+}
+.cgraph .clabel {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  line-height: 1.5;
+  padding: 0.1rem 0.42rem;
+  border-radius: 999px;
+  margin: 0.1rem 0.06rem;
+  white-space: nowrap;
+}
+.cgraph .clabel.br   { background: var(--good-bg); color: var(--good); border: 1px solid var(--good); }
+.cgraph .clabel.head { background: var(--accent); color: #fff; border: 1px solid var(--accent); }
+.cgraph-cap {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin: -0.9rem 0 1.4rem;
+  text-align: center;
+}
+
 /* ----- "3 hudud" diagrammasi --------------------------------------------- */
 .areas {
   display: flex;

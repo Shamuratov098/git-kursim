@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 31 ta</span>
+    <span>Atamalar: 33 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -35,6 +35,8 @@
     <li><a href="#snapshot">snapshot</a></li>
     <li><a href="#commit-message">commit message</a></li>
     <li><a href="#branch">branch</a></li>
+    <li><a href="#switch">switch</a></li>
+    <li><a href="#feature-branch">feature branch</a></li>
     <li><a href="#head">HEAD</a></li>
     <li><a href="#main">main / master</a></li>
     <li><a href="#merge">merge</a></li>
@@ -123,8 +125,27 @@
 
     <div class="term" id="branch">
       <dt>branch <span class="uz">— shox / tarmoq</span></dt>
-      <dd>Asosiy kodga tegmasdan, alohida ishlash uchun ajratilgan "yo'l". Tugagach
-      asosiyga <a href="#merge">merge</a> qilinadi. <span class="eg">git switch -c login-feature</span></dd>
+      <dd>Bitta <a href="#commit">commit</a>ga ishora qiluvchi <b>ko'chib yuruvchi
+      yorliq</b> (pointer) — nusxa <b>emas</b>. Shuning uchun yaratish bir zumda bo'ladi.
+      Unda commit qilsangiz, faqat o'sha yorliq siljiydi; <a href="#main">main</a>
+      joyida qoladi. Ish tugagach asosiyga <a href="#merge">merge</a> qilinadi.
+      <span class="eg">git switch -c login-sahifasi</span></dd>
+    </div>
+
+    <div class="term" id="switch">
+      <dt>switch <span class="uz">— branch almashtirish</span></dt>
+      <dd><a href="#head">HEAD</a>ni boshqa branch'ga ko'chiradi. Shu bilan birga
+      <b>ish papkangiz o'sha branch holatiga aylanadi</b> — fayllar ko'rinmay qolishi
+      mumkin (normal holat). <code>-c</code> = yarat va o't; <code>-</code> = oldingisiga qayt.
+      <span class="eg">git switch -c login · git switch main · git switch -</span></dd>
+    </div>
+
+    <div class="term" id="feature-branch">
+      <dt>feature branch <span class="uz">— ish uchun branch</span></dt>
+      <dd>Jamoadagi odatiy tartib: har bir yangi ish (funksiya yoki tuzatish) uchun
+      alohida branch ochiladi, <code>main</code> esa doim <b>ishlaydigan</b> holatda
+      qoladi. <a href="#pull-request">Pull request</a> aynan shu branch ustida ochiladi.
+      <span class="eg">feature/login · fix/email-xatosi</span></dd>
     </div>
 
     <div class="term" id="head">

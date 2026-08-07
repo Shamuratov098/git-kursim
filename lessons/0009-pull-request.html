@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 09 — Pull request: taklif, review, merge</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 09 · MODUL D · JAMOA</p>
+  <h1>Pull request: taklif, review, merge</h1>
+  <p class="lead">Bu darsdan keyin siz <b>haqiqiy pull request</b> ochasiz, uni ko'rib
+  chiqasiz va merge qilasiz. Bu — ish joyidagi kundalik amal: jamoada kod aynan shu
+  yo'l bilan qo'shiladi.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 15 daqiqa</span>
+    <span>Kerak: <a href="0008-merge-conflict.html">Dars 08</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Bu — <b>missiyangizning markazi</b>. Ish joyida hech kim to'g'ridan-to'g'ri
+    <code>main</code>ga push qilmaydi: har bir o'zgarish pull request orqali o'tadi.
+    PR ocha bilish va boshqalarnikini ko'rib chiqa bilish — jamoaga qo'shilganingizdan
+    keyingi <b>birinchi kundan</b> kerak bo'ladi.</p>
+  </div>
+
+  <h2>Pull request nima — va nima emas</h2>
+
+  <div class="callout warning">
+    <span class="label">Diqqat: bu Git buyrug'i EMAS</span>
+    <p><code>git pull request</code> degan buyruq <b>yo'q</b>. Pull request —
+    <b>GitHub'ning</b> (va GitLab, Bitbucket kabi saytlarning) imkoniyati.
+    Git — kompyuteringizdagi dastur; PR — internetdagi <b>muhokama sahifasi</b>.
+    Ikkalasi turli narsa, va bu chalkashlik juda ko'p uchraydi.</p>
+  </div>
+
+  <p>Pull request — bu <b>taklif</b>: «mening branch'imdagi o'zgarishlarni
+  <code>main</code>ga qo'shaylik. Mana nima qildim, mana nega. Ko'rib
+  chiqing.»<a class="cite" href="#fn1">1</a></p>
+
+  <p>PR sahifasi uch narsani bir joyga to'playdi:</p>
+  <ul>
+    <li><b>O'zgarishlar</b> — satrma-satr, qaysi faylda nima o'zgargani;</li>
+    <li><b>Muhokama</b> — savollar, takliflar, tasdiq;</li>
+    <li><b>Yozuv</b> — bu o'zgarish <b>nega</b> qilingani abadiy saqlanadi.</li>
+  </ul>
+
+  <p>Oxirgisi ko'pincha e'tibordan chetda qoladi, lekin eng qimmatlisi shu. Bir yildan
+  keyin «bu kod nega bunday yozilgan?» degan savol tug'ilsa — javob PR muhokamasida
+  turgan bo'ladi.</p>
+
+  <h2>PR ning hayoti — to'rt bosqich</h2>
+
+  <div class="areas wide">
+    <div class="area">
+      <h4>1. Branch</h4>
+      <span class="en">git switch -c</span>
+      <div class="desc">O'z yo'lingizda ishlaysiz</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git push -u</span></div>
+    <div class="area">
+      <h4>2. Push</h4>
+      <span class="en">GitHub'ga</span>
+      <div class="desc">Branch endi internetda</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">brauzerda</span></div>
+    <div class="area">
+      <h4>3. PR + review</h4>
+      <span class="en">Pull Request</span>
+      <div class="desc">Taklif va muhokama</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">Merge</span></div>
+    <div class="area">
+      <h4>4. Merge</h4>
+      <span class="en">main'ga qo'shildi</span>
+      <div class="desc">Ish yakunlandi</div>
+    </div>
+  </div>
+
+  <p>1 va 2-bosqich — sizga tanish (<a href="0006-branch.html">6-dars</a> va
+  <a href="0004-remote-va-push.html">4-dars</a>). Bugun 3 va 4-bosqichni qo'shamiz.</p>
+
+  <div class="callout note">
+    <span class="label">Nihoyat <code>-u</code> kerak bo'ladi</span>
+    <p><a href="0004-remote-va-push.html">4-darsda</a> <code>git push -u origin main</code>
+    dagi <code>-u</code> ni o'rgangan edik, lekin sizda u allaqachon sozlangan edi.
+    Bugun <b>yangi branch</b>ni birinchi marta jo'natasiz — GitHub uni hali bilmaydi.
+    Mana shu yerda <code>-u</code> rostdan kerak bo'ladi:</p>
+    <div class="cmd" data-cmd="git push -u origin mening-branchim">git push -u origin mening-branchim</div>
+  </div>
+
+  <h2>PR sahifasidagi bo'limlar</h2>
+  <p>PR ochilgach, to'rtta yorliq (tab) ko'rasiz. Ish joyida ularning barchasini
+  ishlatasiz:</p>
+
+  <table class="sheet">
+    <thead><tr><th>Bo'lim</th><th>Nima uchun</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="ui">Conversation</span></td>
+        <td>Umumiy muhokama: tavsif, izohlar, qaror. PR ochilganda shu yerga tushasiz.</td>
+      </tr>
+      <tr>
+        <td><span class="ui">Commits</span></td>
+        <td>Qaysi commitlar kirayotgani. Bu yerda commit izohlaringiz ko'rinadi —
+        <span class="note-cell">yaxshi izoh yozish shuning uchun ham muhim.</span></td>
+      </tr>
+      <tr>
+        <td><span class="ui">Files changed</span></td>
+        <td><b>Eng muhim bo'lim.</b> Satrma-satr farq (<a href="0003-xatoni-qaytarish.html">
+        <code>git diff</code></a> ning brauzerdagi ko'rinishi). Review aynan shu yerda
+        qilinadi: har qaysi satrga izoh qoldirish mumkin.</td>
+      </tr>
+      <tr>
+        <td><span class="ui">Checks</span></td>
+        <td>Avtomatik testlar (agar loyihada sozlangan bo'lsa). Kursimizda yo'q —
+        <span class="note-cell">ish joyingizda ehtimol bo'ladi.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Yaxshi pull request qanday bo'ladi</h2>
+  <p>Bu — texnika emas, <b>odob</b>. Hamkasblaringiz sizni aynan shu bo'yicha baholaydi:</p>
+  <ul>
+    <li><b>Kichik bo'lsin.</b> 20 satrlik PR bir necha daqiqada ko'rib chiqiladi;
+    2000 satrlik PR bir hafta kutadi va yuzaki o'qiladi. Katta ishni bir necha PR'ga
+    bo'ling.</li>
+    <li><b>Sarlavha — nima qilingani:</b> «Login sahifasiga parolni tiklash qo'shildi».</li>
+    <li><b>Tavsif — nega va qanday tekshirish:</b> muammo nima edi, qanday yechdingiz,
+    ko'rib chiquvchi buni qanday sinab ko'rsin.</li>
+    <li><b>Bitta PR = bitta mavzu.</b> Xuddi commit kabi
+    (<a href="0002-uch-hudud-va-commit.html">2-dars</a>) — aralashtirmang.</li>
+  </ul>
+
+  <h2>Review qilish — boshqalarning PR'ini ko'rish</h2>
+  <p>Jamoada siz faqat PR ochmaysiz, boshqalarnikini ham ko'rib chiqasiz.
+  <span class="ui">Files changed</span> bo'limida istalgan satr yoniga izoh qoldirasiz,
+  keyin uchta javobdan birini tanlaysiz:<a class="cite" href="#fn2">2</a></p>
+
+  <table class="sheet">
+    <thead><tr><th>Javob</th><th>Qachon</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="ui">Approve</span></td>
+        <td>Hammasi joyida — qo'shilsin.</td>
+      </tr>
+      <tr>
+        <td><span class="ui">Request changes</span></td>
+        <td>Tuzatish kerak. <span class="note-cell">Nimani va nega — aniq yozing.</span></td>
+      </tr>
+      <tr>
+        <td><span class="ui">Comment</span></td>
+        <td>Savol yoki fikr bor, lekin to'sqinlik qilmaydi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Review odobi</span>
+    <p><b>Buyruq emas, savol bering.</b> «Buni o'zgartir» o'rniga «bu yerda
+    <code>null</code> kelsa nima bo'ladi?» — ohang butunlay boshqacha, natija bir xil.
+    Va kod haqida gapiring, odam haqida emas: «bu funksiya uzun» ✓, «sen chalkash
+    yozibsan» ✗. Yaxshi joyni ko'rsangiz — <b>maqtang</b>, bu ham review'ning qismi.</p>
+  </div>
+
+  <h2>Merge qilingandan keyin — eng ko'p unutiladigan qadam</h2>
+  <div class="callout warning">
+    <span class="label">Mahalliy <code>main</code> hali eski!</span>
+    <p>PR GitHub'da merge qilinadi — ya'ni <b>internetda</b>. Sizning kompyuteringizdagi
+    <code>main</code> bundan bexabar qolaveradi
+    (<a href="0005-clone-va-pull.html">5-dars</a>: <code>origin/main</code> — bu shunchaki
+    xatcho'p). Shuning uchun merge'dan keyin darhol:</p>
+    <div class="cmd" data-cmd="git switch main && git pull">git switch main &amp;&amp; git pull</div>
+    <p>Buni unutsangiz, keyingi ishni <b>eskirgan</b> kod ustida boshlaysiz — va
+    <a href="0008-merge-conflict.html">konflikt</a> chiqadi.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: haqiqiy pull request ochamiz</h2>
+    <p>Bu safar mashq <b>haqiqiy kurs repongizda</b> (<code>~/Projects/Learn/Git</code>)
+    bo'ladi — chunki PR GitHub'da ochiladi. Nusxa papka bugun kerak emas.</p>
+
+    <div class="callout note">
+      <span class="label">Yolg'iz ishlayapsiz — bu normal</span>
+      <p>Ish joyida PR'ingizni <b>hamkasbingiz</b> ko'rib chiqadi. Bugun ikkala rolni
+      ham o'zingiz o'ynaysiz: avval muallif, keyin ko'rib chiquvchi. Tugmalar va
+      tartib — <b>aynan bir xil</b>, shuning uchun mashq to'liq haqiqiy.</p>
+    </div>
+
+    <h3>A qism — kompyuterda: branch va push</h3>
+    <ol class="steps">
+      <li>
+        <p>Toza holatdan boshlang</p>
+        <p class="why-step">Kundalik odat (<a href="0005-clone-va-pull.html">5-dars</a>):
+        yangi ish har doim eng yangi <code>main</code> ustida boshlanadi.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git && git switch main && git pull">cd ~/Projects/Learn/Git &amp;&amp; git switch main &amp;&amp; git pull
+<span class="out">Already up to date.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Already up to date» yoki yangi
+        commitlar tushadi. Ikkalasi ham yaxshi.</p>
+      </li>
+
+      <li>
+        <p>Ish uchun branch oching</p>
+        <p class="why-step">Nom mazmunli bo'lsin (<a href="0006-branch.html">6-dars</a>).</p>
+        <div class="cmd" data-cmd="git switch -c mening-birinchi-pr">git switch -c mening-birinchi-pr
+<span class="out">Switched to a new branch 'mening-birinchi-pr'</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Switched to a new branch».</p>
+      </li>
+
+      <li>
+        <p>O'zgarish qiling va commit qiling</p>
+        <p class="why-step">Bu fayl kursingizda qoladi — o'z yo'lingiz haqidagi eslatma.
+        Matnni o'zingiznikiga almashtirsangiz ham bo'ladi.</p>
+        <div class="cmd" data-cmd='echo "# Mening Git yo&apos;lim" > mening-yolim.md && echo "Bugun birinchi pull request&apos;imni ochdim." >> mening-yolim.md && git add mening-yolim.md && git commit -m "Mening yo&apos;lim eslatmasi qo&apos;shildi"'>echo "# Mening Git yo'lim" &gt; mening-yolim.md &amp;&amp; echo "Bugun birinchi pull request'imni ochdim." &gt;&gt; mening-yolim.md &amp;&amp; git add mening-yolim.md &amp;&amp; git commit -m "Mening yo'lim eslatmasi qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>1 file changed, 2 insertions(+)</code>.</p>
+      </li>
+
+      <li>
+        <p>Branch'ni GitHub'ga jo'nating</p>
+        <p class="why-step">Mana shu yerda <code>-u</code> rostdan kerak: GitHub bu
+        branch'ni hali bilmaydi.</p>
+        <div class="cmd" data-cmd="git push -u origin mening-birinchi-pr">git push -u origin mening-birinchi-pr
+<span class="out">remote: Create a pull request for 'mening-birinchi-pr' on GitHub by visiting:</span>
+<span class="out">remote:   https://github.com/Shamuratov098/git-kursim/pull/new/mening-birinchi-pr</span>
+<span class="out"> * [new branch]  mening-birinchi-pr -&gt; mening-birinchi-pr</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «[new branch]» va GitHub bergan
+        <b>havola</b>. Git sizga PR ochish uchun to'g'ridan-to'g'ri link beryapti!
+        <b>1-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — brauzerda: PR ochish, review, merge</h3>
+    <ol class="steps web">
+      <li>
+        <p>Repongizni brauzerda oching</p>
+        <p class="why-step">Yuqoridagi havolani bosishingiz ham mumkin.</p>
+        <div class="cmd" data-cmd="xdg-open https://github.com/Shamuratov098/git-kursim">xdg-open https://github.com/Shamuratov098/git-kursim</div>
+        <p class="expect"><b>Kutilgan natija:</b> sahifa tepasida sariq chiziq va
+        <span class="ui">Compare &amp; pull request</span> tugmasi ko'rinadi.</p>
+      </li>
+
+      <li>
+        <p><span class="ui">Compare &amp; pull request</span> tugmasini bosing</p>
+        <p class="why-step">Bu tugma yangi push qilingan branch uchun avtomatik chiqadi.
+        Ko'rinmasa: <span class="ui">Pull requests</span> → <span class="ui">New pull request</span>.</p>
+        <p class="expect"><b>Kutilgan natija:</b> PR yaratish sahifasi ochiladi.
+        Tepada yo'nalish yozilgan: <code>base: main ← compare: mening-birinchi-pr</code>.
+        Ya'ni «main'ga qo'shamiz» — <a href="0007-merge.html">7-darsdagi</a> yo'nalish
+        qoidasi, brauzerdagi ko'rinishi.</p>
+      </li>
+
+      <li>
+        <p>Sarlavha va tavsif yozing</p>
+        <p class="why-step">Sarlavha — nima qilingani, tavsif — nega. Hamkasbingiz shuni
+        birinchi o'qiydi.</p>
+        <p class="expect"><b>Yozing:</b><br>
+        Sarlavha: <code>Mening yo'lim eslatmasi qo'shildi</code><br>
+        Tavsif: <code>Kursdagi o'z natijalarimni yozib boradigan fayl. Birinchi PR mashqi.</code></p>
+      </li>
+
+      <li>
+        <p><span class="ui">Create pull request</span> ni bosing</p>
+        <p class="expect"><b>Kutilgan natija:</b> PR ochildi va unga raqam berildi
+        (masalan <code>#1</code>). <b>2-g'alaba — birinchi pull request'ingiz!</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Endi «ko'rib chiquvchi» rolini o'ynang</p>
+        <p class="why-step">Ish joyida bu qismni hamkasbingiz qiladi — mexanika bir xil.</p>
+        <p class="expect"><b>Bajaring:</b> <span class="ui">Files changed</span>
+        bo'limiga o'ting. Qo'shilgan satrlar <b>yashil</b> va <code>+</code> bilan
+        ko'rsatilgan — bu <code>git diff</code> ning brauzerdagi ko'rinishi.
+        Satr ustiga sichqonchani olib boring va chapdagi <b>ko'k «+»</b> tugmasini bosib
+        izoh qoldiring, masalan: <code>Yaxshi boshlanish!</code></p>
+      </li>
+
+      <li>
+        <p>Merge qiling</p>
+        <p class="why-step">Bu — taklifning qabul qilinishi.</p>
+        <p class="expect"><b>Bajaring:</b> <span class="ui">Conversation</span> ga
+        qayting → <span class="ui">Merge pull request</span> → <span class="ui">Confirm merge</span>.<br>
+        <b>Kutilgan natija:</b> binafsha rangda «Merged» yozuvi paydo bo'ladi.
+        <b>3-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Branch'ni o'chiring</p>
+        <p class="why-step">Ish qo'shildi — yorliq keraksiz
+        (<a href="0007-merge.html">7-dars</a>). GitHub o'zi taklif qiladi.</p>
+        <p class="expect"><b>Bajaring:</b> <span class="ui">Delete branch</span>
+        tugmasini bosing. Xavotir olmang — commitlar <code>main</code> ichida qoldi.</p>
+      </li>
+    </ol>
+
+    <h3>C qism — kompyuterga qaytish</h3>
+    <ol class="steps">
+      <li>
+        <p>Merge'ni o'zingizga tortib oling</p>
+        <p class="why-step">Eng ko'p unutiladigan qadam. Merge GitHub'da bo'ldi —
+        kompyuteringizdagi <code>main</code> hali bexabar.</p>
+        <div class="cmd" data-cmd="git switch main && git pull">git switch main &amp;&amp; git pull
+<span class="out">Updating f1fb65f..7c8d9e0</span>
+<span class="out">Fast-forward</span>
+<span class="out"> mening-yolim.md | 2 +</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>mening-yolim.md</code> endi
+        <code>main</code>da. <code>ls</code> bilan tekshiring.</p>
+      </li>
+
+      <li>
+        <p>Mahalliy branch'ni ham tozalang</p>
+        <p class="why-step">GitHub'dagisini o'chirdik, mahalliy nusxasi hali turibdi.</p>
+        <div class="cmd" data-cmd="git branch -d mening-birinchi-pr && git branch">git branch -d mening-birinchi-pr &amp;&amp; git branch
+<span class="out">Deleted branch mening-birinchi-pr (was 3a4b5c6).</span>
+<span class="out">* main</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> faqat <code>main</code> qoldi.
+        To'liq aylana yakunlandi. <b>4-g'alaba!</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Natijani ko'ring</p>
+        <div class="cmd" data-cmd="git log --oneline -3">git log --oneline -3
+<span class="out">7c8d9e0 (HEAD -&gt; main, origin/main) Merge pull request #1 from ...</span>
+<span class="out">3a4b5c6 Mening yo'lim eslatmasi qo'shildi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «<b>Merge pull request #1</b>» —
+        GitHub yozgan commit izohi. Bu sizning birinchi PR'ingizning izi. 🏅</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d9c1"><label for="d9c1">PR — Git buyrug'i emas, <b>GitHub</b> imkoniyati</label></li>
+      <li><input type="checkbox" id="d9c2"><label for="d9c2">Yangi branch'ni <code>git push -u origin nom</code> bilan jo'natdim</label></li>
+      <li><input type="checkbox" id="d9c3"><label for="d9c3">Haqiqiy PR ochdim va sarlavha + tavsif yozdim 🎉</label></li>
+      <li><input type="checkbox" id="d9c4"><label for="d9c4"><span class="ui">Files changed</span> da satrga izoh qoldirdim</label></li>
+      <li><input type="checkbox" id="d9c5"><label for="d9c5">Merge qildim va branch'ni o'chirdim</label></li>
+      <li><input type="checkbox" id="d9c6"><label for="d9c6">Merge'dan keyin <code>git pull</code> qildim — <b>eng ko'p unutiladigan qadam</b></label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda (va brauzerda)</span>
+    <p>Bu safar amaliyot uch qismli: <b>A</b> — terminalda branch ochib, o'zgarish
+    qilib, <code>git push -u</code> bilan jo'natasiz. <b>B</b> — brauzerda GitHub'da
+    <b>haqiqiy PR</b> ochasiz, <span class="ui">Files changed</span> da izoh
+    qoldirasiz va merge qilasiz. <b>C</b> — terminalga qaytib <code>git pull</code>
+    bilan natijani olasiz. Jami 14 qadam va oxirida repongizda haqiqiy
+    <code>Merge pull request #1</code> commiti qoladi.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Pull request qayerda mavjud?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">GitHub'da — bu sayt imkoniyati, Git buyrug'i emas</button></li>
+      <li><button class="quiz-option">Git'da — <code>git pull request</code> buyrug'i bilan</button></li>
+      <li><button class="quiz-option">Ikkalasida — Git yaratadi, GitHub ko'rsatadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Git — kompyuteringizdagi dastur; pull request —
+    GitHub'dagi <b>muhokama sahifasi</b>. <code>git pull request</code> degan buyruq yo'q.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Yangi branch'ni birinchi marta jo'natyapsiz. Qaysi buyruq?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git push -u origin branch-nomi</code></button></li>
+      <li><button class="quiz-option"><code>git push</code> — Git o'zi topib oladi</button></li>
+      <li><button class="quiz-option"><code>git merge origin branch-nomi</code></button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — GitHub bu branch'ni hali bilmaydi.
+    <code>-u</code> bog'lanishni o'rnatadi; shundan keyin qisqa <code>git push</code>
+    yetarli bo'ladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> PR'da kod review qaysi bo'limda qilinadi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><span class="ui">Files changed</span> — satrma-satr farq ko'rinadi</button></li>
+      <li><button class="quiz-option"><span class="ui">Conversation</span> — umumiy muhokama joyi</button></li>
+      <li><button class="quiz-option"><span class="ui">Commits</span> — commitlar ro'yxati</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <span class="ui">Files changed</span> bu
+    <code>git diff</code> ning brauzerdagi ko'rinishi. Har qaysi satrga alohida izoh
+    qoldirish mumkin.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> PR GitHub'da merge qilindi. Kompyuteringizda nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git switch main</code> va <code>git pull</code> — merge'ni olaman</button></li>
+      <li><button class="quiz-option">Hech narsa — Git avtomatik yangilanib turadi</button></li>
+      <li><button class="quiz-option"><code>git clone</code> — repo'ni qaytadan olaman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri, va bu <b>eng ko'p unutiladigan qadam</b>.
+    Merge internetda bo'ldi; mahalliy <code>main</code> bexabar qoladi. Unutsangiz,
+    keyingi ishni eskirgan kod ustida boshlaysiz.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.
+    Oxirgi ikkitasi — oldingi darslarni takrorlash.</p>
+
+    <details class="recall">
+      <summary>Pull request bir jumlada nima?</summary>
+      <div class="answer"><p>«Mening branch'imdagi o'zgarishlarni <code>main</code>ga
+      qo'shaylik — ko'rib chiqing» degan <b>taklif</b>. GitHub'ning imkoniyati,
+      Git buyrug'i emas.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>PR ning to'rt bosqichi?</summary>
+      <div class="answer"><p>1) Branch ochish · 2) <code>git push -u</code> ·
+      3) PR ochish va review · 4) Merge.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>PR sahifasida review qayerda qilinadi?</summary>
+      <div class="answer"><p><b>Files changed</b> bo'limida — satrma-satr farq.
+      Har qaysi satrga izoh qoldirish mumkin. Javob turlari: Approve,
+      Request changes, Comment.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Yaxshi PR ning eng muhim xususiyati?</summary>
+      <div class="answer"><p><b>Kichik bo'lishi.</b> Kichik PR tez va diqqat bilan
+      ko'riladi; katta PR uzoq kutadi va yuzaki o'qiladi. Yana: bitta PR = bitta mavzu,
+      tavsifda <b>nega</b> yozilgan bo'lsin.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Merge'dan keyingi eng ko'p unutiladigan qadam?</summary>
+      <div class="answer"><p><code>git switch main &amp;&amp; git pull</code> —
+      merge internetda bo'ldi, mahalliy <code>main</code> hali eski.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: konflikt chiqsa qochish yo'li qaysi?</summary>
+      <div class="answer"><p><code>git merge --abort</code> — merge boshlangunga qadar
+      bo'lgan holatga qaytaradi. (<a href="0008-merge-conflict.html">Dars 08</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: branch nima — bir jumlada?</summary>
+      <div class="answer"><p>Bitta commitga ishora qiluvchi <b>ko'chib yuruvchi
+      yorliq</b>, nusxa emas. (<a href="0006-branch.html">Dars 06</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>PR — GitHub imkoniyati</b>, Git buyrug'i emas. <code>git pull request</code> yo'q.</li>
+      <li>To'rt bosqich: branch → <code>git push -u origin nom</code> → PR + review → merge.</li>
+      <li>Bo'limlar: <b>Conversation</b> (muhokama) · <b>Commits</b> ·
+      <b>Files changed</b> (review shu yerda) · <b>Checks</b>.</li>
+      <li>Review javoblari: <b>Approve</b> · <b>Request changes</b> · <b>Comment</b>.</li>
+      <li>Yaxshi PR: <b>kichik</b>, bitta mavzu, tavsifda <b>nega</b> yozilgan.</li>
+      <li>Review odobi: buyruq emas <b>savol</b>; kod haqida, odam haqida emas.</li>
+      <li><b>Merge'dan keyin:</b> <code>git switch main &amp;&amp; git pull</code> —
+      unutmang!</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>GitHub Skills — «Introduction to GitHub»</b>:
+    <a href="https://skills.github.com/">skills.github.com</a>. Bu kurs GitHub'ning
+    <b>o'zida</b>, haqiqiy repo ichida bajariladi va aynan PR aylanasini o'rgatadi —
+    bugungi darsning eng yaxshi mustahkamlovchisi. 15–20 daqiqa oladi, bepul.<br>
+    <b>GitHub Docs</b> — <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests">About pull requests</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>PR ochishda biror tugma topilmasa — menga yozing.</b> GitHub interfeysi
+    vaqti-vaqti bilan o'zgaradi, shuning uchun tugma nomi yoki joyi darsdagidan farq
+    qilishi mumkin. Ekran rasmini yoki ko'rgan matningizni tashlang, birga topamiz.
+    «Hamkasbim PR'imga Request changes qo'ydi, endi nima qilaman?» — bu ham yaxshi savol.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0008-merge-conflict.html">Oldingi: Merge conflict</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">GitHub Docs — <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests">About pull requests</a>.</li>
+      <li id="fn2">GitHub Docs — <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews">About pull request reviews</a>
+      (Approve / Request changes / Comment).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

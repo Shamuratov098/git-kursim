@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0008-merge-conflict.html">08</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0009-pull-request.html">09</a></span>
   </p>
 
   <div class="callout tip">
@@ -405,6 +405,55 @@
     ikkalasi yoki butunlay yangisi.</p>
   </div>
 
+  <h2>10. Pull request aylanasi (Dars 09)</h2>
+  <p>PR — <b>GitHub</b> imkoniyati, Git buyrug'i emas (<code>git pull request</code> yo'q).
+  To'liq aylana: branch → push → PR → review → merge → pull.</p>
+  <table class="sheet">
+    <thead><tr><th>Qadam</th><th>Nima qilinadi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git switch -c ish-nomi</code></td>
+        <td>Ish uchun branch ochasiz.
+        <span class="note-cell">Avval <code>git switch main &amp;&amp; git pull</code> —
+        eng yangi holatdan boshlang.</span></td>
+      </tr>
+      <tr>
+        <td><code>git push -u origin ish-nomi</code></td>
+        <td>Branch'ni <b>birinchi marta</b> GitHub'ga jo'natasiz.
+        <span class="note-cell">Git chiqishda PR ochish havolasini beradi.</span></td>
+      </tr>
+      <tr>
+        <td>GitHub: <b>Compare &amp; pull request</b></td>
+        <td>PR ochasiz: sarlavha (nima) + tavsif (nega).</td>
+      </tr>
+      <tr>
+        <td>GitHub: <b>Files changed</b></td>
+        <td>Review shu yerda — satrma-satr farq, har satrga izoh.
+        <span class="note-cell">Javoblar: Approve · Request changes · Comment.</span></td>
+      </tr>
+      <tr>
+        <td>GitHub: <b>Merge pull request</b></td>
+        <td>Qo'shiladi, keyin <b>Delete branch</b>.</td>
+      </tr>
+      <tr>
+        <td><code>git switch main &amp;&amp; git pull</code></td>
+        <td>⚠️ <b>Eng ko'p unutiladigan qadam.</b> Merge internetda bo'ldi — mahalliy
+        <code>main</code> hali eski.</td>
+      </tr>
+      <tr>
+        <td><code>git branch -d ish-nomi</code></td>
+        <td>Mahalliy branch'ni ham tozalaysiz.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Yaxshi PR</span>
+    <p><b>Kichik</b> bo'lsin (katta PR yuzaki o'qiladi) · bitta PR = bitta mavzu ·
+    sarlavhada <b>nima</b>, tavsifda <b>nega</b> · review'da buyruq emas <b>savol</b>
+    bering, kod haqida gapiring — odam haqida emas.</p>
+  </div>
+
   <h2>Yaxshi commit izohi qanday bo'ladi?</h2>
   <ul>
     <li>Buyruq shaklida va qisqa: <code>"Login sahifasi qo'shildi"</code>,
@@ -416,8 +465,8 @@
 
   <div class="callout note">
     <span class="label">Keyingi darslarda qo'shiladi</span>
-    <p>Pull request — GitHub'da taklif, review, merge (Dars 09) · kundalik jamoa ritmi
-    (Dars 10) · <code>.gitignore</code> va professional odatlar (Dars 11). To'liq reja:
+    <p>Kundalik jamoa ritmi va hamkasbning ishini olish (Dars 10) ·
+    <code>.gitignore</code> va professional odatlar (Dars 11). To'liq reja:
     <a href="yol-xaritasi.html">yo'l xaritasi</a>.</p>
   </div>
 

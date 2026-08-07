@@ -697,6 +697,24 @@ body.mode-read .cmd { padding-right: 1.1rem; font-size: 0.9rem; }
 }
 .steps .expect b { color: var(--good); }
 
+/* ----- Brauzerda bajariladigan qadamlar (GitHub UI) ---------------------- */
+/* Sahifadagi tugma/menyu nomi: <span class="ui">Compare &amp; pull request</span> */
+.ui {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.82em;
+  font-weight: 600;
+  line-height: 1.4;
+  background: var(--info-bg);
+  color: var(--info);
+  border: 1px solid var(--info);
+  border-radius: 6px;
+  padding: 0.05em 0.45em;
+  white-space: nowrap;
+}
+/* Brauzer qadamlari — raqam doirasi ko'k (terminal qadamlari to'q sariq) */
+.steps.web > li::before { background: var(--info); }
+
 /* ----- Vazifa ro'yxati (checklist) --------------------------------------- */
 .checklist { list-style: none; padding: 0; }
 .checklist li {

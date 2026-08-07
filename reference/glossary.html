@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 33 ta</span>
+    <span>Atamalar: 34 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -40,6 +40,7 @@
     <li><a href="#head">HEAD</a></li>
     <li><a href="#main">main / master</a></li>
     <li><a href="#merge">merge</a></li>
+    <li><a href="#merge-commit">merge commit</a></li>
     <li><a href="#conflict">merge conflict</a></li>
     <li><a href="#remote">remote</a></li>
     <li><a href="#origin">origin</a></li>
@@ -162,7 +163,17 @@
     <div class="term" id="merge">
       <dt>merge <span class="uz">— birlashtirish</span></dt>
       <dd>Bir <a href="#branch">branch</a>dagi o'zgarishlarni boshqasiga qo'shish.
-      <span class="eg">git merge login-feature</span></dd>
+      Har doim <b>siz turgan</b> branch'ga qo'shadi — shuning uchun avval qabul
+      qiluvchiga o'tasiz. Ikki xil bo'ladi:
+      <a href="#fast-forward">fast-forward</a> yoki <a href="#merge-commit">merge commit</a>.
+      <span class="eg">git switch main → git merge login</span></dd>
+    </div>
+
+    <div class="term" id="merge-commit">
+      <dt>merge commit <span class="uz">— birlashtiruvchi commit</span></dt>
+      <dd><b>Ikkita ota-onasi</b> (parent) bo'lgan maxsus commit — ikki tarixni
+      bog'laydi. Ikkala branch ham ajralganidan keyin siljigan bo'lsa yaratiladi.
+      <span class="eg">Merge made by the 'ort' strategy.</span></dd>
     </div>
 
     <div class="term" id="conflict">

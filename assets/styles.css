@@ -456,6 +456,16 @@ body.mode-read .cmd { padding-right: 1.1rem; font-size: 0.9rem; }
   text-align: center;
 }
 
+/* Ajralgan tarmoqlar uchun SVG grafik (merge / conflict darslarida) */
+.cgraph-svg {
+  margin: 1.4rem 0 0;
+  padding: 0.7rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--card);
+}
+.cgraph-svg svg { display: block; width: 100%; height: auto; }
+
 /* ----- "3 hudud" diagrammasi --------------------------------------------- */
 .areas {
   display: flex;

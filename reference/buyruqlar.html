@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0006-branch.html">06</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0007-merge.html">07</a></span>
   </p>
 
   <div class="callout tip">
@@ -303,6 +303,60 @@
     — xuddi shu ish, eski usul.</p>
   </div>
 
+  <h2>8. Merge — ishni asosiyga qo'shish (Dars 07)</h2>
+  <div class="callout warning">
+    <span class="label">Yo'nalishni chalkashtirmang</span>
+    <p>Merge har doim <b>siz turgan branch'ga</b> qo'shadi. Avval qabul qiluvchiga
+    o'ting: <code>git switch main</code> → keyin <code>git merge login</code>.</p>
+  </div>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git merge login</code></td>
+        <td><code>login</code>ni <b>joriy</b> branch'ga qo'shadi.
+        <span class="note-cell">Chiqishda «Fast-forward» yoki «Merge made by...» yoziladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git merge login --no-edit</code></td>
+        <td>Xuddi shu, lekin merge izohi uchun <b>tahrirlagich ochilmaydi</b>.
+        <span class="note-cell">Boshlovchi uchun qulay.</span></td>
+      </tr>
+      <tr>
+        <td><code>git log --oneline --graph</code></td>
+        <td>Tarixni grafik ko'rinishda: <code>|\</code> ajralish, <code>|/</code> birlashish.</td>
+      </tr>
+      <tr>
+        <td><code>git branch -d login</code></td>
+        <td>Tugagan branch yorlig'ini o'chiradi.
+        <span class="note-cell">✓ Xavfsiz: merge qilinmagan bo'lsa o'chirmaydi.
+        Commitlar <code>main</code> ichida qoladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git merge --abort</code></td>
+        <td>Merge chala qolgan bo'lsa, boshlangunidagi holatga qaytaradi.
+        <span class="note-cell">Dars 08 da kerak bo'ladi.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Ikki xil merge — farqi</h3>
+  <table class="sheet">
+    <thead><tr><th>Chiqish</th><th>Nima bo'ldi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>Fast-forward</code></td>
+        <td><code>main</code> siz branch ochganingizdan beri <b>qimirlamagan</b> →
+        Git yorliqni oldinga surdi. <b>Yangi commit yaratilmadi.</b></td>
+      </tr>
+      <tr>
+        <td><code>Merge made by...</code></td>
+        <td>Ikkala tomon ham siljigan → Git <b>ikkita ota-onali</b> yangi
+        <b>merge commit</b> yaratdi.</td>
+      </tr>
+    </tbody>
+  </table>
+
   <h2>Yaxshi commit izohi qanday bo'ladi?</h2>
   <ul>
     <li>Buyruq shaklida va qisqa: <code>"Login sahifasi qo'shildi"</code>,
@@ -314,8 +368,7 @@
 
   <div class="callout note">
     <span class="label">Keyingi darslarda qo'shiladi</span>
-    <p><code>git merge</code>, <code>git branch -d</code> (Dars 07) · merge conflict
-    belgilarini hal qilish (Dars 08) · pull request (Dars 09) ·
+    <p>Merge conflict belgilarini hal qilish (Dars 08) · pull request (Dars 09) ·
     <code>.gitignore</code> (Dars 11). To'liq reja:
     <a href="yol-xaritasi.html">yo'l xaritasi</a>.</p>
   </div>

@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 07 — Merge: ishni asosiyga qo'shish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 07 · MODUL C · BRANCH</p>
+  <h1>Merge: ishni asosiyga qo'shish</h1>
+  <p class="lead">Bu darsdan keyin siz branch'da tugatgan ishingizni <code>main</code>ga
+  <b>qo'sha olasiz</b> — va Git buni ikki xil usulda bajarishini, qay birini nega
+  tanlaganini tushunasiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 14 daqiqa</span>
+    <span>Kerak: <a href="0006-branch.html">Dars 06</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Branch'da ishlash — ishning yarmi. Uni asosiyga qo'shmasangiz, hech kim ko'rmaydi
+    va u hech qayerga ketmaydi. <b>Merge</b> — ishni yakunlash amali. Jamoada esa
+    <a href="../reference/yol-xaritasi.html">pull request</a> aslida shu merge'ni
+    <i>so'rash</i> demakdir — shuning uchun merge'ni tushunmasdan PR'ni tushunib
+    bo'lmaydi.</p>
+  </div>
+
+  <h2>Eng ko'p qilinadigan xato: yo'nalishni chalkashtirish</h2>
+  <p>Buni darsning boshida aytaman, chunki deyarli har bir yangi boshlovchi shu yerda
+  adashadi.</p>
+
+  <div class="callout warning">
+    <span class="label">Qoida: avval qabul qiluvchiga o'ting</span>
+    <p><code>git merge</code> har doim <b>siz turgan branch'ga</b> qo'shadi.
+    Ya'ni «kimga qo'shmoqchi bo'lsangiz — o'shanga o'ting, keyin beruvchining nomini
+    yozing».</p>
+    <div class="cmd" data-cmd="git switch main">git switch main          <span class="cm"># 1. qabul qiluvchiga o'tdim</span></div>
+    <div class="cmd" data-cmd="git merge login">git merge login          <span class="cm"># 2. beruvchini qo'shdim</span></div>
+    <p>Agar teskarisini qilsangiz (<code>login</code>da turib <code>git merge main</code>),
+    Git xato bermaydi — u shunchaki <b>main'ni login'ga</b> qo'shadi. Bu ham foydali amal,
+    lekin siz xohlagan narsa emas.</p>
+  </div>
+
+  <h2>Git merge'ni ikki xil bajaradi</h2>
+  <p>Qaysi biri bo'lishini <b>Git o'zi hal qiladi</b> — vaziyatga qarab. Ikkalasini ham
+  bilib qo'ysangiz, terminal chiqishini o'qiy olasiz.</p>
+
+  <h3>1-holat: Fast-forward — «shunchaki oldinga surish»</h3>
+  <p>Siz branch ochganingizdan beri <code>main</code> <b>qimirlamagan</b> bo'lsa,
+  hech narsani birlashtirishning hojati yo'q. Git shunchaki <code>main</code> yorlig'ini
+  oldinga suradi:<a class="cite" href="#fn1">1</a></p>
+
+  <div class="cgraph">
+    <div class="cnode"><span class="cdot"></span><span class="chash">c1</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c2</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c3</span>
+      <span class="clabel br">main</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c4</span>
+      <span class="clabel br">login</span></div>
+  </div>
+  <p class="cgraph-cap">Merge'dan oldin: <code>main</code> c3 da qolgan, <code>login</code> c4 da.</p>
+
+  <div class="cgraph">
+    <div class="cnode"><span class="cdot"></span><span class="chash">c1</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c2</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c3</span></div>
+    <div class="cnode"><span class="cdot"></span><span class="chash">c4</span>
+      <span class="clabel br">main</span><span class="clabel br">login</span><span class="clabel head">HEAD</span></div>
+  </div>
+  <p class="cgraph-cap">Merge'dan keyin: <code>main</code> c4 ga «yetib oldi».
+  <b>Yangi commit yaratilmadi.</b></p>
+
+  <p>Terminalda buni shunday ko'rasiz:</p>
+  <div class="cmd" data-cmd="git merge login">git merge login
+<span class="out">Updating f1fb65f..a1b2c3d</span>
+<span class="out">Fast-forward</span>
+<span class="out"> login.txt | 1 +</span></div>
+
+  <div class="callout note">
+    <span class="label">Tanish so'z</span>
+    <p><b>Fast-forward</b>ni siz allaqachon ko'rgansiz —
+    <a href="0005-clone-va-pull.html">5-darsda</a> <code>git pull</code> qilganingizda
+    xuddi shu yozuv chiqqan edi. Sabab bir xil: <code>pull</code> ichida ham
+    <code>merge</code> bor.</p>
+  </div>
+
+  <h3>2-holat: Merge commit — «ikki yo'lni bog'lash»</h3>
+  <p>Endi boshqacha vaziyat: siz <code>login</code>da ishlayotganingizda, kimdir
+  (yoki o'zingiz) <code>main</code>ga ham commit qilib qo'ydi. Ikkala yo'l ham
+  siljidi — yo'llar <b>ajraldi</b>:</p>
+
+  <div class="cgraph-svg">
+    <svg viewBox="0 0 460 145" role="img" aria-labelledby="g1t">
+      <title id="g1t">Ajralgan tarmoqlar: login c4 da, main c5 da, ikkalasi ham c3 dan chiqqan</title>
+      <g stroke="var(--accent)" stroke-opacity="0.4" stroke-width="2.5" fill="none">
+        <path d="M60 100 H300"/>
+        <path d="M220 100 L300 48"/>
+      </g>
+      <g fill="var(--accent)">
+        <circle cx="60" cy="100" r="7"/>
+        <circle cx="140" cy="100" r="7"/>
+        <circle cx="220" cy="100" r="7"/>
+        <circle cx="300" cy="100" r="7"/>
+        <circle cx="300" cy="48" r="7"/>
+      </g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle">
+        <text x="60" y="122">c1</text>
+        <text x="140" y="122">c2</text>
+        <text x="220" y="122">c3</text>
+        <text x="300" y="122">c5</text>
+        <text x="300" y="34">c4</text>
+      </g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+        <rect x="336" y="38" rx="9" width="52" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="362" y="52" fill="var(--good)" text-anchor="middle">login</text>
+        <rect x="336" y="90" rx="9" width="48" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="360" y="104" fill="var(--good)" text-anchor="middle">main</text>
+      </g>
+    </svg>
+  </div>
+  <p class="cgraph-cap">Ikkala branch ham c3 dan keyin o'z yo'liga ketdi.</p>
+
+  <p>Endi Git yorliqni «surib qo'ya olmaydi» — ikkala tomonda ham yangi ish bor.
+  Shuning uchun u <b>yangi commit</b> yaratadi: uning <b>ikkita ota-onasi</b>
+  (parent) bo'ladi.<a class="cite" href="#fn1">1</a> Bu — <b>merge commit</b>:</p>
+
+  <div class="cgraph-svg">
+    <svg viewBox="0 0 460 145" role="img" aria-labelledby="g2t">
+      <title id="g2t">Merge commit c6 ikkala yo'lni bog'ladi va main endi c6 da</title>
+      <g stroke="var(--accent)" stroke-opacity="0.4" stroke-width="2.5" fill="none">
+        <path d="M60 100 H300"/>
+        <path d="M220 100 L300 48"/>
+        <path d="M300 100 H380"/>
+        <path d="M300 48 L380 100"/>
+      </g>
+      <g fill="var(--accent)">
+        <circle cx="60" cy="100" r="7"/>
+        <circle cx="140" cy="100" r="7"/>
+        <circle cx="220" cy="100" r="7"/>
+        <circle cx="300" cy="100" r="7"/>
+        <circle cx="300" cy="48" r="7"/>
+      </g>
+      <circle cx="380" cy="100" r="9" fill="var(--card)" stroke="var(--accent)" stroke-width="3.5"/>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle">
+        <text x="60" y="122">c1</text>
+        <text x="140" y="122">c2</text>
+        <text x="220" y="122">c3</text>
+        <text x="300" y="122">c5</text>
+        <text x="300" y="34">c4</text>
+        <text x="380" y="126">c6</text>
+      </g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+        <rect x="336" y="38" rx="9" width="52" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="362" y="52" fill="var(--good)" text-anchor="middle">login</text>
+        <rect x="398" y="78" rx="9" width="48" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="422" y="92" fill="var(--good)" text-anchor="middle">main</text>
+      </g>
+    </svg>
+  </div>
+  <p class="cgraph-cap">Bo'sh doira — <b>merge commit</b> (c6). U ikkala tarixni
+  birlashtiradi va <code>main</code> endi shu yerda.</p>
+
+  <p>Terminalda esa boshqacha yozuv chiqadi:</p>
+  <div class="cmd" data-cmd="git merge login">git merge login
+<span class="out">Merge made by the 'ort' strategy.</span>
+<span class="out"> login.txt | 1 +</span></div>
+
+  <div class="callout tip">
+    <span class="label"><code>ort</code> nima degani?</span>
+    <p>Bu Git ishlatadigan birlashtirish algoritmining nomi (Git 2.34 dan beri
+    standart). Uni yodlashning hojati yo'q — shunchaki «Merge made by...» yozuvini
+    ko'rsangiz, <b>merge commit yaratildi</b> deb tushunavering.</p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Merge commit yomonmi?</span>
+    <p>Yo'q. Ba'zilar tarixni «toza» qilish uchun undan qochadi (<code>rebase</code>
+    bilan — bu kurs doirasidan tashqarida). Lekin merge commit <b>rostgo'y</b>: u
+    aslida nima bo'lganini ko'rsatadi. Ko'p jamoalar aynan shuning uchun uni
+    ma'qul ko'radi.</p>
+  </div>
+
+  <h2>Merge tugagach: branch'ni o'chirish</h2>
+  <p>Ish <code>main</code>ga qo'shildi — endi <code>login</code> yorlig'i keraksiz:</p>
+  <div class="cmd" data-cmd="git branch -d login">git branch -d login
+<span class="out">Deleted branch login (was a1b2c3d).</span></div>
+
+  <div class="callout win">
+    <span class="label">Commitlaringiz yo'qolmaydi</span>
+    <p>Siz faqat <b>yorliqni</b> o'chirdingiz — commitlar <code>main</code> ichida
+    qolaveradi (<a href="0006-branch.html">6-dars</a>: branch = yorliq, nusxa emas).
+    Bundan tashqari <code>-d</code> <b>xavfsiz</b>: agar branch hali merge qilinmagan
+    bo'lsa, Git o'chirishdan <b>bosh tortadi</b> va sizni ogohlantiradi.</p>
+  </div>
+
+  <p>Tugagan branch'larni o'chirib borish yaxshi odat — aks holda bir yildan keyin
+  <code>git branch</code> ellikta eski nom ko'rsatadi va kerakligini topa olmaysiz.</p>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: ikkala merge turini ham o'z ko'zingiz bilan ko'ring</h2>
+    <p>Mashq yana <b>nusxa papkada</b>. <a href="0006-branch.html">6-darsda</a>
+    yasagan <code>mashq-branch</code> hali <code>main</code>ga qo'shilmagan holda
+    turibdi — aynan shundan boshlaymiz.</p>
+
+    <div class="callout warning">
+      <span class="label">Nusxa papkadan <code>push</code> QILMANG</span>
+      <p><code>Git-nusxa</code> — mashq maydoni. U yerdan <code>git push</code> qilsangiz,
+      mashq commitlari haqiqiy kurs repongizga tushib qoladi va chalkashlik chiqadi.
+      Bu darsda <b>push umuman yo'q</b> — hammasi mahalliy.</p>
+    </div>
+
+    <h3>A qism — Fast-forward</h3>
+    <ol class="steps">
+      <li>
+        <p>Nusxa papkaga o'ting va holatni ko'ring</p>
+        <p class="why-step">Ikkita branch bo'lishi kerak, yulduzcha <code>mashq-branch</code>da.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git-nusxa && git branch">cd ~/Projects/Learn/Git-nusxa &amp;&amp; git branch
+<span class="out">  main</span>
+<span class="out">* mashq-branch</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ikki branch. Agar
+        <code>mashq-branch</code> yo'q bo'lsa — <a href="0006-branch.html">6-darsning</a>
+        amaliyotini bajaring.</p>
+      </li>
+
+      <li>
+        <p>Qabul qiluvchiga o'ting</p>
+        <p class="why-step">Darsning asosiy qoidasi: avval <code>main</code>ga o'tamiz.</p>
+        <div class="cmd" data-cmd="git switch main && ls">git switch main &amp;&amp; ls
+<span class="out">assets  index.html  lessons  reference ...</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>branch-mashq.txt</code> yo'q —
+        u hali faqat branch'da (6-darsdagi «sehr»).</p>
+      </li>
+
+      <li>
+        <p>Merge qiling</p>
+        <p class="why-step"><code>main</code> qimirlamagan edi → Git yorliqni suradi.</p>
+        <div class="cmd" data-cmd="git merge mashq-branch">git merge mashq-branch
+<span class="out">Updating f1fb65f..a1b2c3d</span>
+<span class="out">Fast-forward</span>
+<span class="out"> branch-mashq.txt | 1 +</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <b>Fast-forward</b> so'zi.
+        Tahrirlagich ochilmaydi. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Fayl endi <code>main</code>da ekanini tekshiring</p>
+        <div class="cmd" data-cmd="ls && git log --oneline -2">ls &amp;&amp; git log --oneline -2
+<span class="out">assets  branch-mashq.txt  index.html ...</span>
+<span class="out">a1b2c3d (HEAD -&gt; main, mashq-branch) Branch mashq fayli qo'shildi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> fayl paydo bo'ldi va ikkala yorliq
+        <b>bir commitda</b> turibdi.</p>
+      </li>
+
+      <li>
+        <p>Keraksiz branch'ni o'chiring</p>
+        <p class="why-step">Ish qo'shildi — yorliq endi kerak emas.</p>
+        <div class="cmd" data-cmd="git branch -d mashq-branch && git branch">git branch -d mashq-branch &amp;&amp; git branch
+<span class="out">Deleted branch mashq-branch (was a1b2c3d).</span>
+<span class="out">* main</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Deleted branch» va endi faqat
+        <code>main</code>. Fayl esa joyida — commitlar yo'qolmadi.</p>
+      </li>
+    </ol>
+
+    <h3>B qism — Merge commit</h3>
+    <p>Endi ataylab <b>ajralish</b> yasaymiz: ikkala tomonda ham commit qilamiz.</p>
+
+    <ol class="steps">
+      <li>
+        <p>Yangi branch ochib, unda commit qiling</p>
+        <p class="why-step">Bu — «sizning ishingiz».</p>
+        <div class="cmd" data-cmd='git switch -c ikkinchi-mashq && echo "Branch tomonidan." > ikkinchi.txt && git add ikkinchi.txt && git commit -m "Ikkinchi mashq fayli"'>git switch -c ikkinchi-mashq &amp;&amp; echo "Branch tomonidan." &gt; ikkinchi.txt &amp;&amp; git add ikkinchi.txt &amp;&amp; git commit -m "Ikkinchi mashq fayli"</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Switched to a new branch» va
+        <code>1 file changed</code>.</p>
+      </li>
+
+      <li>
+        <p>Endi <code>main</code>ga o'tib, U YERDA ham commit qiling</p>
+        <p class="why-step">Mana shu qadam ajralishni yaratadi — «hamkasbingiz» main'ga
+        ish qo'shdi.</p>
+        <div class="cmd" data-cmd='git switch main && echo "Main tomonidan." > asosiy.txt && git add asosiy.txt && git commit -m "Main da to&apos;g&apos;ridan-to&apos;g&apos;ri o&apos;zgarish"'>git switch main &amp;&amp; echo "Main tomonidan." &gt; asosiy.txt &amp;&amp; git add asosiy.txt &amp;&amp; git commit -m "Main da to'g'ridan-to'g'ri o'zgarish"</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit yaratildi. Endi ikkala yo'l
+        ham c3 dan keyin ajralgan — rasmdagi holat.</p>
+      </li>
+
+      <li>
+        <p>Merge qiling — bu safar boshqacha bo'ladi</p>
+        <p class="why-step"><code>--no-edit</code> = izohni Git o'zi yozsin, tahrirlagich
+        ochilmasin. (Bu bo'lmasa terminal matn tahrirlagichga o'tib ketadi.)</p>
+        <div class="cmd" data-cmd="git merge ikkinchi-mashq --no-edit">git merge ikkinchi-mashq --no-edit
+<span class="out">Merge made by the 'ort' strategy.</span>
+<span class="out"> ikkinchi.txt | 1 +</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Fast-forward» emas, balki
+        <b>«Merge made by...»</b>. Yangi merge commit yaratildi. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>🎨 Tarixni grafik ko'rinishda ko'ring</p>
+        <p class="why-step">Mana darsning eng chiroyli qismi: rasmdagi ajralishni
+        o'z terminalingizda ko'rasiz.</p>
+        <div class="cmd" data-cmd="git log --oneline --graph -4">git log --oneline --graph -4
+<span class="out">*   e5f6a7b (HEAD -&gt; main) Merge branch 'ikkinchi-mashq'</span>
+<span class="out">|\</span>
+<span class="out">| * c3d4e5f (ikkinchi-mashq) Ikkinchi mashq fayli</span>
+<span class="out">* | b2c3d4e Main da to'g'ridan-to'g'ri o'zgarish</span>
+<span class="out">|/</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>|\</code> va <code>|/</code>
+        belgilari — ajralish va birlashish. Ikkala fayl ham papkada:
+        <code>ls</code> bilan tekshiring. <b>3-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Tozalab qo'ying</p>
+        <p class="why-step">Ish qo'shildi, yorliq keraksiz.</p>
+        <div class="cmd" data-cmd="git branch -d ikkinchi-mashq && git branch">git branch -d ikkinchi-mashq &amp;&amp; git branch
+<span class="out">Deleted branch ikkinchi-mashq (was c3d4e5f).</span>
+<span class="out">* main</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> faqat <code>main</code> qoldi,
+        lekin <code>git log --oneline --graph</code> da ajralish tarixi <b>saqlanib
+        qoladi</b>.</p>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <span class="label">Ikkalasining farqini his qildingizmi?</span>
+      <p>A qismda Git <b>yorliqni surdi</b> (Fast-forward), B qismda esa
+      <b>yangi commit yaratdi</b> (Merge made by...). Farq bitta narsada:
+      <code>main</code> shu orada qimirladimi yoki yo'qmi.</p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d7c1"><label for="d7c1">Merge'dan oldin <b>qabul qiluvchi</b> branch'ga o'taman</label></li>
+      <li><input type="checkbox" id="d7c2"><label for="d7c2">Fast-forward'ni ko'rdim — yangi commit yaratilmadi</label></li>
+      <li><input type="checkbox" id="d7c3"><label for="d7c3">Merge commit'ni ko'rdim — «Merge made by...»</label></li>
+      <li><input type="checkbox" id="d7c4"><label for="d7c4"><code>git log --graph</code> da ajralishni ko'rdim 🎨</label></li>
+      <li><input type="checkbox" id="d7c5"><label for="d7c5"><code>git branch -d</code> bilan tugagan branch'larni o'chirdim</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyot ikki qismdan iborat. <b>A:</b> 6-darsdagi <code>mashq-branch</code>ni
+    <code>main</code>ga qo'shasiz — <b>Fast-forward</b> chiqadi. <b>B:</b> ataylab
+    ajralish yasaysiz (ikkala tomonda commit) va merge qilasiz — bu safar
+    <b>merge commit</b> yaratiladi. Oxirida <code>git log --graph</code> bilan
+    ajralishni o'z terminalingizda ko'rasiz. 10 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> <code>login</code>ni <code>main</code>ga qo'shmoqchisiz. Qanday qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git switch main</code>, keyin <code>git merge login</code></button></li>
+      <li><button class="quiz-option"><code>git switch login</code>, keyin <code>git merge main</code></button></li>
+      <li><button class="quiz-option"><code>git merge main login</code> — ikkalasini birga yozaman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — merge har doim <b>siz turgan branch'ga</b>
+    qo'shadi. Avval qabul qiluvchiga o'ting, keyin beruvchining nomini yozing.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Terminalda «Fast-forward» chiqdi. Bu nima degani?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Yangi commit yaratilmadi — yorliq oldinga surildi</button></li>
+      <li><button class="quiz-option">Yangi merge commit yaratildi — ikki tarix bog'landi</button></li>
+      <li><button class="quiz-option">Merge bekor qilindi — ziddiyat topilgani uchun</button></li>
+    </ul>
+    <div class="quiz-explain">Aynan — <code>main</code> siz branch ochganingizdan beri
+    qimirlamagan, shuning uchun birlashtirishga hojat qolmadi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Merge commit qachon yaratiladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Ikkala branch ham ajralganidan keyin siljigan bo'lsa</button></li>
+      <li><button class="quiz-option">Har safar merge qilganda — bu doim shunday bo'ladi</button></li>
+      <li><button class="quiz-option">Faqat merge conflict chiqqanda — boshqa holatda yo'q</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Ikkala tomonda ham yangi ish bo'lsa, Git yorliqni
+    sura olmaydi — <b>ikkita ota-onali</b> yangi commit yaratadi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> <code>git branch -d login</code> qilsangiz, commitlaringizga nima bo'ladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Hech narsa — ular <code>main</code> ichida qolaveradi</button></li>
+      <li><button class="quiz-option">Ular ham o'chadi — branch bilan birga yo'qoladi</button></li>
+      <li><button class="quiz-option">Ular arxivga ko'chadi — keyin tiklash kerak bo'ladi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — siz faqat <b>yorliqni</b> o'chirdingiz
+    (<a href="0006-branch.html">6-dars</a>: branch = yorliq). Merge qilinmagan bo'lsa,
+    <code>-d</code> umuman o'chirmaydi va sizni ogohlantiradi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.
+    Oxirgi ikkitasi — oldingi darslarni takrorlash.</p>
+
+    <details class="recall">
+      <summary>Merge qilishdan oldin qaysi branch'da turish kerak?</summary>
+      <div class="answer"><p><b>Qabul qiluvchi</b>da — ya'ni ishni <i>qabul qiladigan</i>
+      branch'da. <code>git switch main</code>, keyin <code>git merge login</code>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Fast-forward qachon bo'ladi?</summary>
+      <div class="answer"><p>Siz branch ochganingizdan beri <code>main</code>
+      <b>qimirlamagan</b> bo'lsa. Git shunchaki yorliqni oldinga suradi — yangi commit
+      yaratilmaydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Merge commit'ning nimasi boshqacha?</summary>
+      <div class="answer"><p>Uning <b>ikkita ota-onasi</b> (parent) bor — u ikkala
+      tarixni bog'laydi. Terminalda «Merge made by the 'ort' strategy» deb chiqadi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Branch'ni o'chirsam, ishim yo'qoladimi?</summary>
+      <div class="answer"><p>Yo'q — siz faqat <b>yorliqni</b> o'chirasiz, commitlar
+      <code>main</code> ichida qoladi. Bundan tashqari <code>-d</code> merge
+      qilinmagan branch'ni o'chirishdan bosh tortadi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Tarixni grafik ko'rinishda qanday ko'rasiz?</summary>
+      <div class="answer"><p><code>git log --oneline --graph</code>. <code>|\</code> —
+      ajralish, <code>|/</code> — birlashish.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: branch nima — bir jumlada?</summary>
+      <div class="answer"><p>Bitta commitga ishora qiluvchi <b>ko'chib yuruvchi
+      yorliq</b>, nusxa emas. (<a href="0006-branch.html">Dars 06</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: <code>push</code> nimani jo'natmaydi?</summary>
+      <div class="answer"><p>Commit qilinmagan o'zgarishlarni.
+      (<a href="0004-remote-va-push.html">Dars 04</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Yo'nalish:</b> avval <code>git switch main</code> (qabul qiluvchi),
+      keyin <code>git merge login</code> (beruvchi).</li>
+      <li><b>Fast-forward</b> — <code>main</code> qimirlamagan → yorliq oldinga suriladi,
+      yangi commit yo'q.</li>
+      <li><b>Merge commit</b> — ikkala tomon ham siljigan → ikkita ota-onali yangi
+      commit yaratiladi («Merge made by...»).</li>
+      <li>Tahrirlagich ochilmasin desangiz: <code>git merge branch --no-edit</code>.</li>
+      <li><code>git log --oneline --graph</code> — ajralishni ko'rish.</li>
+      <li><code>git branch -d login</code> — tugagan yorliqni o'chirish (commitlar qoladi;
+      merge qilinmagan bo'lsa Git ruxsat bermaydi).</li>
+    </ul>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Keyingi darsda</span>
+    <p>Bu darsda hammasi silliq ketdi, chunki ikki tomon <b>turli fayllarni</b>
+    o'zgartirdi. Agar ikkovi ham <b>bitta faylning bitta joyini</b> o'zgartirsa —
+    Git qaysi birini olishni bilmaydi va sizdan so'raydi. Bu <b>merge conflict</b>.
+    Qo'rqinchli emas, lekin uni ko'rish kerak — <a href="../reference/yol-xaritasi.html">8-darsda</a>
+    ataylab yasab, hal qilamiz.</p>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 3.2-bo'lim — "Basic Branching and Merging":
+    <a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">git-scm.com/book</a>.
+    Fast-forward va merge commit rasmlari juda aniq.<br>
+    <b>O'ynang:</b> <a href="https://learngitbranching.js.org/">Learn Git Branching</a> →
+    «Introduction» bo'limining 4-darsi aynan <code>git merge</code>. Yorliqning
+    siljishini jonli ko'rasiz.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Merge'da adashish oson — bemalol so'rang.</b> «Teskari tomonga merge qilib
+    qo'ydim», «tahrirlagich ochilib qoldi, chiqolmayapman», «<code>-d</code> o'chirmadi»
+    — bularning hammasi hal bo'ladi. Terminal chiqishini menga tashlang.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0006-branch.html">Oldingi: Branch</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">Git Branching: Basic Branching and Merging</a>
+      (fast-forward va uch tomonlama merge).</li>
+      <li id="fn2">Git hujjatlari — <a href="https://git-scm.com/docs/git-merge">git-merge</a>
+      · <a href="https://git-scm.com/docs/git-branch">git-branch</a> (<code>-d</code> / <code>-D</code>).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

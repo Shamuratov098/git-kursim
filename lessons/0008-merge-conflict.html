@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 08 — Merge conflict: ziddiyatni hal qilish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 08 · MODUL C · BRANCH</p>
+  <h1>Merge conflict: ziddiyatni hal qilish</h1>
+  <p class="lead">Bu darsdan keyin siz konfliktni <b>ataylab yasaysiz</b> va o'z
+  qo'lingiz bilan hal qilasiz. Shundan so'ng u sizni hech qachon qo'rqitmaydi —
+  chunki nima bo'layotganini aniq bilasiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 15 daqiqa</span>
+    <span>Kerak: <a href="0007-merge.html">Dars 07</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Missiyangizda shunday yozilgan: «<b>merge conflict chiqsa, vahima qilmasdan hal
+    qilish</b>». Bu — yangi dasturchilarni eng ko'p qo'rqitadigan narsa, va aynan
+    shuning uchun ko'pchilik branch ishlatishdan qochadi. Bugun uni ataylab chaqiramiz,
+    ochib ko'ramiz — va u oddiy ish ekanini ko'rasiz.</p>
+  </div>
+
+  <h2>Avvalo: konflikt — bu xato emas</h2>
+  <p>Konflikt chiqishi Git buzilgani yoki siz noto'g'ri ish qilganingizni anglatmaydi.
+  Aksincha — bu Git'ning <b>ehtiyotkorligi</b>.</p>
+
+  <div class="callout win">
+    <span class="label">Nima bo'lyapti aslida</span>
+    <p>Ikki kishi bir joyni har xil o'zgartirgan. Git <b>hech qachon o'zi tanlab
+    qo'ymaydi</b> — chunki qay biri to'g'ri ekanini faqat odam biladi. Shuning uchun u
+    to'xtaydi va sizdan so'raydi.<a class="cite" href="#fn1">1</a></p>
+    <p>Tasavvur qiling, Git o'zi tanlab qo'yganida — kimningdir ishi jimgina yo'q
+    bo'lardi. Konflikt aslida <b>sizni himoya qilyapti</b>.</p>
+  </div>
+
+  <h2>Birinchi bilishingiz kerak bo'lgan buyruq</h2>
+  <p>Nazariyaga o'tishdan oldin, sizga xotirjamlik beradigan narsani aytay. Konflikt
+  o'rtasida <b>istalgan vaqt</b> orqaga qayta olasiz:</p>
+
+  <div class="cmd" data-cmd="git merge --abort">git merge --abort</div>
+
+  <p>Bu buyruq merge boshlangunga qadar bo'lgan holatga qaytaradi. Hech narsa
+  yo'qolmaydi, hech narsa buzilmaydi. Chalkashib ketsangiz — shuni yozing va toza
+  boshdan boshlang. Amaliyotda buni <b>ataylab sinab ko'ramiz</b>.</p>
+
+  <h2>Konflikt qachon chiqadi — va qachon CHIQMAYDI</h2>
+  <p>Ko'pchilik o'ylaganidan ancha kam holatda chiqadi:</p>
+
+  <table class="sheet">
+    <thead><tr><th>Vaziyat</th><th>Natija</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Har xil fayllar</b></td>
+        <td>✓ Konflikt <b>yo'q</b>. Git ikkalasini ham oladi.
+        <span class="note-cell"><a href="0007-merge.html">7-darsda</a> aynan shunday
+        bo'ldi — shuning uchun hammasi silliq ketgan edi.</span></td>
+      </tr>
+      <tr>
+        <td><b>Bitta fayl, turli joylari</b></td>
+        <td>✓ Odatda konflikt <b>yo'q</b>. Git o'zgarishlarni qo'shib qo'yadi.
+        <span class="note-cell">Masalan biri faylning boshini, ikkinchisi oxirini
+        o'zgartirgan bo'lsa.</span></td>
+      </tr>
+      <tr>
+        <td><b>Bitta fayl, bitta joyi</b></td>
+        <td>⚠️ <b>Konflikt.</b> Git qaysi variantni olishni bilmaydi va sizdan so'raydi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Ya'ni konflikt uchun ikki tomon <b>aynan bir xil qatorlarni</b> boshqacha
+  o'zgartirgan bo'lishi kerak. Kundalik ishda bu unchalik tez-tez bo'lmaydi —
+  ayniqsa <a href="0005-clone-va-pull.html">muntazam <code>pull</code> qilib tursangiz</a>.</p>
+
+  <h2>Konflikt chiqqanda Git nima qiladi</h2>
+  <p>Uchta narsa sodir bo'ladi:</p>
+  <ol>
+    <li><b>Merge to'xtaydi</b> — yarim holatda qoladi (commit qilinmagan).</li>
+    <li><b>Fayl ichiga belgilar qo'yiladi</b> — ikkala variant ham yonma-yon yoziladi.</li>
+    <li><b><code>git status</code> sizga aniq aytadi</b> nima qilish kerakligini.</li>
+  </ol>
+
+  <p>Terminalda shunday ko'rinadi:</p>
+  <div class="cmd" data-cmd="git merge login">git merge login
+<span class="out">Auto-merging salom.txt</span>
+<span class="out">CONFLICT (content): Merge conflict in salom.txt</span>
+<span class="out">Automatic merge failed; fix conflicts and then commit the result.</span></div>
+
+  <p>E'tibor bering: Git <b>qaysi faylda</b> ekanini aniq aytdi. Bir nechta fayl bo'lsa,
+  hammasini sanab beradi.</p>
+
+  <h2>Belgilarni o'qishni o'rganamiz</h2>
+  <p>Faylni ochsangiz, shunday manzarani ko'rasiz. Bu — darsning eng muhim rasmi:</p>
+
+  <div class="conflict">
+    <div class="cf-file">salom.txt — konflikt holatida</div>
+    <div class="cf-line mark">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
+    <div class="cf-line ours">Salom, dunyo!<span class="cf-note">sizdagi</span></div>
+    <div class="cf-line mark">=======</div>
+    <div class="cf-line theirs">Assalomu alaykum, dunyo!<span class="cf-note">kelayotgan</span></div>
+    <div class="cf-line mark">&gt;&gt;&gt;&gt;&gt;&gt;&gt; login</div>
+  </div>
+
+  <p>Har bir belgining ma'nosi bor:</p>
+  <ul>
+    <li><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> — «bu yerdan boshlab —
+    <b>siz turgan branch</b>dagi variant». <code>HEAD</code> tanish
+    (<a href="0006-branch.html">6-dars</a>): «men hozir qayerdaman».</li>
+    <li><code>=======</code> — ikki variantni ajratuvchi chiziq. Bu shunchaki chegara,
+    matnning bir qismi emas.</li>
+    <li><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; login</code> — «bu yergacha —
+    <b>kelayotgan branch</b>dagi variant». Oxirida branch nomi yozilgan.</li>
+  </ul>
+
+  <div class="callout warning">
+    <span class="label">Eng ko'p qilinadigan xato</span>
+    <p>Belgilarni fayl ichida <b>qoldirib ketish</b>. <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>
+    va <code>=======</code> — bu Git yozgan vaqtinchalik belgilar, sizning matningizning
+    qismi emas. Ularni <b>albatta o'chirish kerak</b>. Aks holda kodingizga axlat
+    qatorlar tushib qoladi (va odatda dastur ishlamay qoladi).</p>
+  </div>
+
+  <h2>Muhim: sizdan tanlash emas, YAKUNIY MATN so'ralyapti</h2>
+  <p>Ko'pchilik «ikkitasidan birini tanlashim kerak» deb o'ylaydi. Bu <b>noto'g'ri</b>.
+  Git sizdan faqat bitta narsani kutadi: <b>fayl oxir-oqibat qanday bo'lishi kerak?</b></p>
+  <p>Ya'ni sizda to'rt yo'l bor:</p>
+  <ul>
+    <li>O'zingiznikini qoldirish;</li>
+    <li>Kelayotganini qoldirish;</li>
+    <li><b>Ikkalasini ham</b> qoldirish (ikki qator qilib);</li>
+    <li><b>Butunlay yangi matn</b> yozish — ikkalasini birlashtirgan uchinchi variant.</li>
+  </ul>
+
+  <p>Masalan, hal qilingandan keyin fayl shunday bo'lishi mumkin:</p>
+
+  <div class="conflict">
+    <div class="cf-file">salom.txt — hal qilingan</div>
+    <div class="cf-line done">Assalomu alaykum, dunyo!<span class="cf-note">tanlandi</span></div>
+  </div>
+
+  <p>Belgilar yo'q, ortiqcha qator yo'q — faqat siz xohlagan yakuniy matn.</p>
+
+  <h2>Hal qilishning uch qadami</h2>
+  <ol>
+    <li><b>Faylni tahrirlang</b> — belgilarni o'chiring, kerakli matnni qoldiring.</li>
+    <li><code>git add &lt;fayl&gt;</code> — <b>«men buni hal qildim»</b> degani.</li>
+    <li><code>git commit</code> — merge yakunlanadi.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label"><code>git add</code>ning yangi ma'nosi</span>
+    <p>Odatda <code>git add</code> — «bu o'zgarishni keyingi commitga qo'sh»
+    (<a href="0002-uch-hudud-va-commit.html">2-dars</a>). Konflikt paytida esa u
+    qo'shimcha ma'no oladi: <b>«bu fayldagi ziddiyat hal qilindi»</b>. Git aynan shu
+    signalni kutadi.</p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">VS Code ishlatsangiz</span>
+    <p>VS Code konflikt bo'lgan faylni ochsangiz, belgilar ustida tugmalar chiqadi:
+    <b>Accept Current Change</b> (sizdagi), <b>Accept Incoming Change</b> (kelayotgan),
+    <b>Accept Both Changes</b> (ikkalasi). Bir bosishda belgilar ham o'chadi. Qulay —
+    lekin avval belgilarni <b>qo'lda</b> hal qilib ko'ring, mexanizmni tushunish uchun.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: konfliktni ataylab yasab, hal qilamiz</h2>
+    <p>Yana <b>nusxa papkada</b> ishlaymiz — bu xavfsiz mashq maydoni.</p>
+
+    <div class="callout warning">
+      <span class="label">Nusxa papkadan <code>push</code> QILMANG</span>
+      <p>Bu darsda ham push yo'q — hammasi mahalliy. <code>Git-nusxa</code>dagi
+      commitlar haqiqiy kurs repongizga tushmasligi kerak.</p>
+    </div>
+
+    <h3>A qism — konflikt yasaymiz</h3>
+    <ol class="steps">
+      <li>
+        <p>Nusxa papkaga o'ting va umumiy fayl yarating</p>
+        <p class="why-step">Bu — ikkala branch ham o'zgartiradigan «umumiy nuqta».</p>
+        <div class="cmd" data-cmd='cd ~/Projects/Learn/Git-nusxa && git switch main && echo "Salom!" > salom.txt && git add salom.txt && git commit -m "Salom fayli qo&apos;shildi"'>cd ~/Projects/Learn/Git-nusxa &amp;&amp; git switch main &amp;&amp; echo "Salom!" &gt; salom.txt &amp;&amp; git add salom.txt &amp;&amp; git commit -m "Salom fayli qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>1 file changed</code>.
+        Endi <code>main</code>da <code>salom.txt</code> bor.</p>
+      </li>
+
+      <li>
+        <p>Branch ochib, o'sha qatorni o'zgartiring</p>
+        <p class="why-step"><code>&gt;</code> (bitta) — faylni <b>butunlay qayta yozadi</b>.
+        <code>&gt;&gt;</code> (ikkita) esa oxiriga qo'shardi.</p>
+        <div class="cmd" data-cmd='git switch -c salom-branch && echo "Assalomu alaykum, dunyo!" > salom.txt && git commit -am "Salomlashish uzaytirildi"'>git switch -c salom-branch &amp;&amp; echo "Assalomu alaykum, dunyo!" &gt; salom.txt &amp;&amp; git commit -am "Salomlashish uzaytirildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi branch va commit.
+        Bu — «hamkasbingizning» varianti.</p>
+      </li>
+
+      <li>
+        <p><code>main</code>ga qayting va AYNAN o'sha qatorni boshqacha o'zgartiring</p>
+        <p class="why-step">Mana shu qadam konfliktni muqarrar qiladi: bir fayl, bir qator,
+        ikki xil matn.</p>
+        <div class="cmd" data-cmd='git switch main && echo "Salom, dunyo!" > salom.txt && git commit -am "Salomlashishga dunyo qo&apos;shildi"'>git switch main &amp;&amp; echo "Salom, dunyo!" &gt; salom.txt &amp;&amp; git commit -am "Salomlashishga dunyo qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit yaratildi. Endi ikki tomonda
+        ikki xil variant bor.</p>
+      </li>
+
+      <li>
+        <p>💥 Merge qiling — konflikt chiqadi</p>
+        <p class="why-step">Qo'rqmang, hammasi rejaga muvofiq.</p>
+        <div class="cmd" data-cmd="git merge salom-branch">git merge salom-branch
+<span class="out">Auto-merging salom.txt</span>
+<span class="out">CONFLICT (content): Merge conflict in salom.txt</span>
+<span class="out">Automatic merge failed; fix conflicts and then commit the result.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <b>CONFLICT</b> so'zi. Tabriklayman —
+        siz birinchi konfliktingizni yasadingiz! <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Git nima deyayotganini o'qing</p>
+        <p class="why-step"><code>git status</code> — konflikt paytidagi eng yaxshi do'stingiz.</p>
+        <div class="cmd" data-cmd="git status">git status
+<span class="out">You have unmerged paths.</span>
+<span class="out">Unmerged paths:</span>
+<span class="out">  both modified:   salom.txt</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «<b>both modified</b>» — ikkala tomon
+        ham o'zgartirgan. Git yana nima qilish kerakligini ham yozib beradi.</p>
+      </li>
+
+      <li>
+        <p>Fayl ichini ko'ring — belgilar shu yerda</p>
+        <p class="why-step">Nazariy qismdagi rasm bilan solishtiring.</p>
+        <div class="cmd" data-cmd="cat salom.txt">cat salom.txt
+<span class="out">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="out">Salom, dunyo!</span>
+<span class="out">=======</span>
+<span class="out">Assalomu alaykum, dunyo!</span>
+<span class="out">&gt;&gt;&gt;&gt;&gt;&gt;&gt; salom-branch</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> aynan darsdagi belgilar. Yuqorisi —
+        sizdagi (<code>main</code>), pastkisi — kelayotgan (<code>salom-branch</code>).</p>
+      </li>
+    </ol>
+
+    <h3>B qism — qochish yo'lini sinab ko'ramiz</h3>
+    <p>Hal qilishdan oldin, <b>orqaga qaytish</b> ishlashiga ishonch hosil qilamiz.
+    Kelajakda chalkashib qolsangiz, shu buyruq sizni qutqaradi.</p>
+
+    <ol class="steps">
+      <li>
+        <p>Merge'ni bekor qiling</p>
+        <p class="why-step">Konflikt o'rtasida turibsiz — chiqib ketamiz.</p>
+        <div class="cmd" data-cmd="git merge --abort && git status">git merge --abort &amp;&amp; git status
+<span class="out">On branch main</span>
+<span class="out">nothing to commit, working tree clean</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «working tree clean» — konflikt yo'q,
+        hammasi tinch. <code>cat salom.txt</code> deng: belgilar yo'q, faqat sizning
+        variantingiz. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Endi qaytadan merge qiling</p>
+        <p class="why-step">Konflikt yana chiqadi — bu ham normal. Bu safar hal qilamiz.</p>
+        <div class="cmd" data-cmd="git merge salom-branch">git merge salom-branch
+<span class="out">CONFLICT (content): Merge conflict in salom.txt</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> yana CONFLICT. Endi qo'rqinchli emas,
+        to'g'rimi?</p>
+      </li>
+    </ol>
+
+    <h3>C qism — hal qilamiz</h3>
+    <ol class="steps">
+      <li>
+        <p>Yakuniy matnni yozing</p>
+        <p class="why-step">Bu yerda men <b>uchinchi variant</b>ni tanladim — ikkalasini
+        birlashtirgan. Siz xohlagan matnni yozishingiz mumkin: bu sizning qaroringiz.</p>
+        <div class="cmd" data-cmd='echo "Assalomu alaykum, aziz dunyo!" > salom.txt && cat salom.txt'>echo "Assalomu alaykum, aziz dunyo!" &gt; salom.txt &amp;&amp; cat salom.txt
+<span class="out">Assalomu alaykum, aziz dunyo!</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> faqat bitta qator — <b>belgilar yo'q</b>.
+        Fayl yakuniy holatida.</p>
+      </li>
+
+      <li>
+        <p>Git'ga «hal qildim» deng</p>
+        <p class="why-step">Konflikt paytida <code>git add</code> aynan shuni bildiradi.</p>
+        <div class="cmd" data-cmd="git add salom.txt && git status">git add salom.txt &amp;&amp; git status
+<span class="out">All conflicts fixed but you are still merging.</span>
+<span class="out">  (use "git commit" to conclude merge)</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «<b>All conflicts fixed</b>» —
+        Git rozi. U hatto keyingi qadamni ham aytib turibdi.</p>
+      </li>
+
+      <li>
+        <p>Merge'ni yakunlang</p>
+        <p class="why-step"><code>--no-edit</code> — tahrirlagich ochilmasin
+        (<a href="0007-merge.html">7-darsdagidek</a>).</p>
+        <div class="cmd" data-cmd="git commit --no-edit">git commit --no-edit
+<span class="out">[main 8d9e0f1] Merge branch 'salom-branch'</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> merge commit yaratildi.
+        <b>Konfliktni to'liq hal qildingiz. 3-g'alaba!</b> 🎉🎉</p>
+      </li>
+
+      <li>
+        <p>Natijani ko'ring</p>
+        <p class="why-step">Tarixda ajralish va birlashish ko'rinadi.</p>
+        <div class="cmd" data-cmd="git log --oneline --graph -4 && cat salom.txt">git log --oneline --graph -4 &amp;&amp; cat salom.txt
+<span class="out">*   8d9e0f1 (HEAD -&gt; main) Merge branch 'salom-branch'</span>
+<span class="out">|\</span>
+<span class="out">| * 5a6b7c8 (salom-branch) Salomlashish uzaytirildi</span>
+<span class="out">* | 2d3e4f5 Salomlashishga dunyo qo'shildi</span>
+<span class="out">|/</span>
+<span class="out">Assalomu alaykum, aziz dunyo!</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> grafikda ikki yo'l birlashgan va
+        faylda siz yozgan matn turibdi.</p>
+      </li>
+
+      <li>
+        <p>Tozalab qo'ying</p>
+        <div class="cmd" data-cmd="git branch -d salom-branch">git branch -d salom-branch
+<span class="out">Deleted branch salom-branch (was 5a6b7c8).</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Deleted branch». Mashq tugadi —
+        va siz endi konfliktdan qo'rqmaysiz. 😌</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d8c1"><label for="d8c1">Konflikt — xato emas, Git'ning ehtiyotkorligi</label></li>
+      <li><input type="checkbox" id="d8c2"><label for="d8c2"><code>git merge --abort</code> bilan orqaga qaytishni sinab ko'rdim</label></li>
+      <li><input type="checkbox" id="d8c3"><label for="d8c3">Belgilarni o'qiy olaman: <code>&lt;&lt;&lt;</code> sizdagi, <code>&gt;&gt;&gt;</code> kelayotgan</label></li>
+      <li><input type="checkbox" id="d8c4"><label for="d8c4">Belgilarni <b>o'chirish shart</b> ekanini bilaman</label></li>
+      <li><input type="checkbox" id="d8c5"><label for="d8c5">Hal qildim: tahrirla → <code>add</code> → <code>commit</code> 🎉</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyot uch qismli. <b>A:</b> bitta faylning bitta qatorini ikki tomondan
+    o'zgartirib, konfliktni <b>ataylab</b> yasaysiz va belgilarni o'z ko'zingiz bilan
+    ko'rasiz. <b>B:</b> <code>git merge --abort</code> bilan orqaga qaytishni sinab
+    ko'rasiz — qochish yo'li ishlashiga ishonch hosil qilasiz. <b>C:</b> yakuniy matnni
+    yozib, <code>add</code> → <code>commit</code> bilan hal qilasiz. 13 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Merge conflict qachon chiqadi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Ikki tomon bitta faylning bitta joyini boshqacha o'zgartirsa</button></li>
+      <li><button class="quiz-option">Har safar ikki branch birlashtirilganda — bu doim shunday</button></li>
+      <li><button class="quiz-option">Ikki tomon turli fayllarni bir vaqtda o'zgartirsa</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Turli fayllar yoki bitta faylning turli joylari
+    bo'lsa — Git o'zi uddalaydi. Faqat <b>aynan bir xil qatorlar</b> to'qnashsa so'raydi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> ostidagi matn kimniki?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Siz turgan branch'niki — ya'ni sizdagi variant</button></li>
+      <li><button class="quiz-option">Kelayotgan branch'niki — merge qilinayotgan variant</button></li>
+      <li><button class="quiz-option">Ikkalasining avtomatik birlashtirilgan varianti</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <code>HEAD</code> «men hozir qayerdaman»
+    (<a href="0006-branch.html">6-dars</a>). Pastki qism esa <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>
+    dan oldingi — kelayotgan branch'niki.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Konfliktni hal qilganda belgilarni nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Faylni tahrirlab, ularni butunlay o'chirib tashlayman</button></li>
+      <li><button class="quiz-option">Joyida qoldiraman — Git ularni o'zi tozalab oladi</button></li>
+      <li><button class="quiz-option">Faqat o'rtadagi <code>=======</code> chizig'ini o'chiraman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — bular Git yozgan <b>vaqtinchalik</b> belgilar.
+    Qolib ketsa, kodingizga axlat qatorlar tushadi va odatda dastur ishlamay qoladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Konflikt o'rtasida chalkashib ketdingiz. Nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git merge --abort</code> — boshlangunidagi holatga qaytaman</button></li>
+      <li><button class="quiz-option">Papkani o'chirib, repo'ni qaytadan clone qilaman</button></li>
+      <li><button class="quiz-option">Belgilarni o'chirmasdan commit qilib, keyin tuzataman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — bu sizning xavfsizlik tugmangiz. Hech narsa
+    yo'qolmaydi, merge boshlangunga qadar bo'lgan holat qaytadi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.
+    Oxirgi ikkitasi — oldingi darslarni takrorlash.</p>
+
+    <details class="recall">
+      <summary>Nega Git konflikt paytida o'zi tanlab qo'ymaydi?</summary>
+      <div class="answer"><p>Chunki qay biri to'g'ri ekanini faqat <b>odam</b> biladi.
+      O'zi tanlaganida, kimningdir ishi jimgina yo'qolardi. Konflikt — himoya.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Uchta belgi nimani anglatadi?</summary>
+      <div class="answer"><p><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> — bu yerdan
+      sizdagi variant · <code>=======</code> — ajratuvchi chiziq ·
+      <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch-nomi</code> — bu yergacha kelayotgan variant.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Ikkitasidan birini tanlash shartmi?</summary>
+      <div class="answer"><p>Yo'q! Git sizdan <b>yakuniy matn</b>ni so'rayapti.
+      O'zingiznikini, kelayotganini, ikkalasini, yoki butunlay <b>yangi matn</b>ni
+      yozishingiz mumkin.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Hal qilishning uch qadami?</summary>
+      <div class="answer"><p>1) Faylni tahrirla, belgilarni o'chir · 2) <code>git add
+      fayl</code> («hal qildim» signali) · 3) <code>git commit</code>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Chalkashib ketsangiz — qaysi buyruq?</summary>
+      <div class="answer"><p><code>git merge --abort</code>. Merge boshlangunga qadar
+      bo'lgan holat qaytadi, hech narsa yo'qolmaydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: merge'dan oldin qaysi branch'da turasiz?</summary>
+      <div class="answer"><p><b>Qabul qiluvchi</b>da: <code>git switch main</code>,
+      keyin <code>git merge login</code>. (<a href="0007-merge.html">Dars 07</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: konfliktlarni kichik saqlash uchun nima qilasiz?</summary>
+      <div class="answer"><p>Muntazam <code>git pull</code> — ish boshlashdan oldin.
+      Eskirgan kod ustida ishlash konfliktning asosiy sababi.
+      (<a href="0005-clone-va-pull.html">Dars 05</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Konflikt = xato emas.</b> Git o'zi tanlamaydi, chunki faqat odam biladi.</li>
+      <li>Chiqadi: <b>bitta fayl, bitta joy, ikki xil o'zgarish</b>. Boshqa hollarda yo'q.</li>
+      <li>Belgilar: <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> sizdagi ·
+      <code>=======</code> chegara · <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch</code> kelayotgan.</li>
+      <li><b>Belgilarni albatta o'chiring</b> — ular matnning qismi emas.</li>
+      <li>Tanlash emas — <b>yakuniy matn</b>: sizniki / ularniki / ikkalasi / yangisi.</li>
+      <li>Hal qilish: tahrirla → <code>git add fayl</code> → <code>git commit</code>.</li>
+      <li>Qochish yo'li: <code>git merge --abort</code> — istalgan vaqt, xavfsiz.</li>
+      <li>Kompas: <code>git status</code> — konflikt paytida ham nima qilishni aytadi.</li>
+    </ul>
+  </div>
+
+  <div class="callout win">
+    <span class="label">🎓 Modul C tugadi</span>
+    <p>Branch (06) → merge (07) → conflict (08). Endi sizda jamoada ishlash uchun
+    kerak bo'lgan <b>butun texnik poydevor</b> bor: alohida yo'lda ishlash, ishni
+    qaytarib qo'shish va to'qnashuvni hal qilish.</p>
+    <p>Qolgani — odamlar bilan ishlash tartibi: <b>Modul D</b> da pull request,
+    kundalik jamoa ritmi va professional odatlar.
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasiga qarang</a>.</p>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 3.2-bo'lim — "Basic Merge Conflicts":
+    <a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">git-scm.com/book</a>.<br>
+    <b>GitHub Docs</b> — konfliktni GitHub saytining o'zida hal qilish:
+    <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-on-github">Resolving a merge conflict on GitHub</a>
+    (9-darsdan keyin asqotadi).</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Konflikt chiqib, chalkashib qolsangiz — darrov menga yozing.</b>
+    <code>git status</code> va <code>cat &lt;fayl&gt;</code> natijasini tashlang,
+    birga hal qilamiz. Esda tuting: <code>git merge --abort</code> har doim qo'lingizda,
+    shuning uchun hech narsani buzib qo'ya olmaysiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0007-merge.html">Oldingi: Merge</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">Git Branching: Basic Merge Conflicts</a>.</li>
+      <li id="fn2">Git hujjatlari — <a href="https://git-scm.com/docs/git-merge">git-merge</a>
+      (<code>--abort</code>) · <a href="https://git-scm.com/docs/git-status">git-status</a>
+      («unmerged paths»).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

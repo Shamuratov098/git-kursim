@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 34 ta</span>
+    <span>Atamalar: 35 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -42,6 +42,7 @@
     <li><a href="#merge">merge</a></li>
     <li><a href="#merge-commit">merge commit</a></li>
     <li><a href="#conflict">merge conflict</a></li>
+    <li><a href="#conflict-markers">conflict markers</a></li>
     <li><a href="#remote">remote</a></li>
     <li><a href="#origin">origin</a></li>
     <li><a href="#clone">clone</a></li>
@@ -178,8 +179,21 @@
 
     <div class="term" id="conflict">
       <dt>merge conflict <span class="uz">— birlashtirish ziddiyati</span></dt>
-      <dd>Ikki kishi <b>bir joyni</b> har xil o'zgartirsa, Git qaysi birini olishni
-      bilmaydi va sizdan hal qilishni so'raydi. Normal holat — vahima emas.</dd>
+      <dd>Ikki tomon <b>bitta faylning bitta joyini</b> har xil o'zgartirsa, Git qaysi
+      birini olishni bilmaydi va sizdan hal qilishni so'raydi. Xato emas — himoya:
+      Git o'zi tanlaganida kimningdir ishi jimgina yo'qolardi. Hal qilish: faylni
+      tahrirla → <code>git add</code> → <code>git commit</code>. Qochish yo'li —
+      <code>git merge --abort</code>.
+      <span class="eg">CONFLICT (content): Merge conflict in salom.txt</span></dd>
+    </div>
+
+    <div class="term" id="conflict-markers">
+      <dt>conflict markers <span class="uz">— konflikt belgilari</span></dt>
+      <dd>Git konflikt paytida fayl ichiga yozadigan <b>vaqtinchalik</b> qatorlar:
+      <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> (bu yerdan — sizdagi variant),
+      <code>=======</code> (ajratuvchi chiziq),
+      <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch-nomi</code> (bu yergacha — kelayotgan variant).
+      <b>Ularni albatta o'chirish kerak</b> — matnning qismi emas.</dd>
     </div>
 
     <div class="term" id="remote">

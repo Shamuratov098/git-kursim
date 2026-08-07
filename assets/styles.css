@@ -466,6 +466,55 @@ body.mode-read .cmd { padding-right: 1.1rem; font-size: 0.9rem; }
 }
 .cgraph-svg svg { display: block; width: 100%; height: auto; }
 
+/* ----- Konflikt bo'lgan fayl ko'rinishi (Dars 08) ------------------------ */
+/* <div class="conflict">
+     <div class="cf-file">salom.txt</div>
+     <div class="cf-line mark">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
+     <div class="cf-line ours">matn<span class="cf-note">sizdagi</span></div>
+     ...
+   </div>                                                                     */
+.conflict {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  border: 1px solid var(--rule-firm);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.3rem 0;
+  background: var(--card);
+}
+.conflict .cf-file {
+  font-family: var(--sans);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--note-bg);
+  padding: 0.45rem 0.85rem;
+  border-bottom: 1px solid var(--rule);
+}
+.conflict .cf-line {
+  padding: 0.34rem 0.85rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--ink-mid);
+}
+.conflict .cf-line.mark   { background: var(--warn-bg); color: var(--warn); font-weight: 700; }
+.conflict .cf-line.ours   { background: var(--good-bg); color: var(--good-ink); }
+.conflict .cf-line.theirs { background: var(--info-bg); color: var(--info); }
+.conflict .cf-line.done   { background: var(--good-bg); color: var(--good-ink); }
+.conflict .cf-note {
+  float: right;
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-left: 0.8rem;
+}
+
 /* ----- "3 hudud" diagrammasi --------------------------------------------- */
 .areas {
   display: flex;

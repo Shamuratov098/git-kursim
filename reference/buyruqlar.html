@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0007-merge.html">07</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0008-merge-conflict.html">08</a></span>
   </p>
 
   <div class="callout tip">
@@ -357,6 +357,54 @@
     </tbody>
   </table>
 
+  <h2>9. Merge conflict (Dars 08)</h2>
+  <p>Konflikt faqat <b>bitta faylning bitta joyi</b> ikki tomondan boshqacha
+  o'zgartirilganda chiqadi. Bu xato emas — Git o'zi tanlab qo'ymaydi.</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq / belgi</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git merge --abort</code></td>
+        <td><b>Qochish yo'li.</b> Merge boshlangunga qadar bo'lgan holatga qaytaradi.
+        <span class="note-cell">✓ Istalgan vaqt, xavfsiz. Hech narsa yo'qolmaydi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git status</code></td>
+        <td>«both modified» — qaysi fayllarda konflikt borligini ko'rsatadi va
+        keyingi qadamni aytadi.</td>
+      </tr>
+      <tr>
+        <td><code>git add fayl.txt</code></td>
+        <td>Konflikt paytida ma'nosi: <b>«bu fayldagi ziddiyat hal qilindi»</b>.</td>
+      </tr>
+      <tr>
+        <td><code>git commit --no-edit</code></td>
+        <td>Merge'ni yakunlaydi (tahrirlagich ochilmasdan).</td>
+      </tr>
+      <tr>
+        <td><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code></td>
+        <td>Bu yerdan boshlab — <b>siz turgan</b> branch'dagi variant.</td>
+      </tr>
+      <tr>
+        <td><code>=======</code></td>
+        <td>Ikki variantni ajratuvchi chiziq (matnning qismi emas).</td>
+      </tr>
+      <tr>
+        <td><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch-nomi</code></td>
+        <td>Bu yergacha — <b>kelayotgan</b> branch'dagi variant.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Hal qilish — 3 qadam</span>
+    <p><b>1.</b> Faylni tahrirlang va <b>belgilarni butunlay o'chiring</b> (ular Git
+    yozgan vaqtinchalik qatorlar) → <b>2.</b> <code>git add fayl</code> →
+    <b>3.</b> <code>git commit</code>.</p>
+    <p>Sizdan <b>tanlash</b> emas, <b>yakuniy matn</b> so'ralyapti: sizniki, ularniki,
+    ikkalasi yoki butunlay yangisi.</p>
+  </div>
+
   <h2>Yaxshi commit izohi qanday bo'ladi?</h2>
   <ul>
     <li>Buyruq shaklida va qisqa: <code>"Login sahifasi qo'shildi"</code>,
@@ -368,8 +416,8 @@
 
   <div class="callout note">
     <span class="label">Keyingi darslarda qo'shiladi</span>
-    <p>Merge conflict belgilarini hal qilish (Dars 08) · pull request (Dars 09) ·
-    <code>.gitignore</code> (Dars 11). To'liq reja:
+    <p>Pull request — GitHub'da taklif, review, merge (Dars 09) · kundalik jamoa ritmi
+    (Dars 10) · <code>.gitignore</code> va professional odatlar (Dars 11). To'liq reja:
     <a href="yol-xaritasi.html">yo'l xaritasi</a>.</p>
   </div>
 

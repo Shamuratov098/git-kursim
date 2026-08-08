@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 17 — rebase -i: commitlarni birlashtirish va tozalash</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 17 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1><code>rebase -i</code>: commitlarni birlashtirish va tozalash</h1>
+  <p class="lead">Bu darsdan keyin siz PR ochishdan oldin <b>chalkash commitlaringizni
+  tartibga solasiz</b> — bir nechtasini bittaga birlashtirasiz, izohlarni tuzatasiz,
+  keraksizini olib tashlaysiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 9 daqiqa</span>
+    <span>💻 Amaliyot ≈ 15 daqiqa</span>
+    <span>Kerak: <a href="0013-git-rebase.html">Dars 13</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Tanish holat</span>
+    <p>Ish ustida ishlayapsiz va yo'l-yo'lakay commit qilib borasiz — bu
+    <a href="0003-xatoni-qaytarish.html">to'g'ri odat</a>. Lekin PR ochish payti
+    kelganda tarixingiz shunday ko'rinadi:</p>
+    <div class="cmd" data-cmd="git log --oneline main..login">git log --oneline main..login
+<span class="out">e32ba17 yana bir tuzatish</span>
+<span class="out">ee121b6 typo tuzatildi</span>
+<span class="out">3742500 wip</span>
+<span class="out">eb7f337 Login formasi qo'shildi</span></div>
+    <p>Ko'rib chiquvchi uchun bu <b>shovqin</b>: to'rt commitning uchtasi hech narsa
+    aytmaydi. Aslida bu bitta ish edi — <b>bitta commit</b> bo'lishi kerak.</p>
+  </div>
+
+  <h2>Uch yo'l — eng osonidan boshlaymiz</h2>
+
+  <h3>1. GitHub tugmasi — ko'pincha shuning o'zi yetarli</h3>
+  <p>PR merge qilishda GitHub uchta variant taklif qiladi. Ulardan biri —
+  <span class="ui">Squash and merge</span>. U <b>butun PR'ni bitta commitga</b>
+  birlashtirib <code>main</code>ga qo'shadi.<a class="cite" href="#fn1">1</a></p>
+
+  <div class="callout win">
+    <span class="label">Avval shuni sinang</span>
+    <p>Hech qanday buyruq yo'q, xavf yo'q, tarixni qayta yozish yo'q. Ko'p jamoada
+    aynan shu ishlatiladi — chalkash commitlaringiz sizning branch'ingizda qoladi,
+    <code>main</code>ga esa toza bitta commit tushadi.</p>
+    <p>Agar jamoangizda shu tartib bo'lsa — bu darsning qolgani sizga <b>kerak
+    emas</b>. Lekin bilib qo'ygan yaxshi.</p>
+  </div>
+
+  <h3>2. <code>reset --soft</code> — tahrirlagichsiz, oddiy</h3>
+  <p>Butun branch'ni bitta commitga siqmoqchi bo'lsangiz, eng sodda yo'l:</p>
+  <div class="cmd" data-cmd="git reset --soft main">git reset --soft main</div>
+  <div class="cmd" data-cmd='git commit -m "Login formasi qo&apos;shildi"'>git commit -m "Login formasi qo'shildi"</div>
+
+  <p>Nima bo'ldi? <code>--soft</code> — <b>yumshoq</b>: u branch yorlig'ini
+  <code>main</code>ga qaytaradi, lekin <b>hamma o'zgarishlaringizni saqlab qoladi</b>
+  (ular <a href="0002-uch-hudud-va-commit.html">saralash joyida</a> turadi). Keyin
+  bitta yangi commit qilasiz.</p>
+
+  <div class="callout note">
+    <span class="label"><code>--soft</code> va <code>--hard</code> farqi</span>
+    <p><a href="0010-kundalik-jamoa-ritmi.html">10-darsda</a> <code>reset --hard</code>
+    ni ko'rgandik — u <b>hamma narsani o'chiradi</b>. <code>--soft</code> esa
+    faqat <b>yorliqni</b> ko'chiradi, fayllaringizga tegmaydi. Shuning uchun u
+    ancha xavfsiz.</p>
+  </div>
+
+  <h3>3. <code>rebase -i</code> — to'liq nazorat</h3>
+  <p>Hammasini bittaga siqish emas, balki <b>tanlab</b> ishlash kerak bo'lsa:
+  ikkitasini birlashtirib, uchinchisining izohini tuzatib, to'rtinchisini
+  o'chirish. Mana shunda interaktiv rebase kerak.</p>
+
+  <div class="cmd" data-cmd="git rebase -i main">git rebase -i main</div>
+
+  <p>Bu buyruq matn tahrirlagichini ochadi va sizga <b>reja</b> ko'rsatadi.</p>
+
+  <h2>Todo ro'yxatini o'qish</h2>
+  <p>Tahrirlagichda shunday ko'rasiz (yuqoridagi to'rtta commit uchun):</p>
+
+  <div class="conflict">
+    <div class="cf-file">rebase todo ro'yxati</div>
+    <div class="cf-line done">pick eb7f337 Login formasi qo'shildi<span class="cf-note">eng eski</span></div>
+    <div class="cf-line">pick 3742500 wip</div>
+    <div class="cf-line">pick ee121b6 typo tuzatildi</div>
+    <div class="cf-line">pick e32ba17 yana bir tuzatish<span class="cf-note">eng yangi</span></div>
+    <div class="cf-line mark"># Commands:</div>
+    <div class="cf-line mark"># p, pick = use commit</div>
+    <div class="cf-line mark"># r, reword = use commit, but edit the commit message</div>
+    <div class="cf-line mark"># s, squash = use commit, but meld into previous commit</div>
+    <div class="cf-line mark"># f, fixup = like squash but keep only the previous commit's message</div>
+    <div class="cf-line mark"># d, drop = remove commit</div>
+  </div>
+
+  <p>Git yo'riqnomani <b>faylning o'zida</b> beradi (<code>#</code> bilan boshlangan
+  qatorlar — izoh, ular bajarilmaydi). Sizning ishingiz: chap tomondagi
+  <code>pick</code> so'zini kerakli buyruqqa <b>almashtirish</b>.</p>
+
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>pick</code></td>
+        <td>Commitni o'z holicha qoldirish (standart).</td>
+      </tr>
+      <tr>
+        <td><code>squash</code> (<code>s</code>)</td>
+        <td><b>Yuqoridagi commitga qo'shib yuborish.</b> Izohlar birlashtiriladi va
+        tahrirlagich ochilib, yakuniy izohni yozasiz.</td>
+      </tr>
+      <tr>
+        <td><code>fixup</code> (<code>f</code>)</td>
+        <td>Xuddi squash, lekin <b>bu commitning izohi tashlab yuboriladi</b>.
+        <span class="note-cell">«wip» kabi keraksiz izohlar uchun eng qulayi.</span></td>
+      </tr>
+      <tr>
+        <td><code>reword</code> (<code>r</code>)</td>
+        <td>Commitni qoldirib, faqat <b>izohini tuzatish</b>.</td>
+      </tr>
+      <tr>
+        <td><code>drop</code> (<code>d</code>)</td>
+        <td>Commitni butunlay <b>o'chirish</b>. <span class="note-cell">Qatorni
+        o'chirib tashlash ham xuddi shu ta'sirni beradi.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Bizning misolda</h3>
+  <p>To'rt qatorni shunday o'zgartiramiz:</p>
+
+  <div class="conflict">
+    <div class="cf-file">tahrirlangan todo ro'yxati</div>
+    <div class="cf-line done">pick eb7f337 Login formasi qo'shildi<span class="cf-note">qoladi</span></div>
+    <div class="cf-line theirs">fixup 3742500 wip<span class="cf-note">yuqoriga qo'shiladi</span></div>
+    <div class="cf-line theirs">fixup ee121b6 typo tuzatildi<span class="cf-note">yuqoriga qo'shiladi</span></div>
+    <div class="cf-line theirs">fixup e32ba17 yana bir tuzatish<span class="cf-note">yuqoriga qo'shiladi</span></div>
+  </div>
+
+  <p>Saqlab chiqasiz — va to'rtta commit <b>bittaga</b> aylanadi, izohi esa
+  «Login formasi qo'shildi» bo'lib qoladi.</p>
+
+  <h2>Ikkita tuzoq</h2>
+
+  <div class="callout warning">
+    <span class="label">1. Tartib teskari — eng eski YUQORIDA</span>
+    <p><code>git log</code> da eng yangi commit <b>yuqorida</b> turadi. Todo
+    ro'yxatida esa <b>aksincha</b>: yuqorida eng <b>eski</b>, pastda eng yangi.</p>
+    <p>Sabab mantiqiy: Git ularni yuqoridan pastga <b>bajarib chiqadi</b>, ya'ni
+    eskisidan boshlaydi.</p>
+  </div>
+
+  <div class="callout warning">
+    <span class="label">2. Birinchi qator <code>pick</code> bo'lib qolsin</span>
+    <p><code>squash</code> va <code>fixup</code> — «<b>yuqoridagi</b>ga qo'shib yubor»
+    degani. Birinchi qatorning esa yuqorisida hech narsa yo'q. Uni o'zgartirsangiz:</p>
+    <div class="cmd" data-cmd="git rebase -i main">git rebase -i main
+<span class="out">error: cannot 'squash' without a previous commit</span></div>
+    <p>Chiqish yo'li: <code>git rebase --abort</code>, keyin qaytadan.</p>
+  </div>
+
+  <div class="callout warning">
+    <span class="label">🔴 Oltin qoida — o'zgarmadi</span>
+    <p><a href="0013-git-rebase.html">13-darsdagi</a> qoida bu yerda ham amal qiladi:
+    <b>push qilingan commitlarni qayta yozmang.</b> Interaktiv rebase ham yangi
+    commitlar yaratadi.</p>
+    <p>Xavfsiz shakl: <b>PR ochishdan oldin</b>, o'z branch'ingiz hali hech kimga
+    ko'rinmagan paytda tozalang.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: chalkash tarixni tozalaymiz</h2>
+    <p>Mashq <b>nusxa papkada</b>, push yo'q.</p>
+
+    <div class="callout note">
+      <span class="label">Avval tahrirlagichni sozlang</span>
+      <p><code>rebase -i</code> tahrirlagich ochadi. Sozlanmagan bo'lsa
+      <code>vim</code> ochilishi mumkin — u boshlovchi uchun qiyin. Bir martalik
+      yechim (<code>nano</code> kompyuteringizda bor):</p>
+      <div class="cmd" data-cmd="git config --global core.editor nano">git config --global core.editor nano</div>
+      <p><b>nano'da ishlash:</b> o'q tugmalari bilan yurasiz, matnni oddiy yozasiz.
+      Saqlash va chiqish: <kbd>Ctrl</kbd>+<kbd>O</kbd> → <kbd>Enter</kbd> →
+      <kbd>Ctrl</kbd>+<kbd>X</kbd>. Bekor qilish: <kbd>Ctrl</kbd>+<kbd>X</kbd>
+      (o'zgartirmasdan).</p>
+    </div>
+
+    <h3>A qism — <code>reset --soft</code> bilan (tahrirlagichsiz)</h3>
+    <ol class="steps">
+      <li>
+        <p>Chalkash tarix yarating</p>
+        <p class="why-step">Ataylab yomon izohlar bilan — haqiqiy ishdagidek.</p>
+        <div class="cmd" data-cmd='cd ~/Projects/Learn/Git-nusxa && git switch main && git switch -c ri-login && for m in "Login formasi qo&apos;shildi" "wip" "typo" "yana tuzatish"; do echo "$m" >> ri-login.txt; git add ri-login.txt; git commit -q -m "$m"; done && git log --oneline main..ri-login'>cd ~/Projects/Learn/Git-nusxa &amp;&amp; git switch main &amp;&amp; git switch -c ri-login &amp;&amp; for m in "Login formasi qo'shildi" "wip" "typo" "yana tuzatish"; do echo "$m" &gt;&gt; ri-login.txt; git add ri-login.txt; git commit -q -m "$m"; done &amp;&amp; git log --oneline main..ri-login</div>
+        <p class="expect"><b>Kutilgan natija:</b> to'rtta commit — uchtasi
+        ma'nosiz izoh bilan.</p>
+      </li>
+
+      <li>
+        <p>Bitta commitga siqing</p>
+        <p class="why-step"><code>--soft</code> — yorliqni qaytaradi, fayllarni
+        saqlab qoladi.</p>
+        <div class="cmd" data-cmd="git reset --soft main && git status --short">git reset --soft main &amp;&amp; git status --short
+<span class="out">A  ri-login.txt</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>A</code> — fayl saralash
+        joyida turibdi, ya'ni <b>ish yo'qolmadi</b>. <code>git log --oneline main..ri-login</code>
+        deng — bo'sh (commitlar olib tashlandi).</p>
+      </li>
+
+      <li>
+        <p>Bitta toza commit qiling</p>
+        <div class="cmd" data-cmd='git commit -m "Login formasi qo&apos;shildi" && git log --oneline main..ri-login'>git commit -m "Login formasi qo'shildi" &amp;&amp; git log --oneline main..ri-login</div>
+        <p class="expect"><b>Kutilgan natija:</b> <b>bitta</b> commit.
+        <code>cat ri-login.txt</code> deng — to'rtala qator ham joyida.
+        <b>1-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — <code>rebase -i</code> bilan (tanlab)</h3>
+    <ol class="steps">
+      <li>
+        <p>Yangi chalkash tarix yarating</p>
+        <div class="cmd" data-cmd='git switch main && git switch -c ri-profil && for m in "Profil sahifasi qo&apos;shildi" "wip" "kichik tuzatish"; do echo "$m" >> ri-profil.txt; git add ri-profil.txt; git commit -q -m "$m"; done && git log --oneline main..ri-profil'>git switch main &amp;&amp; git switch -c ri-profil &amp;&amp; for m in "Profil sahifasi qo'shildi" "wip" "kichik tuzatish"; do echo "$m" &gt;&gt; ri-profil.txt; git add ri-profil.txt; git commit -q -m "$m"; done &amp;&amp; git log --oneline main..ri-profil</div>
+        <p class="expect"><b>Kutilgan natija:</b> uchta commit.</p>
+      </li>
+
+      <li>
+        <p>Interaktiv rebase'ni boshlang</p>
+        <p class="why-step">nano ochiladi — vahima qilmang, quyida nima qilishni
+        aytaman.</p>
+        <div class="cmd" data-cmd="git rebase -i main">git rebase -i main</div>
+        <p class="expect"><b>Kutilgan natija:</b> nano ochiladi va uchta
+        <code>pick</code> qatorini ko'rasiz. Yuqorida eng eski
+        («Profil sahifasi qo'shildi»).</p>
+      </li>
+
+      <li>
+        <p>🔑 2 va 3-qatorlarni <code>fixup</code> ga o'zgartiring</p>
+        <p class="why-step">Birinchi qator <b>tegilmaydi</b> — u asos.</p>
+        <p class="expect"><b>nano'da bajaring:</b><br>
+        <b>1.</b> O'q tugmalari bilan <b>ikkinchi</b> qator boshiga boring<br>
+        <b>2.</b> <code>pick</code> so'zini o'chirib (<kbd>Delete</kbd> 4 marta),
+        o'rniga <code>fixup</code> yozing<br>
+        <b>3.</b> Uchinchi qatorda ham shunday<br>
+        <b>4.</b> Saqlang: <kbd>Ctrl</kbd>+<kbd>O</kbd> → <kbd>Enter</kbd> →
+        <kbd>Ctrl</kbd>+<kbd>X</kbd></p>
+        <div class="conflict">
+          <div class="cf-file">natijada shunday bo'lishi kerak</div>
+          <div class="cf-line done">pick abc1234 Profil sahifasi qo'shildi</div>
+          <div class="cf-line theirs">fixup def5678 wip</div>
+          <div class="cf-line theirs">fixup ghi9012 kichik tuzatish</div>
+        </div>
+      </li>
+
+      <li>
+        <p>Natijani ko'ring</p>
+        <div class="cmd" data-cmd="git log --oneline main..ri-profil && cat ri-profil.txt">git log --oneline main..ri-profil &amp;&amp; cat ri-profil.txt
+<span class="out">4bc62ec Profil sahifasi qo'shildi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> uchta commit <b>bittaga</b>
+        aylandi, izohi toza, faylda esa uchala qator ham bor.
+        <b>2-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Adashsangiz — chiqish yo'li</p>
+        <p class="why-step">Bu buyruqni bilib qo'ying: rebase o'rtasida chalkashsangiz
+        yoki xato chiqsa, shu sizni qutqaradi.</p>
+        <div class="cmd" data-cmd="git rebase --abort">git rebase --abort</div>
+        <p class="expect"><b>Eslatma:</b> rebase allaqachon tugagan bo'lsa bu buyruq
+        «no rebase in progress» deydi — bu normal. Tugagandan keyin qaytarish uchun
+        <a href="0014-git-reflog.html"><code>git reflog</code></a> ishlatiladi.</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d17c1"><label for="d17c1">Avval GitHub'ning <b>Squash and merge</b> tugmasini o'ylab ko'raman</label></li>
+      <li><input type="checkbox" id="d17c2"><label for="d17c2">Hammasini bittaga: <code>git reset --soft main</code> + commit</label></li>
+      <li><input type="checkbox" id="d17c3"><label for="d17c3">Todo ro'yxatida <b>eng eski yuqorida</b></label></li>
+      <li><input type="checkbox" id="d17c4"><label for="d17c4">Birinchi qator <code>pick</code> bo'lib qoladi</label></li>
+      <li><input type="checkbox" id="d17c5"><label for="d17c5">🔴 Push qilingan commitlarni qayta yozmayman</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda ataylab chalkash tarix yaratasiz («wip», «typo») va uni ikki xil
+    usulda tozalaysiz: <b>A</b> — <code>reset --soft</code> bilan (tahrirlagichsiz,
+    hammasi bittaga), <b>B</b> — <code>rebase -i</code> bilan (nano'da
+    <code>pick</code> → <code>fixup</code>). 8 qadam, nusxa papkada.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Todo ro'yxatida qaysi commit yuqorida turadi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Eng eskisi — Git ularni yuqoridan pastga bajaradi</button></li>
+      <li><button class="quiz-option">Eng yangisi — <code>git log</code> dagi kabi tartibda</button></li>
+      <li><button class="quiz-option">Eng katta o'zgarish kiritilgani birinchi turadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <code>git log</code> ning <b>aksi</b>.
+    Sabab mantiqiy: Git rejani yuqoridan boshlab bajaradi, ya'ni eskisidan.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> <code>squash</code> va <code>fixup</code> farqi nimada?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>fixup</code> bu commitning izohini tashlab yuboradi</button></li>
+      <li><button class="quiz-option"><code>fixup</code> commitning o'zgarishlarini ham tashlaydi</button></li>
+      <li><button class="quiz-option"><code>squash</code> faqat birinchi commit uchun ishlaydi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Ikkalasi ham o'zgarishni yuqoridagi commitga
+    qo'shadi; farq <b>izohda</b>. «wip» kabi keraksiz izohlar uchun
+    <code>fixup</code> qulayroq.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Birinchi qatorni <code>squash</code> qilsangiz nima bo'ladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Xato: «cannot 'squash' without a previous commit»</button></li>
+      <li><button class="quiz-option">Hammasi bitta commitga birlashadi — bu to'g'ri usul</button></li>
+      <li><button class="quiz-option">Birinchi commit o'chib ketadi, qolganlari saqlanadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. <code>squash</code> = «<b>yuqoridagi</b>ga
+    qo'sh», birinchi qatorning esa yuqorisida hech narsa yo'q. Chiqish:
+    <code>git rebase --abort</code>.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Butun branch'ni bitta commitga siqmoqchisiz. Eng oson yo'l?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git reset --soft main</code>, keyin bitta commit</button></li>
+      <li><button class="quiz-option"><code>git reset --hard main</code>, keyin qaytadan yozish</button></li>
+      <li><button class="quiz-option">Har bir commitni alohida <code>--amend</code> qilish</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — tahrirlagich ochilmaydi, ish yo'qolmaydi.
+    ⚠️ <code>--hard</code> esa <b>hamma narsani o'chiradi</b> — bu yerda
+    ishlatilmaydi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>Commitlarni tozalashning uch yo'li?</summary>
+      <div class="answer"><p><b>1.</b> GitHub'ning <b>Squash and merge</b> tugmasi
+      (eng oson) · <b>2.</b> <code>git reset --soft main</code> + bitta commit ·
+      <b>3.</b> <code>git rebase -i main</code> (to'liq nazorat).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Todo ro'yxatidagi to'rt asosiy buyruq?</summary>
+      <div class="answer"><p><code>pick</code> (qoldir) · <code>squash</code>
+      (yuqoridagiga qo'sh, izohlar birlashadi) · <code>fixup</code> (qo'sh, izohni
+      tashla) · <code>reword</code> (faqat izohni tuzat). Yana <code>drop</code> —
+      o'chirish.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Ikkita tuzoq qaysilar?</summary>
+      <div class="answer"><p><b>1.</b> Tartib teskari — eng <b>eski yuqorida</b> ·
+      <b>2.</b> Birinchi qator <code>pick</code> bo'lib qolishi kerak.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>reset --soft</code> va <code>reset --hard</code> farqi?</summary>
+      <div class="answer"><p><code>--soft</code> faqat <b>yorliqni</b> ko'chiradi,
+      o'zgarishlaringiz saralash joyida qoladi. <code>--hard</code> esa
+      <b>hamma narsani o'chiradi</b>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: rebase'ning oltin qoidasi?</summary>
+      <div class="answer"><p><b>Push qilingan commitlarni qayta yozmang.</b>
+      Interaktiv rebase ham yangi commitlar yaratadi.
+      (<a href="0013-git-rebase.html">Dars 13</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Eng oson:</b> GitHub'da <b>Squash and merge</b> — buyruqsiz, xavfsiz.</li>
+      <li><b>Hammasi bittaga:</b> <code>git reset --soft main</code> →
+      <code>git commit -m "..."</code>.</li>
+      <li><b>Tanlab:</b> <code>git rebase -i main</code> → todo ro'yxatini tahrirlash.</li>
+      <li>Buyruqlar: <code>pick</code> · <code>squash</code> · <code>fixup</code> ·
+      <code>reword</code> · <code>drop</code>.</li>
+      <li>⚠️ Tartib <b>teskari</b>: eng eski yuqorida.</li>
+      <li>⚠️ Birinchi qator <code>pick</code> bo'lib qolsin.</li>
+      <li>🔴 Push qilingandan keyin qayta yozmang — PR'dan <b>oldin</b> tozalang.</li>
+      <li>Chiqish: <code>git rebase --abort</code> · tugagandan keyin —
+      <a href="0014-git-reflog.html"><code>git reflog</code></a>.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 7.6-bo'lim — "Rewriting History":
+    <a href="https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History">git-scm.com/book</a>.
+    <code>rebase -i</code> ning barcha imkoniyatlari misollar bilan.<br>
+    <b>GitHub Docs</b> —
+    <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges">About pull request merges</a>
+    (merge / squash / rebase tugmalari farqi).</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>nano'da yoki todo ro'yxatida chalkashsangiz — <code>Ctrl</code>+<code>X</code>
+    bilan chiqing va menga yozing.</b> Hech narsa buzilmaydi: o'zgartirmasdan
+    chiqsangiz rebase bekor bo'ladi. «Squash qildim, lekin izoh chalkash chiqdi» —
+    bu ham tuzatiladi.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0016-fork-va-open-source.html">Oldingi: Fork va open source</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">GitHub Docs — <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges">About pull request merges</a>.</li>
+      <li id="fn2">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History">Git Tools: Rewriting History</a>
+      · <a href="https://git-scm.com/docs/git-rebase#_interactive_mode">git-rebase: interactive mode</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

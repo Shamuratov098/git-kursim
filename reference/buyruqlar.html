@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a>, <a href="../lessons/0017-rebase-interactive.html">17</a></span>
   </p>
 
   <div class="callout tip">
@@ -832,12 +832,68 @@
     O'z jamoangiz repo'sida fork <b>kerak emas</b> — u yerda huquqingiz bor.</p>
   </div>
 
+  <h2>18. <code>rebase -i</code> — tarixni tozalash (Dars 17)</h2>
+  <p>PR ochishdan <b>oldin</b> chalkash commitlarni tartibga solish. Uch yo'l bor —
+  eng osonidan boshlang.</p>
+  <table class="sheet">
+    <thead><tr><th>Usul</th><th>Qachon</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>GitHub: <b>Squash and merge</b></td>
+        <td>Eng oson — buyruq yo'q, xavf yo'q. Butun PR bitta commitga tushadi.
+        <span class="note-cell">Avval shuni o'ylab ko'ring.</span></td>
+      </tr>
+      <tr>
+        <td><code>git reset --soft main</code><br><code>git commit -m "..."</code></td>
+        <td>Butun branch'ni bitta commitga siqish. Tahrirlagich ochilmaydi.
+        <span class="note-cell"><code>--soft</code> yorliqni ko'chiradi, ishni
+        saqlaydi (<code>--hard</code> esa o'chiradi!).</span></td>
+      </tr>
+      <tr>
+        <td><code>git rebase -i main</code></td>
+        <td>Tanlab ishlash: birlashtirish, izoh tuzatish, o'chirish.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Todo ro'yxati buyruqlari</h3>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr><td><code>pick</code></td><td>Commitni o'z holicha qoldirish (standart).</td></tr>
+      <tr><td><code>squash</code> / <code>s</code></td>
+          <td>Yuqoridagi commitga qo'shish, <b>izohlar birlashadi</b>.</td></tr>
+      <tr><td><code>fixup</code> / <code>f</code></td>
+          <td>Yuqoridagiga qo'shish, <b>bu izoh tashlanadi</b>.
+          <span class="note-cell">«wip» kabi izohlar uchun.</span></td></tr>
+      <tr><td><code>reword</code> / <code>r</code></td><td>Faqat izohni tuzatish.</td></tr>
+      <tr><td><code>drop</code> / <code>d</code></td><td>Commitni o'chirish.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Ikkita tuzoq</span>
+    <p><b>1.</b> Tartib <b>teskari</b>: todo ro'yxatida eng <b>eski yuqorida</b>
+    (<code>git log</code> ning aksi).<br>
+    <b>2.</b> <b>Birinchi qator <code>pick</code> bo'lib qolsin</b> — aks holda
+    <code>error: cannot 'squash' without a previous commit</code>.</p>
+    <p>🔴 Oltin qoida o'zgarmadi: <b>push qilingandan keyin qayta yozmang</b>.
+    Chiqish: <code>git rebase --abort</code>; tugagandan keyin —
+    <code>git reflog</code>.</p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Tahrirlagichni sozlab qo'ying</span>
+    <p><code>git config --global core.editor nano</code> — <code>vim</code> o'rniga
+    qulayroq. nano'da saqlash: <kbd>Ctrl</kbd>+<kbd>O</kbd> → <kbd>Enter</kbd> →
+    <kbd>Ctrl</kbd>+<kbd>X</kbd>.</p>
+  </div>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–16) barcha
-    buyruqlari bor. Hali qo'shilmagan mavzular: <code>rebase -i</code>
-    (commitlarni birlashtirish), GitHub Actions, <code>git tag</code>,
-    <code>bisect</code> — kerak bo'lsa ayting, dars qo'shamiz.
+    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–17) barcha
+    buyruqlari bor. Hali qo'shilmagan mavzular: GitHub Actions,
+    <code>git tag</code>, <code>bisect</code> — kerak bo'lsa ayting, dars qo'shamiz.
     <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 

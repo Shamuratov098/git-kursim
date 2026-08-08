@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a></span>
   </p>
 
   <div class="callout tip">
@@ -691,11 +691,55 @@
     </tbody>
   </table>
 
+  <h2>15. <code>git reflog</code> — qutqaruv to'ri (Dars 14)</h2>
+  <p><b>Falokat bo'lsa birinchi buyruq.</b> Reflog — HEAD qayerda bo'lganining mahalliy
+  yozuvi. «O'chirilgan» commit repozitoriyada qolaveradi — faqat unga olib boradigan
+  yorliq yo'qoladi, reflog esa o'shani saqlaydi.</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git reflog</code></td>
+        <td>Bosib o'tgan yo'lingiz: har commit, switch, merge, rebase, reset.
+        <span class="note-cell">✓ Hech narsani o'zgartirmaydi — xohlagancha qarang.</span></td>
+      </tr>
+      <tr>
+        <td><code>HEAD@{1}</code></td>
+        <td>«Bir qadam oldin». <code>HEAD@{0}</code> — hozirgi joy.
+        <span class="note-cell">Hash o'rniga ishlatsa bo'ladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git reset --hard HEAD@{1}</code></td>
+        <td><code>reset --hard</code> yoki buzilgan rebase'dan <b>qaytish</b>.</td>
+      </tr>
+      <tr>
+        <td><code>git switch -c nom &lt;hash&gt;</code></td>
+        <td><b>O'chirilgan branch'ni tiklash</b>.
+        <span class="note-cell">Hash o'chirish xabarida ham bor:
+        «Deleted branch X (<b>was e6c0d99</b>)».</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Qutqarishning uch qadami</span>
+    <p><b>1.</b> <code>git reflog</code> → <b>2.</b> yaxshi holatning hash'ini toping →
+    <b>3.</b> o'sha yerga qayting yoki branch yarating.</p>
+  </div>
+
+  <div class="callout warning">
+    <span class="label">Chegaralari</span>
+    <p><b>1.</b> <b>Commit qilinmagan</b> ishni qaytara olmaydi — u hech qayerda
+    yozilmagan. Mana shuning uchun tez-tez commit qiling.<br>
+    <b>2.</b> Faqat mahalliy: push qilinmaydi, clone bilan ko'chmaydi, ~90 kun saqlanadi.
+    <b>Haqiqiy zaxira — <code>git push</code>.</b></p>
+  </div>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–13) barcha
+    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–14) barcha
     buyruqlari bor. Hali qo'shilmagan mavzular: <code>cherry-pick</code>,
-    <code>reflog</code>, <code>rebase -i</code> (commitlarni birlashtirish),
+    <code>rebase -i</code> (commitlarni birlashtirish), <code>bisect</code>,
     GitHub Actions — kerak bo'lsa ayting, dars qo'shamiz.
     <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>

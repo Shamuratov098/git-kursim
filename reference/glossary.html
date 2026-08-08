@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 42 ta</span>
+    <span>Atamalar: 43 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -53,6 +53,7 @@
     <li><a href="#review">code review</a></li>
     <li><a href="#fork">fork</a></li>
     <li><a href="#gitignore">.gitignore</a></li>
+    <li><a href="#reflog">reflog</a></li>
     <li><a href="#rebase">rebase</a></li>
     <li><a href="#stash">stash</a></li>
     <li><a href="#readme">README.md</a></li>
@@ -271,6 +272,17 @@
       ⚠️ <b>Allaqachon commit qilingan faylga ta'sir qilmaydi</b> — avval
       <code>git rm --cached fayl</code>.
       <span class="eg">*.log · .env · node_modules/</span></dd>
+    </div>
+
+    <div class="term" id="reflog">
+      <dt>reflog <span class="uz">— bosib o'tgan yo'l yozuvi</span></dt>
+      <dd>Git <a href="#head">HEAD</a> qayerda bo'lganini yozib boradigan mahalliy
+      jurnal: har <a href="#commit">commit</a>, <a href="#switch">switch</a>,
+      <a href="#merge">merge</a>, <a href="#rebase">rebase</a>, reset.
+      «O'chirilgan» commit repozitoriyada qolaveradi — faqat yorliq yo'qoladi, reflog
+      esa uni topib beradi. <b>Falokat bo'lsa birinchi buyruq.</b>
+      ⚠️ Commit qilinmagan ishni qaytara olmaydi; mahalliy va ~90 kunlik.
+      <span class="eg">git reflog → git reset --hard HEAD@{1}</span></dd>
     </div>
 
     <div class="term" id="rebase">

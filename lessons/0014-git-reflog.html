@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 14 — git reflog: yo'qolgan ishni qaytarish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 14 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1><code>git reflog</code>: yo'qolgan ishni qaytarish</h1>
+  <p class="lead">Bu darsdan keyin siz «hammasini yo'qotdim» degan holatdan chiqa
+  olasiz. Va nihoyat bilasiz: <a href="0003-xatoni-qaytarish.html">3-darsdagi oltin
+  qoida</a> nega <b>rostdan</b> ishlaydi.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 12 daqiqa</span>
+    <span>Kerak: <a href="0010-kundalik-jamoa-ritmi.html">Dars 10</a>,
+    <a href="0013-git-rebase.html">13</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu dars aynan hozir</span>
+    <p>Siz endi <b>xavfli buyruqlarni</b> bilasiz:
+    <a href="0010-kundalik-jamoa-ritmi.html"><code>reset --hard</code></a>,
+    <a href="0013-git-rebase.html"><code>rebase</code></a>,
+    <code>branch -D</code>,
+    <a href="0003-xatoni-qaytarish.html"><code>commit --amend</code></a>.
+    Ularning hammasi tarixni o'zgartiradi.</p>
+    <p><code>reflog</code> — mana shu buyruqlarning hammasi ostida yotgan
+    <b>himoya to'ri</b>. Uni bilsangiz, ulardan qo'rqmaysiz.</p>
+  </div>
+
+  <h2><code>reflog</code> nima</h2>
+  <p>Git siz <b>qayerda bo'lganingizni</b> jimgina yozib boradi. Har bir
+  <code>commit</code>, <code>switch</code>, <code>merge</code>, <code>rebase</code>,
+  <code>reset</code> — hammasi qayd qilinadi. Bu yozuv <b>reflog</b>
+  (reference log) deb ataladi.<a class="cite" href="#fn1">1</a></p>
+
+  <div class="callout win">
+    <span class="label">Asosiy g'oya</span>
+    <p><b>Commit «o'chirilganda» ham u repozitoriyda qolaveradi</b> — faqat unga
+    ishora qiluvchi yorliq yo'qoladi. Reflog esa o'sha yo'qolgan ishorani saqlab
+    turadi. Ya'ni siz commitni emas, <b>faqat unga olib boradigan yo'lni</b>
+    yo'qotgansiz.</p>
+    <p>Reflog o'sha yo'lni qaytarib beradi.</p>
+  </div>
+
+  <h3>Nihoyat: 3-darsdagi oltin qoida nega ishlaydi</h3>
+  <p><a href="0003-xatoni-qaytarish.html">3-darsda</a> shunday degandim:
+  «<b>commit qilingan narsani yo'qotish juda qiyin, commit qilinmaganini esa oson</b>».
+  Endi sababi ma'lum — <b>reflog</b>. Commit qilingan har bir narsa reflogda iz
+  qoldiradi. Commit qilinmagan o'zgarish esa hech qayerda yozilmagan, shuning uchun
+  uni hech narsa qaytara olmaydi.</p>
+
+  <h2>Chiqishini o'qishni o'rganamiz</h2>
+  <div class="cmd" data-cmd="git reflog">git reflog</div>
+
+  <div class="conflict">
+    <div class="cf-file">git reflog — chiqish</div>
+    <div class="cf-line">49dd82e HEAD@{0}: reset: moving to HEAD~2<span class="cf-note">hozir shu yerdaman</span></div>
+    <div class="cf-line done">5b7c611 HEAD@{1}: commit: Uchinchi commit<span class="cf-note">← YO'QOLGAN ISH</span></div>
+    <div class="cf-line">b881146 HEAD@{2}: commit: Ikkinchi commit</div>
+    <div class="cf-line">49dd82e HEAD@{3}: commit (initial): Birinchi commit</div>
+  </div>
+
+  <p>Har qatorda uch narsa bor:</p>
+  <table class="sheet">
+    <thead><tr><th>Qism</th><th>Ma'nosi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>5b7c611</code></td>
+        <td>Commit <a href="../reference/glossary.html#hash">hash</a>i — qaytarish uchun
+        kerak bo'ladigan narsa.</td>
+      </tr>
+      <tr>
+        <td><code>HEAD@{1}</code></td>
+        <td>«<b>1 qadam oldin</b>». <code>HEAD@{0}</code> — hozirgi joy,
+        <code>HEAD@{1}</code> — undan oldingisi va hokazo.
+        <span class="note-cell">Hash o'rniga shuni ham yozsa bo'ladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>commit:</code> / <code>reset:</code> / <code>rebase:</code></td>
+        <td><b>Nima qilganingiz.</b> Falokatdan oldingi qatorni topish uchun eng
+        foydali ustun.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Qanday o'qiladi</span>
+    <p>Yuqoridan pastga — <b>yangidan eskiga</b>. «Falokat»ni topib (masalan
+    <code>reset:</code> qatori), undan <b>bir qator pastdagi</b> holatga qaytasiz.</p>
+  </div>
+
+  <h2>To'rtta qutqarish retsepti</h2>
+
+  <table class="sheet">
+    <thead><tr><th>Falokat</th><th>Yechim</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b><code>reset --hard</code> bilan commitlarni yo'qotdim</b></td>
+        <td><code>git reflog</code> → falokatdan oldingi qatorni toping →
+        <code>git reset --hard HEAD@{1}</code>
+        <span class="note-cell">Yoki hash bilan: <code>git reset --hard 5b7c611</code></span></td>
+      </tr>
+      <tr>
+        <td><b>Branch'ni o'chirib yubordim</b></td>
+        <td><code>git switch -c branch-nomi &lt;hash&gt;</code> — o'sha commitda
+        branch'ni qayta yaratadi.
+        <span class="note-cell">Hash o'chirish xabarida ham bor:
+        «Deleted branch X (<b>was e6c0d99</b>)».</span></td>
+      </tr>
+      <tr>
+        <td><b><code>rebase</code> buzildi</b></td>
+        <td>Reflogda <code>rebase (start)</code> qatorini toping →
+        undan oldingi holatga <code>git reset --hard HEAD@{N}</code>.
+        <span class="note-cell">Rebase hali tugamagan bo'lsa —
+        <a href="0013-git-rebase.html"><code>git rebase --abort</code></a> osonroq.</span></td>
+      </tr>
+      <tr>
+        <td><b><code>--amend</code> bilan eski commitni yo'qotdim</b></td>
+        <td>Reflogda <code>commit (amend)</code> dan oldingi qatorni toping —
+        eski commit o'sha yerda turibdi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Umumiy tartib — har doim bir xil</span>
+    <p><b>1.</b> <code>git reflog</code> → <b>2.</b> yaxshi holatning hash'ini toping →
+    <b>3.</b> o'sha yerga qayting yoki branch yarating.</p>
+    <p>Shoshilmang: <code>git reflog</code> <b>hech narsani o'zgartirmaydi</b>,
+    xohlagancha qarayvering.</p>
+  </div>
+
+  <h2>Chegaralari — buni bilib qo'ying</h2>
+
+  <div class="callout warning">
+    <span class="label">Reflog nimani QAYTARA OLMAYDI</span>
+    <p><b>Commit qilinmagan o'zgarishni.</b> Agar faylni tahrirlab, commit qilmasdan
+    <a href="0003-xatoni-qaytarish.html"><code>git restore</code></a> yoki
+    <code>reset --hard</code> qilsangiz — u <b>hech qayerda yozilmagan</b> va reflog
+    ham yordam bera olmaydi.</p>
+    <p>Mana shuning uchun <b>tez-tez commit qiling</b>. Har commit — reflogga tushadigan
+    qutqaruv nuqtasi.</p>
+  </div>
+
+  <div class="callout warning">
+    <span class="label">Reflog — zaxira nusxa EMAS</span>
+    <p>Xuddi <a href="0012-git-stash.html"><code>stash</code></a> kabi, u
+    <b>faqat sizning kompyuteringizda</b>. Push qilinmaydi, clone bilan ko'chmaydi,
+    hamkasbingizda yo'q. Kompyuteringiz buzilsa — reflog ham ketadi.</p>
+    <p>Haqiqiy zaxira — <a href="0004-remote-va-push.html"><code>git push</code></a>.</p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Muddat: taxminan 90 kun</span>
+    <p>Git reflog yozuvlarini standart holatda <b>90 kun</b> saqlaydi (hech qaysi
+    branch'ga ulanmagan commitlar — 30 kun), keyin tozalab yuboradi.<a class="cite" href="#fn2">2</a>
+    Amalda bu juda yetarli: falokat odatda o'sha kuni sezildi.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: ataylab yo'qotib, qaytaramiz</h2>
+    <p>Mashq <b>nusxa papkada</b> (<code>~/Projects/Learn/Git-nusxa</code>).
+    Ataylab falokat yasaymiz — va ikkala holatda ham hammasini qaytaramiz.</p>
+
+    <h3>A qism — <code>reset --hard</code> dan qaytarish</h3>
+    <ol class="steps">
+      <li>
+        <p>Uchta commit yarating</p>
+        <p class="why-step">Uchinchisi — «muhim ish», uni yo'qotib ko'ramiz.</p>
+        <div class="cmd" data-cmd='cd ~/Projects/Learn/Git-nusxa && git switch main && echo "1" > rl.txt && git add rl.txt && git commit -m "Reflog mashqi: birinchi" && echo "2" >> rl.txt && git commit -am "Reflog mashqi: ikkinchi" && echo "3" >> rl.txt && git commit -am "Reflog mashqi: MUHIM ISH"'>cd ~/Projects/Learn/Git-nusxa &amp;&amp; git switch main &amp;&amp; echo "1" &gt; rl.txt &amp;&amp; git add rl.txt &amp;&amp; git commit -m "Reflog mashqi: birinchi" &amp;&amp; echo "2" &gt;&gt; rl.txt &amp;&amp; git commit -am "Reflog mashqi: ikkinchi" &amp;&amp; echo "3" &gt;&gt; rl.txt &amp;&amp; git commit -am "Reflog mashqi: MUHIM ISH"</div>
+        <p class="expect"><b>Kutilgan natija:</b> uchta commit.
+        <code>git log --oneline -3</code> bilan tekshiring.</p>
+      </li>
+
+      <li>
+        <p>💥 Falokat: ikkita commitni o'chiring</p>
+        <p class="why-step"><code>HEAD~2</code> = «ikki qadam orqaga».
+        Bu — 10-darsdagi xavfli buyruq.</p>
+        <div class="cmd" data-cmd="git reset --hard HEAD~2">git reset --hard HEAD~2
+<span class="out">HEAD is now at 49dd82e Reflog mashqi: birinchi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>git log --oneline -3</code> deng —
+        ikkita commit <b>yo'q</b>. <code>cat rl.txt</code> deng — faqat <code>1</code>.
+        «Muhim ish» yo'qoldi. 😱</p>
+      </li>
+
+      <li>
+        <p>Vahima qilmang — reflogga qarang</p>
+        <p class="why-step">Bu buyruq hech narsani o'zgartirmaydi.</p>
+        <div class="cmd" data-cmd="git reflog -5">git reflog -5
+<span class="out">49dd82e HEAD@{0}: reset: moving to HEAD~2</span>
+<span class="out">5b7c611 HEAD@{1}: commit: Reflog mashqi: MUHIM ISH</span>
+<span class="out">b881146 HEAD@{2}: commit: Reflog mashqi: ikkinchi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>HEAD@{0}</code> — falokat
+        (<code>reset:</code>), <code>HEAD@{1}</code> — <b>yo'qolgan «MUHIM ISH»</b>.
+        U yo'qolmagan ekan! <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Qaytaring</p>
+        <p class="why-step">Falokatdan bir qadam oldingi holatga qaytamiz.</p>
+        <div class="cmd" data-cmd="git reset --hard HEAD@{1}">git reset --hard HEAD@{1}
+<span class="out">HEAD is now at 5b7c611 Reflog mashqi: MUHIM ISH</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>git log --oneline -3</code> —
+        uchala commit ham joyida. <code>cat rl.txt</code> — <code>1 2 3</code>.
+        <b>To'liq tiklandi. 2-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — o'chirilgan branch'ni qaytarish</h3>
+    <ol class="steps">
+      <li>
+        <p>Branch yaratib, unda ish qiling</p>
+        <div class="cmd" data-cmd='git switch -c muhim-branch && echo "juda muhim ish" > muhim.txt && git add muhim.txt && git commit -m "Juda muhim ish"'>git switch -c muhim-branch &amp;&amp; echo "juda muhim ish" &gt; muhim.txt &amp;&amp; git add muhim.txt &amp;&amp; git commit -m "Juda muhim ish"</div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi branch va commit.</p>
+      </li>
+
+      <li>
+        <p>💥 Falokat: branch'ni majburan o'chiring</p>
+        <p class="why-step"><code>-D</code> (katta harf) — «merge qilinmagan bo'lsa ham
+        o'chir». <code>-d</code> bunday holatda ruxsat bermagan bo'lardi
+        (<a href="0007-merge.html">7-dars</a>).</p>
+        <div class="cmd" data-cmd="git switch main && git branch -D muhim-branch">git switch main &amp;&amp; git branch -D muhim-branch
+<span class="out">Deleted branch muhim-branch (was e6c0d99).</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>git branch</code> deng —
+        branch yo'q. <code>ls muhim.txt</code> — fayl ham yo'q. 😱<br>
+        <b>Lekin diqqat:</b> Git «<b>was e6c0d99</b>» deb hash'ni <b>o'zi aytib
+        turibdi</b> — qutqarish kaliti shu yerda.</p>
+      </li>
+
+      <li>
+        <p>Hash'ni toping</p>
+        <p class="why-step">Yuqoridagi xabarni o'tkazib yuborgan bo'lsangiz —
+        reflogda ham bor.</p>
+        <div class="cmd" data-cmd="git reflog -4">git reflog -4
+<span class="out">5b7c611 HEAD@{0}: checkout: moving from muhim-branch to main</span>
+<span class="out">e6c0d99 HEAD@{1}: commit: Juda muhim ish</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>HEAD@{1}</code> da
+        «Juda muhim ish» va uning hash'i. Sizdagi hash boshqacha bo'ladi — <b>o'zingiznikini
+        yozing</b>.</p>
+      </li>
+
+      <li>
+        <p>Branch'ni qayta tiklang</p>
+        <p class="why-step">Branch — bu shunchaki <b>yorliq</b>
+        (<a href="0006-branch.html">6-dars</a>). Uni istalgan commitda qayta
+        yaratish mumkin.</p>
+        <div class="cmd" data-cmd="git switch -c muhim-branch e6c0d99">git switch -c muhim-branch e6c0d99
+<span class="out">Switched to a new branch 'muhim-branch'</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ⚠️ <code>e6c0d99</code> o'rniga
+        <b>o'zingizning hash'ingizni</b> yozing. Keyin <code>ls muhim.txt</code> deng —
+        <b>fayl qaytdi!</b> <b>3-g'alaba.</b> 🎉🎉</p>
+      </li>
+    </ol>
+
+    <div class="callout win">
+      <span class="label">Endi nimani his qilishingiz kerak</span>
+      <p>Siz ikki marta «yo'qotdim» deb o'ylagan ishni qaytardingiz. Bundan keyin
+      <code>reset --hard</code> ham, <code>rebase</code> ham sizni qo'rqitmasligi
+      kerak — chunki ostingizda to'r bor.</p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d14c1"><label for="d14c1">Falokat bo'lsa birinchi buyruq — <code>git reflog</code></label></li>
+      <li><input type="checkbox" id="d14c2"><label for="d14c2"><code>HEAD@{1}</code> = «bir qadam oldin»</label></li>
+      <li><input type="checkbox" id="d14c3"><label for="d14c3"><code>reset --hard</code> dan qaytardim 🎉</label></li>
+      <li><input type="checkbox" id="d14c4"><label for="d14c4">O'chirilgan branch'ni <code>switch -c nom &lt;hash&gt;</code> bilan tikladim 🎉</label></li>
+      <li><input type="checkbox" id="d14c5"><label for="d14c5">Reflog <b>commit qilinmagan</b> ishni qaytara olmasligini bilaman</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda <b>ataylab ikki marta falokat</b> yasaysiz va ikkalasidan ham
+    chiqasiz: <code>reset --hard HEAD~2</code> bilan ikkita commitni yo'qotib,
+    reflogdan topib qaytarasiz; keyin branch'ni <code>-D</code> bilan o'chirib,
+    hash orqali qayta tiklaysiz. 8 qadam, hammasi nusxa papkada.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> <code>reset --hard</code> bilan commitlarni yo'qotdingiz. Birinchi buyruq?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git reflog</code> — yo'qolgan holatni topaman</button></li>
+      <li><button class="quiz-option"><code>git clone</code> — repo'ni GitHub'dan qaytadan olaman</button></li>
+      <li><button class="quiz-option"><code>git status</code> — nima o'zgarganini ko'raman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Reflog — HEAD qayerda bo'lganining yozuvi.
+    U hech narsani o'zgartirmaydi, shuning uchun bemalol qarayvering.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> <code>HEAD@{1}</code> nimani anglatadi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Bir qadam oldin HEAD turgan joy</button></li>
+      <li><button class="quiz-option">Birinchi commit — tarixning eng boshi</button></li>
+      <li><button class="quiz-option">Birinchi branch — repo yaratilgandagi holat</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. <code>HEAD@{0}</code> — hozirgi joy,
+    <code>HEAD@{1}</code> — undan oldingisi. Hash o'rniga shuni yozsa ham bo'ladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Reflog nimani qaytara OLMAYDI?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Commit qilinmagan o'zgarishni — u hech qayerda yozilmagan</button></li>
+      <li><button class="quiz-option">O'chirilgan branch'ni — yorliq butunlay yo'qoladi</button></li>
+      <li><button class="quiz-option"><code>rebase</code> dan oldingi holatni</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri, va bu 3-darsdagi oltin qoidaning sababi:
+    <b>commit qilingan narsa xavfsiz</b>, chunki u reflogda iz qoldiradi.
+    Commit qilinmagani esa hech qayerda yo'q.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Reflog zaxira nusxa vazifasini o'taydimi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Yo'q — u faqat sizning kompyuteringizda, push qilinmaydi</button></li>
+      <li><button class="quiz-option">Ha — u GitHub'ga commitlar bilan birga ketadi</button></li>
+      <li><button class="quiz-option">Ha — <code>clone</code> qilganda u ham ko'chiriladi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Reflog — <a href="0012-git-stash.html">stash</a>
+    kabi mahalliy. Haqiqiy zaxira — <code>git push</code>.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>Reflog nima yozib boradi?</summary>
+      <div class="answer"><p><b>HEAD qayerda bo'lganini</b> — har bir commit, switch,
+      merge, rebase, reset. Ya'ni siz bosib o'tgan yo'l.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Nega «o'chirilgan» commit qaytariladi?</summary>
+      <div class="answer"><p>Chunki commit repozitoriyada <b>qolaveradi</b> —
+      faqat unga ishora qiluvchi yorliq yo'qoladi. Reflog o'sha ishorani saqlaydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Qutqarishning uch qadami?</summary>
+      <div class="answer"><p><b>1.</b> <code>git reflog</code> ·
+      <b>2.</b> yaxshi holatning hash'ini toping ·
+      <b>3.</b> <code>git reset --hard &lt;hash&gt;</code> yoki
+      <code>git switch -c nom &lt;hash&gt;</code>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>O'chirilgan branch'ni qanday tiklaysiz?</summary>
+      <div class="answer"><p><code>git switch -c branch-nomi &lt;hash&gt;</code>.
+      Hash o'chirish xabarida ham bor: «Deleted branch X (<b>was e6c0d99</b>)».</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Reflogning ikkita chegarasi?</summary>
+      <div class="answer"><p><b>1.</b> Commit qilinmagan ishni qaytara olmaydi ·
+      <b>2.</b> Faqat mahalliy — push qilinmaydi, zaxira emas. Muddat ~90 kun.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: 3-darsdagi oltin qoida — va endi uning sababi?</summary>
+      <div class="answer"><p>«Commit qilingan narsani yo'qotish juda qiyin».
+      Sababi — <b>reflog</b>: har commit unda iz qoldiradi.
+      (<a href="0003-xatoni-qaytarish.html">Dars 03</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Reflog</b> = HEAD qayerda bo'lganining mahalliy yozuvi. Himoya to'ri.</li>
+      <li>Falokat bo'lsa <b>birinchi buyruq:</b> <code>git reflog</code>
+      (u hech narsani o'zgartirmaydi).</li>
+      <li><code>HEAD@{1}</code> = bir qadam oldin. Hash o'rniga ishlatsa bo'ladi.</li>
+      <li><b>reset --hard dan qaytish:</b> <code>git reset --hard HEAD@{1}</code></li>
+      <li><b>O'chirilgan branch:</b> <code>git switch -c nom &lt;hash&gt;</code>
+      (hash o'chirish xabarida ham bor).</li>
+      <li>⚠️ <b>Commit qilinmagan</b> ishni qaytara olmaydi → tez-tez commit qiling.</li>
+      <li>⚠️ Mahalliy va ~90 kunlik. Haqiqiy zaxira — <code>git push</code>.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 10.7-bo'lim — "Maintenance and Data Recovery":
+    <a href="https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery">git-scm.com/book</a>.
+    Yo'qolgan ma'lumotni topishning chuqurroq usullari ham shu yerda.<br>
+    Barcha imkoniyatlari: <a href="https://git-scm.com/docs/git-reflog">git-reflog hujjati</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>«Hammasini yo'qotdim» degan holat bo'lsa — hech narsa qilmasdan menga
+    yozing.</b> <code>git reflog</code> natijasini to'liq ko'chirib tashlang,
+    birga topamiz. Muhim: shoshib yana <code>reset</code> yoki <code>--force</code>
+    qilmang — avval qaraymiz. Deyarli har doim qaytariladi.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0013-git-rebase.html">Oldingi: git rebase</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Git hujjatlari — <a href="https://git-scm.com/docs/git-reflog">git-reflog</a>.</li>
+      <li id="fn2">Standart muddatlar: <code>gc.reflogExpire</code> 90 kun,
+      <code>gc.reflogExpireUnreachable</code> 30 kun —
+      <a href="https://git-scm.com/docs/git-gc">git-gc</a>.</li>
+      <li id="fn3">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery">Git Internals: Maintenance and Data Recovery</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

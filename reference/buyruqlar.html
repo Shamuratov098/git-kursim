@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12 (stash)</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a></span>
   </p>
 
   <div class="callout tip">
@@ -630,11 +630,73 @@
     <b>branch ochib commit qiling</b>.</p>
   </div>
 
+  <h2>14. <code>git rebase</code> — chiziqli tarix (Dars 13)</h2>
+
+  <div class="callout warning">
+    <span class="label">🔴 Oltin qoida</span>
+    <p><b>Push qilingan commitlarni hech qachon rebase qilmang.</b> Rebase
+    <b>yangi</b> commitlar yaratadi (hash o'zgaradi); eskilari hamkasblaringizda
+    qoladi va ikki tarix mos kelmaydi. <b>Shubha bo'lsa — <code>merge</code>.</b></p>
+  </div>
+
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git rebase main</code></td>
+        <td>O'z branch'ingizda turib: commitlaringizni eng yangi <code>main</code>
+        ustiga qayta qo'yadi. Tarix to'g'ri chiziq bo'ladi.</td>
+      </tr>
+      <tr>
+        <td><code>git rebase --abort</code></td>
+        <td><b>Qochish yo'li.</b> Rebase boshlangunga qadar bo'lgan holatga qaytaradi.
+        <span class="note-cell">✓ Xavfsiz. Chalkashsangiz — birinchi shu.</span></td>
+      </tr>
+      <tr>
+        <td><code>git rebase --continue</code></td>
+        <td>Konfliktni hal qilib <code>git add</code> qilgandan keyin davom ettiradi.
+        <span class="note-cell">Merge'dagi <code>git commit</code>ning o'rnida.
+        Tahrirlagich ochilmasin desangiz oldiga
+        <code>GIT_EDITOR=true</code> qo'ying.</span></td>
+      </tr>
+      <tr>
+        <td><code>git rebase --skip</code></td>
+        <td>Shu commitni tashlab ketadi. <span class="note-cell">Kamdan-kam kerak.</span></td>
+      </tr>
+      <tr>
+        <td><code>git pull --rebase</code></td>
+        <td>Pull qilganda merge o'rniga rebase.
+        <span class="note-cell">Xavfsiz — faqat mahalliy, push qilinmagan
+        commitlaringizga tegadi.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">⚠️ Rebase konfliktida belgilar TESKARI</span>
+    <p>Merge'da <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> = <b>sizniki</b> edi.
+    Rebase'da esa <code>HEAD</code> = <b><code>main</code>niki</b>, pastdagisi —
+    <b>sizniki</b>. Adashmaslik uchun: pastki qatorda <b>sizning commit izohingiz</b>
+    yozilgan bo'ladi.</p>
+  </div>
+
+  <h3>merge yoki rebase?</h3>
+  <table class="sheet">
+    <thead><tr><th></th><th><code>merge</code></th><th><code>rebase</code></th></tr></thead>
+    <tbody>
+      <tr><td><b>Tarix</b></td><td>Ajralish saqlanadi</td><td>To'g'ri chiziq</td></tr>
+      <tr><td><b>Commitlar</b></td><td>O'zgarmaydi</td><td>Yangidan yaratiladi</td></tr>
+      <tr><td><b>Xavfsizlik</b></td><td>✓ Har doim</td><td>⚠️ Push qilingan bo'lsa xavfli</td></tr>
+      <tr><td><b>Qachon</b></td><td>Shubha bo'lsa — shu</td><td>O'z, push qilinmagan branch</td></tr>
+    </tbody>
+  </table>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning barcha buyruqlari bor.
-    Hali qo'shilmagan mavzular: <code>rebase</code>, <code>cherry-pick</code>,
-    <code>reflog</code>, GitHub Actions — kerak bo'lsa ayting, dars qo'shamiz.
+    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–13) barcha
+    buyruqlari bor. Hali qo'shilmagan mavzular: <code>cherry-pick</code>,
+    <code>reflog</code>, <code>rebase -i</code> (commitlarni birlashtirish),
+    GitHub Actions — kerak bo'lsa ayting, dars qo'shamiz.
     <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 

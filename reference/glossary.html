@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 41 ta</span>
+    <span>Atamalar: 42 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -53,6 +53,7 @@
     <li><a href="#review">code review</a></li>
     <li><a href="#fork">fork</a></li>
     <li><a href="#gitignore">.gitignore</a></li>
+    <li><a href="#rebase">rebase</a></li>
     <li><a href="#stash">stash</a></li>
     <li><a href="#readme">README.md</a></li>
     <li><a href="#markdown">Markdown</a></li>
@@ -270,6 +271,17 @@
       ⚠️ <b>Allaqachon commit qilingan faylga ta'sir qilmaydi</b> — avval
       <code>git rm --cached fayl</code>.
       <span class="eg">*.log · .env · node_modules/</span></dd>
+    </div>
+
+    <div class="term" id="rebase">
+      <dt>rebase <span class="uz">— poydevorni almashtirish</span></dt>
+      <dd>Commitlaringizni «ko'tarib olib», eng yangi <a href="#main">main</a> ustiga
+      <b>qayta qo'yish</b>. Natijada tarix <a href="#merge-commit">merge commit</a>siz,
+      to'g'ri chiziq bo'ladi. ⚠️ Commitlarni ko'chirmaydi — <b>yangisini yaratadi</b>
+      (<a href="#hash">hash</a> o'zgaradi).
+      <b>🔴 Oltin qoida: push qilingan commitlarni rebase qilmang.</b>
+      Shubha bo'lsa — <a href="#merge">merge</a>.
+      <span class="eg">git rebase main · --continue · --abort</span></dd>
     </div>
 
     <div class="term" id="stash">

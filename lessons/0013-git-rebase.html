@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 13 — git rebase: tarixni to'g'ri chiziqqa keltirish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 13 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1><code>git rebase</code>: tarixni to'g'ri chiziqqa keltirish</h1>
+  <p class="lead">Bu darsdan keyin siz <code>rebase</code> nima qilishini aniq
+  tushunasiz, uni <b>xavfsiz</b> ishlatasiz — va eng muhimi, uni <b>qachon
+  ishlatmaslik</b> kerakligini bilasiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 10 daqiqa</span>
+    <span>💻 Amaliyot ≈ 16 daqiqa</span>
+    <span>Kerak: <a href="0010-kundalik-jamoa-ritmi.html">Dars 10</a>,
+    <a href="0008-merge-conflict.html">08</a></span>
+  </p>
+
+  <div class="callout warning">
+    <span class="label">Bu — kursdagi eng ehtiyot talab qiladigan mavzu</span>
+    <p><code>rebase</code> <b>tarixni o'zgartiradi</b>. To'g'ri ishlatilsa — chiroyli,
+    noto'g'ri ishlatilsa — jamoangizga muammo keltiradi. Shuning uchun bu darsda
+    buyruqdan ko'ra <b>qoida</b> muhimroq. Qoidani yodlab olsangiz, qolgani oson.</p>
+  </div>
+
+  <h2>Muammo: 10-darsdagi merge commitlar</h2>
+  <p><a href="0010-kundalik-jamoa-ritmi.html">10-darsda</a> branch eskirganda
+  <code>git merge main --no-edit</code> qilgan edik. U ishladi, lekin har safar
+  <b>merge commit</b> qoldirdi. Uzoq loyihada tarix shunday ko'rinadi:</p>
+
+  <div class="cmd" data-cmd="git log --oneline --graph">git log --oneline --graph
+<span class="out">*   9a8b7c6 Merge branch 'main' into login</span>
+<span class="out">|\</span>
+<span class="out">| * 5d4e3f2 Hamkasb ishi</span>
+<span class="out">* | 1a2b3c4 Mening ishim</span>
+<span class="out">|/</span>
+<span class="out">*   7f6e5d4 Merge branch 'main' into login</span>
+<span class="out">|\</span></div>
+
+  <p>Har kuni <code>merge main</code> qilsangiz — har kuni bitta merge commit. Ular
+  hech qanday ish qilmaydi, faqat «shu kuni yangiladim» deb turadi. Ba'zi jamoalar
+  buni <b>shovqin</b> deb hisoblaydi va tarix <b>to'g'ri chiziq</b> bo'lishini xohlaydi.</p>
+
+  <h2><code>rebase</code> nima qiladi</h2>
+  <p>Sodda qilib: sizning commitlaringizni «ko'tarib olib», <b>eng yangi
+  <code>main</code>ning ustiga qayta qo'yadi</b>.<a class="cite" href="#fn1">1</a>
+  Go'yo siz ishni boshidanoq yangi <code>main</code> ustida yozgandek bo'lasiz.</p>
+
+  <p><b>Oldin</b> — yo'llar ajralgan (<a href="0007-merge.html">7-darsdagi</a> tanish holat):</p>
+
+  <div class="cgraph-svg">
+    <svg viewBox="0 0 460 145" role="img" aria-labelledby="rb1">
+      <title id="rb1">Ajralish: mening-ishim c4 da, main c3 da, ikkalasi c2 dan chiqqan</title>
+      <g stroke="var(--accent)" stroke-opacity="0.4" stroke-width="2.5" fill="none">
+        <path d="M70 100 H250"/>
+        <path d="M160 100 L250 48"/>
+      </g>
+      <g fill="var(--accent)">
+        <circle cx="70" cy="100" r="7"/>
+        <circle cx="160" cy="100" r="7"/>
+        <circle cx="250" cy="100" r="7"/>
+        <circle cx="250" cy="48" r="7"/>
+      </g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle">
+        <text x="70" y="122">c1</text>
+        <text x="160" y="122">c2</text>
+        <text x="250" y="122">c3</text>
+        <text x="250" y="34">c4</text>
+      </g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+        <rect x="286" y="38" rx="9" width="98" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="335" y="52" fill="var(--good)" text-anchor="middle">mening-ishim</text>
+        <rect x="286" y="90" rx="9" width="48" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="310" y="104" fill="var(--good)" text-anchor="middle">main</text>
+      </g>
+    </svg>
+  </div>
+  <p class="cgraph-cap">Sizning <code>c4</code> commitingiz eski poydevorda
+  (<code>c2</code>) turibdi.</p>
+
+  <p><b>Keyin</b> — <code>git rebase main</code> dan so'ng:</p>
+
+  <div class="cgraph-svg">
+    <svg viewBox="0 0 460 145" role="img" aria-labelledby="rb2">
+      <title id="rb2">Rebase'dan keyin: to'g'ri chiziq, c4 yangi c4-shtrix commitga aylandi</title>
+      <g stroke="var(--accent)" stroke-opacity="0.4" stroke-width="2.5" fill="none">
+        <path d="M70 100 H340"/>
+      </g>
+      <g fill="var(--accent)">
+        <circle cx="70" cy="100" r="7"/>
+        <circle cx="160" cy="100" r="7"/>
+        <circle cx="250" cy="100" r="7"/>
+      </g>
+      <circle cx="340" cy="100" r="9" fill="var(--warn-bg)" stroke="var(--warn)" stroke-width="3.5"/>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle">
+        <text x="70" y="122">c1</text>
+        <text x="160" y="122">c2</text>
+        <text x="250" y="122">c3</text>
+        <text x="340" y="126">c4′</text>
+      </g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+        <rect x="212" y="66" rx="9" width="48" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="236" y="80" fill="var(--good)" text-anchor="middle">main</text>
+        <rect x="360" y="66" rx="9" width="98" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="409" y="80" fill="var(--good)" text-anchor="middle">mening-ishim</text>
+      </g>
+    </svg>
+  </div>
+  <p class="cgraph-cap">Tarix — <b>to'g'ri chiziq</b>. Merge commit yo'q.
+  Lekin <code>c4</code> yo'qoldi va o'rniga <b>yangi</b> <code>c4′</code> paydo bo'ldi.</p>
+
+  <div class="callout win">
+    <span class="label">Eng muhim texnik haqiqat</span>
+    <p><b><code>rebase</code> commitlarni ko'chirmaydi — u <i>yangi</i> commitlar
+    yaratadi.</b> Ichidagi o'zgarish bir xil, lekin <b>hash boshqa</b>
+    (<code>4c7788c</code> → <code>8d72cdc</code>). Eskilari tashlab yuboriladi.</p>
+    <p>Mana shuning uchun bu «tarixni qayta yozish» deb ataladi — va mana shuning
+    uchun quyidagi qoida bor.</p>
+  </div>
+
+  <h2>🔴 Oltin qoida — bittasi, lekin qat'iy</h2>
+
+  <div class="callout warning">
+    <span class="label">Rebase'ning oltin qoidasi</span>
+    <p><b>Push qilingan — ya'ni boshqalar ko'rgan — commitlarni hech qachon
+    rebase qilmang.</b><a class="cite" href="#fn2">2</a></p>
+  </div>
+
+  <p><b>Nega?</b> Rebase yangi commitlar yaratadi. Agar eskilari allaqachon GitHub'da
+  bo'lsa va hamkasbingiz ularni olgan bo'lsa:</p>
+  <ul>
+    <li>Sizda — yangi commitlar (yangi hash);</li>
+    <li>Unda — eski commitlar;</li>
+    <li>Git ikkalasini <b>butunlay boshqa tarix</b> deb ko'radi.</li>
+  </ul>
+  <p>Push qilmoqchi bo'lsangiz, Git rad etadi
+  (<a href="0010-kundalik-jamoa-ritmi.html"><code>! [rejected]</code></a>) va
+  «<code>--force</code> qil» degan maslahat topasiz. <code>--force</code> esa
+  hamkasbingizning ishini o'chirib yuborishi mumkin. Shuning uchun:</p>
+
+  <div class="callout win">
+    <span class="label">Boshlovchi uchun xavfsiz shakl</span>
+    <p><b>Faqat o'zingizning, hali push qilinmagan branch'ingizni rebase qiling.</b></p>
+    <p>Shubhangiz bo'lsa — <code>merge</code> ishlating. U <b>har doim</b> xavfsiz
+    (<a href="0007-merge.html">7-dars</a>). Merge bilan hech kim jarohatlanmagan.</p>
+  </div>
+
+  <h2><code>merge</code> yoki <code>rebase</code>?</h2>
+  <p>Ikkalasi ham <b>bir xil natija</b> beradi — fayllaringiz oxirida bir xil bo'ladi.
+  Farq faqat <b>tarixning ko'rinishida</b>:</p>
+
+  <table class="sheet">
+    <thead><tr><th></th><th><code>merge</code></th><th><code>rebase</code></th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Tarix</b></td>
+        <td>Ajralish saqlanadi — <b>rostgo'y</b></td>
+        <td>To'g'ri chiziq — <b>toza</b></td>
+      </tr>
+      <tr>
+        <td><b>Commitlar</b></td>
+        <td>O'zgarmaydi</td>
+        <td><b>Yangidan yaratiladi</b> (hash o'zgaradi)</td>
+      </tr>
+      <tr>
+        <td><b>Xavfsizlik</b></td>
+        <td>✓ Har doim xavfsiz</td>
+        <td>⚠️ Push qilingan bo'lsa — xavfli</td>
+      </tr>
+      <tr>
+        <td><b>Qachon</b></td>
+        <td>Shubha bo'lsa — <b>shu</b></td>
+        <td>O'z, hali push qilinmagan branch'da</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout note">
+    <span class="label">Jamoalar turlicha qaror qiladi</span>
+    <p>Ba'zi jamoalar faqat merge ishlatadi, ba'zilari rebase talab qiladi.
+    Ikkalasi ham to'g'ri — bu <b>did</b> masalasi. Ish joyingizga borganingizda
+    «bu yerda qaysi tartib?» deb <b>so'rang</b> va o'shanga moslashing.</p>
+  </div>
+
+  <h2>Rebase paytida konflikt</h2>
+  <p>Konflikt bo'lishi mumkin — <a href="0008-merge-conflict.html">8-darsdagi</a>
+  kabi. Lekin uch farq bor.</p>
+
+  <h3>1. Boshqa buyruqlar</h3>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git rebase --abort</code></td>
+        <td><b>Qochish yo'li.</b> Rebase boshlangunga qadar bo'lgan holatga qaytaradi.
+        <span class="note-cell">✓ Xavfsiz. Chalkashsangiz — birinchi shuni eslang.</span></td>
+      </tr>
+      <tr>
+        <td><code>git rebase --continue</code></td>
+        <td>Konfliktni hal qilib <code>git add</code> qilgandan keyin — davom ettiradi.
+        <span class="note-cell">Merge'dagi <code>git commit</code>ning o'rnida.</span></td>
+      </tr>
+      <tr>
+        <td><code>git rebase --skip</code></td>
+        <td>Shu commitni butunlay tashlab ketadi. <span class="note-cell">Kamdan-kam
+        kerak — ishonchingiz komil bo'lmasa ishlatmang.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>2. ⚠️ Belgilar TESKARI bo'ladi</h3>
+  <p>Bu — eng chalkash joy, shuning uchun alohida ta'kidlayman.</p>
+  <p><a href="0008-merge-conflict.html">Merge'da</a> <code>HEAD</code> = <b>siz turgan
+  branch</b> edi. Rebase'da esa Git commitlaringizni <code>main</code> ustiga
+  <b>bitta-bitta qo'yib chiqadi</b> — shuning uchun o'sha payt «asos» bo'lib
+  <code>main</code> turadi:</p>
+
+  <div class="conflict">
+    <div class="cf-file">salom.txt — REBASE paytidagi konflikt</div>
+    <div class="cf-line mark">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div>
+    <div class="cf-line theirs">Salom, dunyo!<span class="cf-note">main'niki</span></div>
+    <div class="cf-line mark">=======</div>
+    <div class="cf-line ours">Assalomu alaykum!<span class="cf-note">SIZNIKI</span></div>
+    <div class="cf-line mark">&gt;&gt;&gt;&gt;&gt;&gt;&gt; b353b15 (Branch: uzun salom)</div>
+  </div>
+
+  <p>Ya'ni <b>yuqoridagi — main'niki, pastdagi — sizniki</b>. Merge'dagining
+  <b>aksi</b>. Adashmaslik uchun oson yo'l: pastdagi qatorda <b>commit izohingiz
+  yozilgan bo'ladi</b> — o'shanga qarang.</p>
+
+  <h3>3. Har commit uchun alohida</h3>
+  <p>Branch'ingizda 3 ta commit bo'lsa, konflikt <b>uch marta</b> chiqishi mumkin —
+  har biri uchun alohida hal qilib, har safar <code>--continue</code> deysiz.
+  Terminalda <code>Rebasing (2/3)</code> kabi yozuv qayerdaligingizni ko'rsatib turadi.</p>
+
+  <h2><code>git pull --rebase</code> — 10-darsdagi sozlama shu edi</h2>
+  <p><a href="0010-kundalik-jamoa-ritmi.html">10-darsda</a> bir martalik sozlama
+  qilgandik:</p>
+  <div class="cmd" data-cmd="git config --global pull.rebase false">git config --global pull.rebase false</div>
+  <p>Endi u nimani anglatishini tushunasiz: «<code>pull</code> qilganda, ajralish bo'lsa
+  <b>merge</b> ishlat» degan edik. Muqobili — <code>true</code>, ya'ni rebase.</p>
+  <p>Bir martalik sinab ko'rish uchun sozlamani o'zgartirish shart emas:</p>
+  <div class="cmd" data-cmd="git pull --rebase">git pull --rebase</div>
+  <p>Bu xavfsiz, chunki u <b>faqat sizning mahalliy, hali push qilinmagan</b>
+  commitlaringizni qayta joylashtiradi. Ko'p jamoalar aynan shuni tavsiya qiladi.</p>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: rebase'ni xavfsiz muhitda sinab ko'ramiz</h2>
+    <p>Mashq <b>nusxa papkada</b> (<code>~/Projects/Learn/Git-nusxa</code>) va
+    <b>push yo'q</b> — ya'ni oltin qoidani buzmaymiz.</p>
+
+    <div class="callout note">
+      <span class="label">Tahrirlagich haqida</span>
+      <p><code>git rebase --continue</code> odatda commit izohini tasdiqlash uchun
+      matn tahrirlagichini ochadi. Mashqda chalkashmaslik uchun buyruq oldiga
+      <code>GIT_EDITOR=true</code> qo'shamiz — bu «tahrirlagich ochilmasin, izoh
+      o'z holicha qolsin» degani.</p>
+      <p>Haqiqiy ishda tahrirlagich ochilsa: <kbd>Ctrl</kbd>+<kbd>X</kbd> (nano) yoki
+      <kbd>Esc</kbd> keyin <code>:wq</code> (vim). Bir martalik yechim:
+      <code>git config --global core.editor nano</code>.</p>
+    </div>
+
+    <h3>A qism — oddiy rebase</h3>
+    <ol class="steps">
+      <li>
+        <p>Tayyorgarlik</p>
+        <p class="why-step">Toza boshlanish nuqtasi yaratamiz.</p>
+        <div class="cmd" data-cmd='cd ~/Projects/Learn/Git-nusxa && git switch main && echo "Baza" > rb-baza.txt && git add rb-baza.txt && git commit -m "Rebase mashqi: baza"'>cd ~/Projects/Learn/Git-nusxa &amp;&amp; git switch main &amp;&amp; echo "Baza" &gt; rb-baza.txt &amp;&amp; git add rb-baza.txt &amp;&amp; git commit -m "Rebase mashqi: baza"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>1 file changed</code>.</p>
+      </li>
+
+      <li>
+        <p>Branch ochib, «o'z ishingizni» qiling</p>
+        <div class="cmd" data-cmd='git switch -c mening-ishim && echo "Mening ishim." > meniki.txt && git add meniki.txt && git commit -m "Mening ishim qo&apos;shildi"'>git switch -c mening-ishim &amp;&amp; echo "Mening ishim." &gt; meniki.txt &amp;&amp; git add meniki.txt &amp;&amp; git commit -m "Mening ishim qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi branch va commit.</p>
+      </li>
+
+      <li>
+        <p>Commitingizning hash'ini yozib oling</p>
+        <p class="why-step">Bu muhim — rebase'dan keyin taqqoslaymiz.</p>
+        <div class="cmd" data-cmd="git log --oneline -1">git log --oneline -1
+<span class="out">4c7788c Mening ishim qo'shildi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> 7 belgili hash. <b>Uni eslab qoling</b>
+        (sizda boshqacha bo'ladi).</p>
+      </li>
+
+      <li>
+        <p>«Hamkasbingiz» <code>main</code>ga ish qo'shsin</p>
+        <p class="why-step">Bu ajralishni yaratadi.</p>
+        <div class="cmd" data-cmd='git switch main && echo "Hamkasb ishi." > rb-hamkasb.txt && git add rb-hamkasb.txt && git commit -m "Hamkasb ishi qo&apos;shildi"'>git switch main &amp;&amp; echo "Hamkasb ishi." &gt; rb-hamkasb.txt &amp;&amp; git add rb-hamkasb.txt &amp;&amp; git commit -m "Hamkasb ishi qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit yaratildi.</p>
+      </li>
+
+      <li>
+        <p>Ajralishni ko'ring</p>
+        <div class="cmd" data-cmd="git log --oneline --graph --all -4">git log --oneline --graph --all -4
+<span class="out">* 9876e39 Hamkasb ishi qo'shildi</span>
+<span class="out">| * 4c7788c Mening ishim qo'shildi</span>
+<span class="out">|/</span>
+<span class="out">* eadb7cb Rebase mashqi: baza</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>|/</code> belgisi — ikki yo'l
+        ajralgan. Rasmdagi «oldin» holati.</p>
+      </li>
+
+      <li>
+        <p>🔑 Rebase qiling</p>
+        <p class="why-step">O'z branch'ingizda turib. Yo'nalish merge'dagidek:
+        <b>kimning ustiga qo'ymoqchi bo'lsangiz — o'shani yozasiz</b>.</p>
+        <div class="cmd" data-cmd="git switch mening-ishim && git rebase main">git switch mening-ishim &amp;&amp; git rebase main
+<span class="out">Successfully rebased and updated refs/heads/mening-ishim.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Successfully rebased».
+        <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Natijani ko'ring — ikki narsaga e'tibor bering</p>
+        <div class="cmd" data-cmd="git log --oneline --graph --all -4">git log --oneline --graph --all -4
+<span class="out">* 8d72cdc Mening ishim qo'shildi</span>
+<span class="out">* 9876e39 Hamkasb ishi qo'shildi</span>
+<span class="out">* eadb7cb Rebase mashqi: baza</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ikkita muhim o'zgarish —<br>
+        <b>1.</b> <code>|/</code> yo'q: tarix <b>to'g'ri chiziq</b>;<br>
+        <b>2.</b> commitingiz hash'i <b>o'zgargan</b> (<code>4c7788c</code> →
+        <code>8d72cdc</code>) — bu <b>yangi commit</b>. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — konfliktli rebase</h3>
+    <ol class="steps">
+      <li>
+        <p>Konflikt uchun holat yarating</p>
+        <p class="why-step">Bitta faylning bitta qatorini ikki tomondan o'zgartiramiz
+        (<a href="0008-merge-conflict.html">8-darsdagi</a> retsept).</p>
+        <div class="cmd" data-cmd='git switch main && echo "Salom!" > rb-salom.txt && git add rb-salom.txt && git commit -m "Salom fayli"'>git switch main &amp;&amp; echo "Salom!" &gt; rb-salom.txt &amp;&amp; git add rb-salom.txt &amp;&amp; git commit -m "Salom fayli"</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit yaratildi.</p>
+      </li>
+
+      <li>
+        <p>Branch'da o'zgartiring</p>
+        <div class="cmd" data-cmd='git switch -c konflikt-branch && echo "Assalomu alaykum!" > rb-salom.txt && git commit -am "Branch: uzun salom"'>git switch -c konflikt-branch &amp;&amp; echo "Assalomu alaykum!" &gt; rb-salom.txt &amp;&amp; git commit -am "Branch: uzun salom"</div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi branch va commit.</p>
+      </li>
+
+      <li>
+        <p><code>main</code>da <b>o'sha qatorni</b> boshqacha o'zgartiring</p>
+        <div class="cmd" data-cmd='git switch main && echo "Salom, dunyo!" > rb-salom.txt && git commit -am "Main: dunyo qo&apos;shildi"'>git switch main &amp;&amp; echo "Salom, dunyo!" &gt; rb-salom.txt &amp;&amp; git commit -am "Main: dunyo qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit. Endi konflikt muqarrar.</p>
+      </li>
+
+      <li>
+        <p>💥 Rebase qiling</p>
+        <div class="cmd" data-cmd="git switch konflikt-branch && git rebase main">git switch konflikt-branch &amp;&amp; git rebase main
+<span class="out">CONFLICT (content): Merge conflict in rb-salom.txt</span>
+<span class="out">error: could not apply b353b15... Branch: uzun salom</span>
+<span class="out">hint: Resolve all conflicts manually, mark them as resolved with</span>
+<span class="out">hint: "git add/rm &lt;conflicted_files&gt;", then run "git rebase --continue".</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> CONFLICT va Git'ning aniq
+        maslahati. E'tibor bering: <code>git commit</code> emas,
+        <b><code>git rebase --continue</code></b> deyilgan.</p>
+      </li>
+
+      <li>
+        <p>Belgilarni ko'ring — teskari ekaniga ishonch hosil qiling</p>
+        <p class="why-step">Darsning eng chalkash joyi — o'z ko'zingiz bilan ko'ring.</p>
+        <div class="cmd" data-cmd="cat rb-salom.txt">cat rb-salom.txt
+<span class="out">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="out">Salom, dunyo!</span>
+<span class="out">=======</span>
+<span class="out">Assalomu alaykum!</span>
+<span class="out">&gt;&gt;&gt;&gt;&gt;&gt;&gt; b353b15 (Branch: uzun salom)</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> yuqorida <code>main</code>niki
+        («Salom, dunyo!»), pastda <b>sizniki</b> («Assalomu alaykum!») — va pastki
+        qatorda <b>sizning commit izohingiz</b> turibdi. Merge'dagining aksi.</p>
+      </li>
+
+      <li>
+        <p>Avval qochish yo'lini sinab ko'ring</p>
+        <p class="why-step">Ishonch uchun: chalkashsangiz orqaga qaytish mumkin.</p>
+        <div class="cmd" data-cmd="git rebase --abort && git status --short">git rebase --abort &amp;&amp; git status --short</div>
+        <p class="expect"><b>Kutilgan natija:</b> hech narsa chiqmaydi —
+        toza. <code>cat rb-salom.txt</code> deng: belgilar yo'q, faqat sizning
+        variantingiz. <b>3-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Qayta rebase qilib, bu safar hal qiling</p>
+        <div class="cmd" data-cmd='git rebase main; echo "Assalomu alaykum, aziz dunyo!" > rb-salom.txt'>git rebase main
+<span class="cm"># konflikt chiqadi, keyin yakuniy matnni yozamiz:</span>
+echo "Assalomu alaykum, aziz dunyo!" &gt; rb-salom.txt</div>
+        <p class="expect"><b>Kutilgan natija:</b> fayl tayyor — belgilarsiz,
+        siz tanlagan matn bilan.</p>
+      </li>
+
+      <li>
+        <p>«Hal qildim» deb belgilang va davom ettiring</p>
+        <p class="why-step"><code>git add</code> — 8-darsdagi kabi. Keyin
+        <code>commit</code> emas, <code>rebase --continue</code>.</p>
+        <div class="cmd" data-cmd="git add rb-salom.txt && GIT_EDITOR=true git rebase --continue">git add rb-salom.txt &amp;&amp; GIT_EDITOR=true git rebase --continue
+<span class="out">Successfully rebased and updated refs/heads/konflikt-branch.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Successfully rebased».
+        <b>4-g'alaba — konfliktli rebase'ni yakunladingiz!</b> 🎉🎉</p>
+      </li>
+
+      <li>
+        <p>Yakuniy tarixni ko'ring</p>
+        <div class="cmd" data-cmd="git log --oneline --graph -4 && cat rb-salom.txt">git log --oneline --graph -4 &amp;&amp; cat rb-salom.txt
+<span class="out">* 5f80e20 Branch: uzun salom</span>
+<span class="out">* 07a35ba Main: dunyo qo'shildi</span>
+<span class="out">* f63076d Salom fayli</span>
+<span class="out">Assalomu alaykum, aziz dunyo!</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> to'g'ri chiziq —
+        <code>|\</code> yoki <code>|/</code> yo'q — va faylda siz yozgan matn.</p>
+      </li>
+    </ol>
+
+    <div class="callout warning">
+      <span class="label">Diqqat: bu branch'larni push qilmang</span>
+      <p>Mashq nusxa papkada va push qilinmadi — ya'ni oltin qoida buzilmadi.
+      Nusxa papkani tartibga solish kerak bo'lsa — ayting.</p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d13c1"><label for="d13c1">Rebase commitlarni <b>ko'chirmaydi</b> — yangisini yaratadi (hash o'zgaradi)</label></li>
+      <li><input type="checkbox" id="d13c2"><label for="d13c2">🔴 Push qilingan commitlarni <b>hech qachon</b> rebase qilmayman</label></li>
+      <li><input type="checkbox" id="d13c3"><label for="d13c3">Shubha bo'lsa — <code>merge</code> (u har doim xavfsiz)</label></li>
+      <li><input type="checkbox" id="d13c4"><label for="d13c4">Konfliktda belgilar <b>teskari</b>: yuqorida main, pastda meniki</label></li>
+      <li><input type="checkbox" id="d13c5"><label for="d13c5"><code>--abort</code> qochish yo'li · <code>--continue</code> davom ettirish</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda avval oddiy rebase qilasiz va ikki narsani ko'rasiz: tarix
+    <b>to'g'ri chiziqqa</b> aylanadi va commitingiz <b>hash'i o'zgaradi</b>.
+    Keyin ataylab konflikt yasab, belgilar <b>teskari</b> ekanini o'z ko'zingiz bilan
+    ko'rasiz, <code>--abort</code> bilan chekinasiz, so'ng hal qilib
+    <code>--continue</code> bilan yakunlaysiz. 16 qadam, hammasi nusxa papkada
+    va push'siz.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Rebase commitlaringizga nima qiladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Yangi commitlar yaratadi — hash o'zgaradi</button></li>
+      <li><button class="quiz-option">Commitlarni o'sha holicha ko'chiradi — hash saqlanadi</button></li>
+      <li><button class="quiz-option">Commitlarni bittaga birlashtiradi — tarix qisqaradi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Ichidagi o'zgarish bir xil, lekin bu
+    <b>boshqa commitlar</b>. Aynan shuning uchun oltin qoida bor.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Rebase'ning oltin qoidasi nima?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Push qilingan commitlarni hech qachon rebase qilmaslik</button></li>
+      <li><button class="quiz-option">Rebase'dan oldin har doim zaxira nusxa olish kerak</button></li>
+      <li><button class="quiz-option">Rebase'ni faqat juma kuni ishlatish kerak emas</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Ular boshqalarda ham bor — siz yangi tarix
+    yaratsangiz, ikkalasi mos kelmaydi va <code>--force</code> kerak bo'lib qoladi.
+    Bu esa hamkasbingizning ishini o'chirishi mumkin.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Rebase paytida konfliktda <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> ostidagi matn kimniki?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>main</code>niki — rebase'da belgilar teskari</button></li>
+      <li><button class="quiz-option">Meniki — xuddi merge'dagi kabi</button></li>
+      <li><button class="quiz-option">Ikkalasining birlashtirilgan varianti</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri, va bu chalkashtiradigan joy. Rebase Git
+    commitlaringizni <code>main</code> ustiga qo'yib chiqadi — shuning uchun «asos»
+    <code>main</code> bo'ladi. Pastki qatorda <b>sizning commit izohingiz</b> yoziladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Konfliktni hal qildingiz va <code>git add</code> qildingiz. Keyin?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git rebase --continue</code></button></li>
+      <li><button class="quiz-option"><code>git commit</code> — merge'dagi kabi</button></li>
+      <li><button class="quiz-option"><code>git rebase main</code> — boshidan takrorlayman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Rebase davom etayotgan jarayon — uni
+    <code>--continue</code> bilan davom ettirasiz. Git buni terminalda ham
+    aytib turadi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>Rebase bir jumlada nima qiladi?</summary>
+      <div class="answer"><p>Commitlaringizni «ko'tarib olib», eng yangi
+      <code>main</code>ning ustiga <b>qayta qo'yadi</b> — natijada tarix to'g'ri
+      chiziq bo'ladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Oltin qoida — va nega?</summary>
+      <div class="answer"><p><b>Push qilingan commitlarni rebase qilmang.</b>
+      Chunki rebase <b>yangi</b> commitlar yaratadi; eskilari hamkasblaringizda qoladi
+      va ikki tarix mos kelmaydi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Shubhangiz bo'lsa — merge yoki rebase?</summary>
+      <div class="answer"><p><b>Merge.</b> U har doim xavfsiz. Rebase faqat o'z,
+      hali push qilinmagan branch'ingiz uchun.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Rebase konfliktida belgilar qanday joylashadi?</summary>
+      <div class="answer"><p><b>Teskari</b> (merge'ga nisbatan): yuqorida
+      <code>HEAD</code> = <code>main</code>niki, pastda — <b>sizniki</b>.
+      Pastki qatorda sizning commit izohingiz yozilgan bo'ladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Rebase'dagi uchta buyruq?</summary>
+      <div class="answer"><p><code>--abort</code> (orqaga qayt) ·
+      <code>--continue</code> (hal qilgandan keyin davom et) ·
+      <code>--skip</code> (bu commitni tashlab ket — kamdan-kam).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: merge'da <code>HEAD</code> kimniki edi?</summary>
+      <div class="answer"><p><b>Siz turgan branch</b>niki.
+      (<a href="0008-merge-conflict.html">Dars 08</a>) — rebase'da esa aksi.</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Rebase</b> = commitlaringizni yangi <code>main</code> ustiga qayta qo'yish.
+      Tarix to'g'ri chiziq bo'ladi.</li>
+      <li>⚠️ U commitlarni <b>ko'chirmaydi — yangisini yaratadi</b> (hash o'zgaradi).</li>
+      <li>🔴 <b>Oltin qoida:</b> push qilingan commitlarni hech qachon rebase qilmang.</li>
+      <li>Shubha bo'lsa — <code>merge</code>. U har doim xavfsiz.</li>
+      <li>O'z branch'ingizda: <code>git rebase main</code>.</li>
+      <li>Konfliktda: belgilar <b>teskari</b> (yuqorida main, pastda siznikingiz).</li>
+      <li>Hal qilish: tahrirla → <code>git add</code> → <code>git rebase --continue</code>.</li>
+      <li>Qochish yo'li: <code>git rebase --abort</code>.</li>
+      <li><code>git pull --rebase</code> — xavfsiz, chunki faqat mahalliy commitlaringizga
+      tegadi.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 3.6-bo'lim — "Rebasing":
+    <a href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">git-scm.com/book</a>.
+    Ayniqsa oxiridagi <b>«The Perils of Rebasing»</b> qismini o'qing — oltin qoida
+    nega borligini rasmlar bilan ko'rsatadi.<br>
+    <b>O'ynang:</b> <a href="https://learngitbranching.js.org/">Learn Git Branching</a> —
+    «Ramping Up» bo'limida rebase jonli daraxt bilan ko'rsatiladi. Rebase aynan shu
+    yerda yaxshi tushuniladi.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Rebase'da adashsangiz — birinchi <code>git rebase --abort</code>, keyin
+    menga yozing.</b> «Push qilingan branch'ni rebase qilib qo'ydim, endi push
+    o'tmayapti» — bu ham hal bo'ladi, faqat <b>o'zingiz <code>--force</code>
+    qilmang</b>, avval so'rang. Ish joyingizda rebase talab qilinsa, o'sha tartibni
+    birga ko'rib chiqamiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0012-git-stash.html">Oldingi: git stash</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing">Git Branching: Rebasing</a>.</li>
+      <li id="fn2">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Branching-Rebasing#_rebase_peril">The Perils of Rebasing</a>
+      («Do not rebase commits that exist outside your repository»).</li>
+      <li id="fn3">Git hujjatlari — <a href="https://git-scm.com/docs/git-rebase">git-rebase</a>
+      (<code>--continue</code>, <code>--abort</code>, <code>--skip</code>).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

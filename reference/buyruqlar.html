@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0010-kundalik-jamoa-ritmi.html">10</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> (to'liq)</span>
   </p>
 
   <div class="callout tip">
@@ -523,20 +523,75 @@
     </tbody>
   </table>
 
+  <h2>12. <code>.gitignore</code> (Dars 11)</h2>
+  <p>Git <b>kuzatmasligi</b> kerak bo'lgan fayllar ro'yxati. Loyihaning ildizida turadi
+  va <b>Git tomonidan kuzatiladi</b> — ya'ni jamoa bilan birga ishlaydi.</p>
+  <table class="sheet">
+    <thead><tr><th>Belgi / buyruq</th><th>Ma'nosi</th></tr></thead>
+    <tbody>
+      <tr><td><code># izoh</code></td><td>Izoh qatori.</td></tr>
+      <tr><td><code>*.log</code></td><td><code>*</code> = istalgan matn — barcha
+      <code>.log</code> fayllar.</td></tr>
+      <tr><td><code>node_modules/</code></td><td>Oxiridagi <code>/</code> = butun papka.</td></tr>
+      <tr><td><code>!muhim.log</code></td><td><code>!</code> = istisno (rad etilganni qaytarish).</td></tr>
+      <tr>
+        <td><code>git rm --cached fayl.log</code></td>
+        <td>Allaqachon kuzatilayotgan faylni kuzatuvdan chiqaradi.
+        <span class="note-cell">⚠️ <code>--cached</code> yozmasangiz fayl <b>o'chib
+        ketadi</b>. U bilan — fayl diskda qoladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git add -f fayl</code></td>
+        <td>Ignore qilingan faylni majburan qo'shish (kamdan-kam kerak).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Ikkita muhim nuqta</span>
+    <p><b>1.</b> <code>.gitignore</code> <b>allaqachon commit qilingan</b> faylga ta'sir
+    qilmaydi → avval <code>git rm --cached</code>.<br>
+    <b>2.</b> Sir (parol, <code>.env</code>, API kalit) bir marta push qilinsa,
+    u <b>tarixda qoladi</b> — faylni o'chirish yetarli emas, <b>parolni almashtiring</b>.</p>
+    <p>Tayyor shablonlar: <a href="https://github.com/github/gitignore">github.com/github/gitignore</a>.</p>
+  </div>
+
   <h2>Yaxshi commit izohi qanday bo'ladi?</h2>
+  <div class="callout tip">
+    <span class="label">Asosiy qoida</span>
+    <p>Diff <b>nima</b> o'zgarganini ko'rsatadi — izoh <b>nega</b> o'zgarganini aytadi.</p>
+  </div>
   <ul>
-    <li>Buyruq shaklida va qisqa: <code>"Login sahifasi qo'shildi"</code>,
+    <li>Qisqa va aniq: <code>"Login sahifasi qo'shildi"</code>,
     <code>"Bo'sh email xatosi tuzatildi"</code>.</li>
-    <li><b>Nima</b> o'zgargani ko'rinsin — <code>"update"</code>, <code>"fix"</code>,
-    <code>"asdf"</code> kabi izohlar hamkasbingizga hech narsa aytmaydi.</li>
+    <li><code>"update"</code>, <code>"fix"</code>, <code>"asdf"</code> —
+    hamkasbingizga hech narsa aytmaydi.</li>
     <li>Bir commit = bir fikr. Ikki xil ish qilgan bo'lsangiz — ikki commit.</li>
+    <li>Uzunroq izoh: <code>git commit -m "sarlavha" -m "tavsif"</code>
+    (birinchisi <code>log --oneline</code>da, ikkinchisi <code>git show</code>da).</li>
   </ul>
 
-  <div class="callout note">
-    <span class="label">Keyingi darslarda qo'shiladi</span>
-    <p><code>.gitignore</code>, yaxshi commit message va README — professional odatlar
-    (Dars 11, kursning oxirgi darsi). To'liq reja:
-    <a href="yol-xaritasi.html">yo'l xaritasi</a>.</p>
+  <h2>README.md</h2>
+  <p>GitHub repo sahifasida <b>avtomatik ko'rsatiladi</b> — loyihaning yuzi.
+  Uch savolga javob bersin: <b>bu nima</b> · <b>qanday ishga tushiraman</b> ·
+  <b>qanday hissa qo'shaman</b>.</p>
+  <table class="sheet">
+    <thead><tr><th>Markdown</th><th>Natija</th></tr></thead>
+    <tbody>
+      <tr><td><code># Sarlavha</code> / <code>## Kichik</code></td><td>Sarlavhalar</td></tr>
+      <tr><td><code>**qalin**</code></td><td><b>qalin</b></td></tr>
+      <tr><td><code>- element</code></td><td>Ro'yxat</td></tr>
+      <tr><td><code>[matn](https://...)</code></td><td>Havola</td></tr>
+      <tr><td><code>`buyruq`</code></td><td><code>buyruq</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout win">
+    <span class="label">🎓 Kurs to'liq qamrab olindi</span>
+    <p>Bu varaqada endi 11 ta darsning barcha buyruqlari bor.
+    Keyingi bosqich mavzulari (<code>stash</code>, <code>rebase</code>,
+    <code>reflog</code>, GitHub Actions) kursdan tashqarida — kerak bo'lsa
+    alohida qo'shamiz. <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 
   <div class="ask-teacher">

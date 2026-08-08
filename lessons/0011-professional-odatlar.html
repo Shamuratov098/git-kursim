@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 11 — Professional odatlar: .gitignore, commit message, README</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 11 · MODUL D · JAMOA · YAKUNIY DARS</p>
+  <h1>Professional odatlar: <code>.gitignore</code>, commit message, README</h1>
+  <p class="lead">Kursning oxirgi darsi. Bu yerdagi uch narsa texnik jihatdan oson —
+  lekin aynan ular <b>«Git biladi»</b> bilan <b>«u bilan ishlash yoqimli»</b> orasidagi
+  farqni yaratadi.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 9 daqiqa</span>
+    <span>💻 Amaliyot ≈ 15 daqiqa</span>
+    <span>Kerak: <a href="0010-kundalik-jamoa-ritmi.html">Dars 10</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Shu paytgacha <b>mexanika</b>ni o'rgandingiz — Git nima qilishini. Bugungi uch
+    narsa esa <b>hamkasblaringiz</b> uchun: ular sizning repongizni ochganda, tarixingizni
+    o'qiganda va loyihangizni birinchi marta ishga tushirganda his qiladigan narsa.
+    Ishga qabul qilishda ham ko'pincha aynan shunga qaraladi.</p>
+  </div>
+
+  <h2>1. <code>.gitignore</code> — Git nimani ko'rmasligi kerak</h2>
+  <p>Har bir loyihada Git <b>kuzatmasligi</b> kerak bo'lgan fayllar bo'ladi.
+  <code>.gitignore</code> — shularning ro'yxati.<a class="cite" href="#fn1">1</a></p>
+
+  <h3>Nimalarni yozadi va nega</h3>
+  <table class="sheet">
+    <thead><tr><th>Nima</th><th>Nega</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Sirlar</b><br><code>.env</code> · <code>parollar.txt</code> ·
+        <code>*.key</code></td>
+        <td>🔴 <b>Eng muhim sabab.</b> Parol yoki API kaliti bir marta push qilinsa,
+        u <b>tarixda abadiy</b> qoladi — faylni keyin o'chirsangiz ham eski commitdan
+        topib olish mumkin.
+        <span class="note-cell">Ya'ni «keyin o'chiraman» ishlamaydi. Boshidan
+        yozmaslik kerak.</span></td>
+      </tr>
+      <tr>
+        <td><b>Yaratiladigan fayllar</b><br><code>node_modules/</code> ·
+        <code>build/</code> · <code>__pycache__/</code></td>
+        <td>Ular koddan <b>qayta yaratiladi</b> — saqlashning ma'nosi yo'q. Hajmi
+        katta va har commitda minglab qator «o'zgarish» ko'rsatib, haqiqiy ishni
+        ko'rinmas qiladi.</td>
+      </tr>
+      <tr>
+        <td><b>Shaxsiy fayllar</b><br><code>.idea/</code> · <code>.vscode/</code> ·
+        <code>.DS_Store</code></td>
+        <td>Bu sizning muharriringiz sozlamalari. Hamkasbingizga keraksiz va
+        uning sozlamalari bilan to'qnashadi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Qanday yoziladi</h3>
+  <p>Oddiy matn fayli, loyihaning <b>ildizida</b> (root). Har qator — bitta qoida:</p>
+
+  <div class="conflict">
+    <div class="cf-file">.gitignore</div>
+    <div class="cf-line mark"># Sirlar — hech qachon GitHub'ga chiqmasin</div>
+    <div class="cf-line">.env</div>
+    <div class="cf-line">*.key<span class="cf-note">.key bilan tugagan hamma fayl</span></div>
+    <div class="cf-line mark"># Yaratiladigan fayllar</div>
+    <div class="cf-line">node_modules/<span class="cf-note">/ = butun papka</span></div>
+    <div class="cf-line">*.log</div>
+    <div class="cf-line mark"># Lekin bu bittasi kerak</div>
+    <div class="cf-line">!muhim.log<span class="cf-note">! = istisno</span></div>
+  </div>
+
+  <ul>
+    <li><code>#</code> — izoh (Git e'tiborsiz qoldiradi);</li>
+    <li><code>*</code> — istalgan matn: <code>*.log</code> = barcha <code>.log</code> fayllar;</li>
+    <li><code>/</code> oxirida — <b>papka</b>: <code>node_modules/</code>;</li>
+    <li><code>!</code> — <b>istisno</b>: yuqorida rad etilgan narsani qaytarib qo'shadi.</li>
+  </ul>
+
+  <div class="callout tip">
+    <span class="label">Noldan yozmang</span>
+    <p>Deyarli har bir til va muhit uchun tayyor <code>.gitignore</code> bor:
+    <a href="https://github.com/github/gitignore">github.com/github/gitignore</a>
+    (Python, Node, Java…). Yangi loyiha ochganingizda GitHub ham buni taklif qiladi.
+    Nusxa oling va o'zingiznikini qo'shing.</p>
+  </div>
+
+  <div class="callout note">
+    <span class="label">Sizda allaqachon bor</span>
+    <p>Kurs repongizda <code>.gitignore</code> bor va u ishlab turibdi:
+    <code>NOTES.md</code> va <code>learning-records/</code> — bu mening o'qituvchilik
+    eslatmalarim, ular public saytga chiqmaydi. Shu sababli siz ularni GitHub'da
+    ko'rmaysiz, kompyuteringizda esa turibdi.</p>
+  </div>
+
+  <h3>⚠️ Eng ko'p uchraydigan chalkashlik</h3>
+  <div class="callout warning">
+    <span class="label"><code>.gitignore</code> allaqachon kuzatilayotgan faylga ta'sir qilmaydi</span>
+    <p>Agar faylni <b>bir marta commit qilib bo'lgan</b> bo'lsangiz, uni
+    <code>.gitignore</code>ga yozish <b>hech narsa qilmaydi</b> — Git uni kuzatishda
+    davom etadi.</p>
+    <p>Yechim: avval kuzatuvdan chiqaring, keyin ignore ishlaydi:</p>
+    <div class="cmd" data-cmd="git rm --cached fayl.log">git rm --cached fayl.log</div>
+    <p><code>--cached</code> — <b>faqat Git'dan</b> chiqaradi, fayl diskingizda
+    qolaveradi. (<code>--cached</code>siz yozsangiz, fayl o'chib ketadi — ehtiyot bo'ling.)</p>
+  </div>
+
+  <h2>2. Commit message — tarix o'qiladigan hujjat</h2>
+  <p>Bitta qoida hamma narsani tushuntiradi:</p>
+
+  <div class="callout win">
+    <span class="label">Asosiy qoida</span>
+    <p><b>Diff <i>nima</i> o'zgarganini ko'rsatadi. Izoh <i>nega</i> o'zgarganini
+    aytishi kerak.</b><a class="cite" href="#fn2">2</a></p>
+  </div>
+
+  <p>Kodni o'qib «nima o'zgargani»ni har doim topa olasiz. «Nega» esa faqat sizning
+  boshingizda — va uni yozmasangiz, olti oydan keyin o'zingiz ham eslay olmaysiz.</p>
+
+  <table class="sheet">
+    <thead><tr><th>Yomon</th><th>Yaxshi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>fix</code></td>
+        <td><code>Bo'sh email bilan ro'yxatdan o'tish xatosi tuzatildi</code></td>
+      </tr>
+      <tr>
+        <td><code>update</code></td>
+        <td><code>Login sahifasiga parolni tiklash havolasi qo'shildi</code></td>
+      </tr>
+      <tr>
+        <td><code>asdf</code> · <code>o'zgarishlar</code></td>
+        <td><code>Sekin ishlagan qidiruvga indeks qo'shildi</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Uzunroq izoh kerak bo'lsa</h3>
+  <p>Katta yoki g'ayrioddiy o'zgarishda ikki qismli izoh yozing: <b>qisqa sarlavha</b>,
+  keyin <b>tafsilot</b>. Terminalda ikkita <code>-m</code> bilan:</p>
+
+  <div class="cmd" data-cmd='git commit -m "Qidiruvga indeks qo&apos;shildi" -m "Qidiruv 4 soniya davom etardi. Sabab: baza har so&apos;rovda butun jadvalni o&apos;qir edi."'>git commit -m "Qidiruvga indeks qo'shildi" -m "Qidiruv 4 soniya davom etardi. Sabab: baza har so'rovda butun jadvalni o'qir edi."</div>
+
+  <p>Birinchi <code>-m</code> — sarlavha (<code>git log --oneline</code>da shu ko'rinadi),
+  ikkinchisi — tavsif (<code>git show</code>da ochiladi).</p>
+
+  <div class="callout tip">
+    <span class="label">Ba'zi jamoalarda old qo'shimcha ishlatiladi</span>
+    <p><code>feat:</code> (yangi imkoniyat), <code>fix:</code> (tuzatish),
+    <code>docs:</code> (hujjat). Masalan: <code>fix: bo'sh email xatosi</code>.
+    Bu «Conventional Commits» deb ataladi. Majburiy emas — ish joyingizdagi odatga
+    qarang va <b>o'shanga moslashing</b>.</p>
+  </div>
+
+  <h2>3. README.md — loyihaning yuzi</h2>
+  <p>GitHub repo sahifasini ochganda, fayllar ro'yxati ostida <code>README.md</code>
+  <b>avtomatik ko'rsatiladi</b>.<a class="cite" href="#fn3">3</a> Ya'ni bu — loyihangizning
+  birinchi taassuroti. Odam sizning kodingizni o'qishdan oldin shuni o'qiydi.</p>
+
+  <p>Yaxshi README uch savolga javob beradi:</p>
+  <ol>
+    <li><b>Bu nima?</b> — bir-ikki jumlada, oddiy tilda.</li>
+    <li><b>Qanday ishga tushiraman?</b> — aniq qadamlar, ko'chirib qo'yish mumkin bo'lgan buyruqlar.</li>
+    <li><b>Qanday hissa qo'shaman?</b> — jamoa loyihasi bo'lsa.</li>
+  </ol>
+
+  <p><code>.md</code> — <b>Markdown</b>: oddiy matn, bir nechta belgi bilan
+  bezatiladigan. Kerakli qismi juda kichik:</p>
+
+  <table class="sheet">
+    <thead><tr><th>Yozasiz</th><th>Chiqadi</th></tr></thead>
+    <tbody>
+      <tr><td><code># Sarlavha</code></td><td>Katta sarlavha</td></tr>
+      <tr><td><code>## Kichik sarlavha</code></td><td>Kichikroq sarlavha</td></tr>
+      <tr><td><code>**qalin**</code></td><td><b>qalin</b></td></tr>
+      <tr><td><code>- element</code></td><td>Ro'yxat</td></tr>
+      <tr><td><code>[matn](https://...)</code></td><td>Havola</td></tr>
+      <tr><td><code>`buyruq`</code></td><td><code>buyruq</code></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: uchalasini ham qo'llaymiz</h2>
+    <p>Bugungi mashq <b>haqiqiy foyda</b> beradi: kurs repongizga README yozasiz —
+    u GitHub'da hamma ko'radigan sahifa bo'ladi.</p>
+    <p>Va butun ishni <a href="0010-kundalik-jamoa-ritmi.html">10-darsdagi kundalik
+    ritm</a> bo'yicha qilamiz — ya'ni bu ayni paytda yakuniy takrorlash ham.</p>
+
+    <h3>A qism — <code>.gitignore</code></h3>
+    <ol class="steps">
+      <li>
+        <p>Ritm bo'yicha boshlang</p>
+        <p class="why-step">Kun boshi + ish uchun branch.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git && git switch main && git pull && git switch -c professional-odatlar">cd ~/Projects/Learn/Git &amp;&amp; git switch main &amp;&amp; git pull &amp;&amp; git switch -c professional-odatlar</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Switched to a new branch
+        'professional-odatlar'».</p>
+      </li>
+
+      <li>
+        <p>«Sir» fayl yarating va Git uni ko'rayotganini tekshiring</p>
+        <p class="why-step">Bu haqiqiy parol emas — mashq uchun.</p>
+        <div class="cmd" data-cmd='echo "PAROL=123456" > .env && git status --short'>echo "PAROL=123456" &gt; .env &amp;&amp; git status --short
+<span class="out">?? .env</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>?? .env</code> — Git uni
+        ko'ryapti va commit qilishga tayyor. <b>Xavfli holat.</b></p>
+      </li>
+
+      <li>
+        <p><code>.gitignore</code>ga qo'shing</p>
+        <p class="why-step"><code>&gt;&gt;</code> — mavjud faylning oxiriga qo'shadi
+        (ichidagini o'chirmaydi).</p>
+        <div class="cmd" data-cmd='printf "\n# Sirlar\n.env\n*.log\n" >> .gitignore && git status --short'>printf "\n# Sirlar\n.env\n*.log\n" &gt;&gt; .gitignore &amp;&amp; git status --short
+<span class="out"> M .gitignore</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>.env</code> ro'yxatdan
+        <b>yo'qoldi</b>! Faqat <code>.gitignore</code>ning o'zgargani ko'rinadi.
+        <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>🪤 Endi tuzoqni ko'ring: avval commit qilingan fayl</p>
+        <p class="why-step">Ataylab «xato» qilamiz — faylni ignore qilishdan
+        <b>oldin</b> commit qilamiz.</p>
+        <div class="cmd" data-cmd='echo "test log" > vaqtinchalik.log && git add -f vaqtinchalik.log && git commit -m "Vaqtinchalik log fayli (ataylab)"'>echo "test log" &gt; vaqtinchalik.log &amp;&amp; git add -f vaqtinchalik.log &amp;&amp; git commit -m "Vaqtinchalik log fayli (ataylab)"</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit yaratildi.
+        <code>-f</code> = «ignore qilinganini bilaman, baribir qo'sh».</p>
+      </li>
+
+      <li>
+        <p>Fayl hali ham kuzatilayotganini tasdiqlang</p>
+        <p class="why-step"><code>*.log</code> qoidasi <code>.gitignore</code>da bor —
+        lekin fayl allaqachon kuzatuvda.</p>
+        <div class="cmd" data-cmd='echo "yana qator" >> vaqtinchalik.log && git status --short'>echo "yana qator" &gt;&gt; vaqtinchalik.log &amp;&amp; git status --short
+<span class="out"> M .gitignore</span>
+<span class="out"> M vaqtinchalik.log</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>M vaqtinchalik.log</code> —
+        Git uni <b>hamon kuzatyapti</b>. Mana o'sha chalkashlik.</p>
+      </li>
+
+      <li>
+        <p>Kuzatuvdan chiqaring</p>
+        <p class="why-step"><code>--cached</code> — faqat Git'dan chiqaradi,
+        fayl diskda qoladi.</p>
+        <div class="cmd" data-cmd="git rm --cached vaqtinchalik.log && git status --short">git rm --cached vaqtinchalik.log &amp;&amp; git status --short
+<span class="out">rm 'vaqtinchalik.log'</span>
+<span class="out"> M .gitignore</span>
+<span class="out">D  vaqtinchalik.log</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>ls</code> deng — fayl
+        <b>diskda joyida</b>, lekin Git endi uni kuzatmaydi. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — README yozamiz</h3>
+    <ol class="steps">
+      <li>
+        <p>Kichik README yarating</p>
+        <p class="why-step">Avval qisqasini yozamiz — keyingi qadamda kengaytirasiz.
+        Bu buyruq bir necha qatorli, shuning uchun <b>Copy tugmasidan foydalaning</b>
+        va terminalga bir marta qo'ying.</p>
+        <div class="cmd" data-cmd="cat > README.md << 'EOF'
+# Git va GitHub — shaxsiy kursim
+
+O'zbekcha kurs: Git'ni 0 dan jamoada ishlash darajasigacha.
+4 modul, 11 dars.
+
+**Sayt:** https://shamuratov098.github.io/git-kursim/
+EOF">cat &gt; README.md &lt;&lt; 'EOF'
+<span class="cm"># Git va GitHub — shaxsiy kursim</span>
+<span class="cm">(4 qator matn — Copy tugmasida to'liq)</span>
+EOF</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik. <code>cat README.md</code>
+        bilan tekshiring — 6 qatorli fayl chiqishi kerak.<br>
+        <b>Agar terminal <code>&gt;</code> belgisi bilan kutib qolsa:</b> oxirgi
+        <code>EOF</code> qatori tushmagan. <code>EOF</code> deb yozib
+        <kbd>Enter</kbd> bosing.</p>
+      </li>
+
+      <li>
+        <p>Matn muharririda kengaytiring (ixtiyoriy, lekin tavsiya qilaman)</p>
+        <p class="why-step">Uzun matnni terminalga emas, muharrirga yozgan qulay.
+        VS Code'da: <code>code README.md</code>, yoki fayl menejeridan oching.</p>
+        <p class="expect"><b>Quyidagicha bo'limlar qo'shing</b> (Markdown belgilarini
+        yuqoridagi jadvaldan qarang):</p>
+        <div class="conflict">
+          <div class="cf-file">README.md — kengaytirilgan namuna</div>
+          <div class="cf-line mark">## Qanday ishlatiladi</div>
+          <div class="cf-line">Kurs ikki rejimda ishlaydi:</div>
+          <div class="cf-line">- **O'qish** — telefonda, tushunchani egallash uchun</div>
+          <div class="cf-line">- **Amaliyot** — kompyuterda, terminal yonida</div>
+          <div class="cf-line mark">## Nimalar o'rganildi</div>
+          <div class="cf-line">- Git sozlash, commit, xatoni ortga qaytarish</div>
+          <div class="cf-line">- GitHub: push, clone, pull</div>
+          <div class="cf-line">- Branch, merge va merge conflict</div>
+          <div class="cf-line">- Pull request va kundalik jamoa ritmi</div>
+        </div>
+      </li>
+
+      <li>
+        <p>Yaxshi izoh bilan commit qiling</p>
+        <p class="why-step">Ikkita <code>-m</code>: sarlavha + tavsif.
+        Sarlavha <b>nima</b>, tavsif <b>nega</b>.</p>
+        <div class="cmd" data-cmd='git add -A && git commit -m "README va .gitignore qo&apos;shildi" -m "README repo sahifasida kursning nimaligini tushuntiradi. .gitignore esa sirlar (.env) va log fayllar tarixga tushmasligi uchun."'>git add -A &amp;&amp; git commit -m "README va .gitignore qo'shildi" -m "README repo sahifasida kursning nimaligini tushuntiradi. .gitignore esa sirlar (.env) va log fayllar tarixga tushmasligi uchun."</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit yaratildi.
+        <code>git show --stat</code> deng — sarlavha va tavsif alohida ko'rinadi.</p>
+      </li>
+    </ol>
+
+    <h3>C qism — ritmni yakunlang</h3>
+    <ol class="steps">
+      <li>
+        <p>Push qiling va PR oching</p>
+        <p class="why-step">10-darsdagi tartib — endi mustaqil bajarasiz.</p>
+        <div class="cmd" data-cmd="git push -u origin professional-odatlar">git push -u origin professional-odatlar</div>
+        <p class="expect"><b>Bajaring:</b> GitHub'da
+        <span class="ui">Compare &amp; pull request</span> →
+        <span class="ui">Create pull request</span> →
+        <span class="ui">Merge pull request</span> → <span class="ui">Delete branch</span>.</p>
+      </li>
+
+      <li>
+        <p>Aylanani yoping va natijani ko'ring</p>
+        <div class="cmd" data-cmd="git switch main && git pull && git branch -d professional-odatlar">git switch main &amp;&amp; git pull &amp;&amp; git branch -d professional-odatlar</div>
+        <p class="expect"><b>Kutilgan natija:</b> README endi <code>main</code>da.
+        GitHub'da repongizni oching — <b>README sahifada chiroyli ko'rinadi</b>.
+        <b>3-g'alaba!</b> 🎉🎉</p>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <span class="label">Tozalash (ixtiyoriy)</span>
+      <p>Mashq fayllari (<code>.env</code>, <code>vaqtinchalik.log</code>,
+      <code>ritm.txt</code>, <code>hamkasb.txt</code>…) kerak bo'lmasa, keyingi safar
+      birga tozalaymiz — ayting. <code>.env</code> va <code>*.log</code> allaqachon
+      ignore qilingan, shuning uchun ular GitHub'ga chiqmaydi.</p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d11c1"><label for="d11c1">Sirlar (<code>.env</code>) hech qachon commit qilinmasligini bilaman</label></li>
+      <li><input type="checkbox" id="d11c2"><label for="d11c2"><code>.gitignore</code> <b>allaqachon kuzatilgan</b> faylga ta'sir qilmaydi</label></li>
+      <li><input type="checkbox" id="d11c3"><label for="d11c3"><code>git rm --cached</code> — kuzatuvdan chiqarish (fayl diskda qoladi)</label></li>
+      <li><input type="checkbox" id="d11c4"><label for="d11c4">Izoh <b>nega</b> ni aytadi — <b>nima</b>ni diff ko'rsatadi</label></li>
+      <li><input type="checkbox" id="d11c5"><label for="d11c5">Repongizga README yozdim 🎉</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda soxta <code>.env</code> fayli yaratib, uni <code>.gitignore</code>
+    bilan yashirasiz; keyin <b>tuzoqni</b> ko'rasiz — avval commit qilingan fayl ignore
+    qilinmaydi va uni <code>git rm --cached</code> bilan chiqarasiz. So'ng repongizga
+    <b>haqiqiy README</b> yozasiz, ikki qismli izoh bilan commit qilasiz va butun
+    ishni 10-darsdagi ritm bo'yicha PR orqali qo'shasiz. 10 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Parolni commit qilib, push qildingiz. Keyin faylni o'chirdingiz. Xavfsizmi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Yo'q — parol eski commitlarda, ya'ni tarixda qolgan</button></li>
+      <li><button class="quiz-option">Ha — fayl o'chirilgach, u repodan butunlay yo'qoladi</button></li>
+      <li><button class="quiz-option">Ha — GitHub bunday fayllarni avtomatik o'chirib turadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri, va bu jiddiy xavf. Tarix — <b>hamma
+    commitlar</b>. Shuning uchun sirlarni boshidan <code>.gitignore</code>ga yozing.
+    Agar tushib qolsa — parolni <b>almashtiring</b>.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Faylni commit qilib bo'lgansiz. Endi <code>.gitignore</code>ga yozdingiz. Nima bo'ladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Hech narsa — Git uni kuzatishda davom etadi</button></li>
+      <li><button class="quiz-option">Fayl darhol kuzatuvdan chiqadi va e'tiborsiz qolinadi</button></li>
+      <li><button class="quiz-option">Fayl kompyuteringizdan butunlay o'chib ketadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <code>.gitignore</code> faqat <b>hali
+    kuzatilmagan</b> fayllarga ta'sir qiladi. Yechim:
+    <code>git rm --cached fayl</code>.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Commit izohi nimani aytishi kerak?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Nega o'zgartirilganini — nimani diff ko'rsatadi</button></li>
+      <li><button class="quiz-option">Nima o'zgartirilganini — qaysi satrlar tahrirlangani</button></li>
+      <li><button class="quiz-option">Kim o'zgartirganini — muallif ismi va sanasi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. «Nima» kodda ko'rinadi, «kim va qachon» Git
+    o'zi yozadi. Faqat <b>«nega»</b> sizning boshingizda — uni yozib qo'ymasangiz,
+    yo'qoladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> <code>git rm --cached fayl.log</code> nima qiladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Kuzatuvdan chiqaradi, fayl diskda qoladi</button></li>
+      <li><button class="quiz-option">Faylni diskdan ham, Git'dan ham o'chiradi</button></li>
+      <li><button class="quiz-option">Faylni eski commitlardan butunlay tozalaydi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. <code>--cached</code> = «faqat Git'dan».
+    Usiz yozsangiz, fayl <b>o'chib ketadi</b> — shuning uchun diqqat bilan yozing.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Bu — kursning oxirgi eslab-aytish to'plami. Oxirgi
+    uchtasi butun kursni qamrab oladi.</p>
+
+    <details class="recall">
+      <summary><code>.gitignore</code>ga birinchi navbatda nima yoziladi?</summary>
+      <div class="answer"><p><b>Sirlar</b> — <code>.env</code>, parollar, API kalitlari.
+      Chunki bir marta push qilinsa, ular tarixda abadiy qoladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>.gitignore</code> qachon ishlamaydi?</summary>
+      <div class="answer"><p>Fayl <b>allaqachon commit qilingan</b> bo'lsa.
+      Yechim: <code>git rm --cached fayl</code> — kuzatuvdan chiqadi, disk'da qoladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Commit izohining oltin qoidasi?</summary>
+      <div class="answer"><p>Diff <b>nima</b> o'zgarganini ko'rsatadi — izoh
+      <b>nega</b> o'zgarganini aytishi kerak.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>README uch savolga javob beradi — qaysilar?</summary>
+      <div class="answer"><p>1) Bu nima? · 2) Qanday ishga tushiraman? ·
+      3) Qanday hissa qo'shaman?</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Kurs bo'yicha: kundalik aylananing besh qadami?</summary>
+      <div class="answer"><p><code>pull</code> → branch → ishla+commit →
+      <code>push</code> → PR/merge → yana <code>pull</code>.
+      (<a href="0010-kundalik-jamoa-ritmi.html">Dars 10</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Kurs bo'yicha: konflikt belgilari va hal qilish qadamlari?</summary>
+      <div class="answer"><p><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> sizdagi ·
+      <code>=======</code> chegara · <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> kelayotgan.
+      Hal qilish: tahrirla (belgilarni o'chir) → <code>git add</code> →
+      <code>git commit</code>. (<a href="0008-merge-conflict.html">Dars 08</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Kurs bo'yicha: Git'ning oltin qoidasi?</summary>
+      <div class="answer"><p><b>Commit qilingan narsani yo'qotish juda qiyin</b>,
+      commit qilinmaganini esa oson. Shuning uchun tez-tez commit qiling.
+      (<a href="0003-xatoni-qaytarish.html">Dars 03</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b><code>.gitignore</code>:</b> sirlar · yaratiladigan fayllar · shaxsiy fayllar.
+      <code>#</code> izoh · <code>*</code> namuna · <code>/</code> papka · <code>!</code> istisno.</li>
+      <li>⚠️ Allaqachon commit qilingan faylga ta'sir qilmaydi →
+      <code>git rm --cached fayl</code>.</li>
+      <li>Sir push qilinsa — <b>tarixda qoladi</b>. Faylni o'chirish yetarli emas,
+      <b>parolni almashtiring</b>.</li>
+      <li><b>Commit izohi:</b> diff <i>nima</i>ni ko'rsatadi — izoh <i>nega</i>ni aytadi.
+      Ikki qismli: <code>git commit -m "sarlavha" -m "tavsif"</code>.</li>
+      <li><b>README:</b> bu nima · qanday ishga tushiraman · qanday hissa qo'shaman.</li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       KURS YAKUNI
+       ==================================================================== -->
+  <h2>🎓 Kurs tugadi — endi nima qila olasiz</h2>
+
+  <p>Kursni <a href="../index.html">boshlaganingizda</a> qo'yilgan maqsadlar shu edi.
+  Har biri qaysi darsda yopilganini ko'ring:</p>
+
+  <table class="sheet">
+    <thead><tr><th>Maqsad</th><th>Qayerda o'rganildi</th></tr></thead>
+    <tbody>
+      <tr><td>Git'ni sozlash va birinchi commit</td>
+          <td><a href="0001-git-nima-va-sozlash.html">Dars 01</a>,
+              <a href="0002-uch-hudud-va-commit.html">02</a> ✅</td></tr>
+      <tr><td>«Xato qildim» — yo'qotmasdan ortga qaytish</td>
+          <td><a href="0003-xatoni-qaytarish.html">Dars 03</a> ✅</td></tr>
+      <tr><td>O'z branch'ida ishlab, GitHub'ga push qilish</td>
+          <td><a href="0004-remote-va-push.html">Dars 04</a>,
+              <a href="0006-branch.html">06</a> ✅</td></tr>
+      <tr><td>Jamoadagilarning o'zgarishlarini pull qilish</td>
+          <td><a href="0005-clone-va-pull.html">Dars 05</a>,
+              <a href="0010-kundalik-jamoa-ritmi.html">10</a> ✅</td></tr>
+      <tr><td>Merge conflict'ni vahima qilmasdan hal qilish</td>
+          <td><a href="0007-merge.html">Dars 07</a>,
+              <a href="0008-merge-conflict.html">08</a> ✅</td></tr>
+      <tr><td>Pull request ochish, ko'rib chiqish va merge qilish</td>
+          <td><a href="0009-pull-request.html">Dars 09</a> ✅</td></tr>
+      <tr><td>Aniq, tushunarli commit message yozish</td>
+          <td>Dars 11 (shu dars) ✅</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout win">
+    <span class="label">🎉 Tabriklayman</span>
+    <p>Siz endi jamoada Git bilan <b>ishonch bilan</b> ishlay olasiz. Bu kursni
+    boshlaganingizda Git tajribangiz nolga teng edi — bugun sizda 11 dars,
+    o'nlab commit, haqiqiy pull request va o'z qo'lingiz bilan hal qilingan
+    merge conflict bor.</p>
+  </div>
+
+  <h3>Endi eng muhim qadam: haqiqiy amaliyot</h3>
+  <p>Kurs — bu mashq maydoni. Haqiqiy mahorat <b>real muhitda</b> shakllanadi.
+  Uch taklif, oson tartibda:</p>
+
+  <ol>
+    <li><b>GitHub Skills</b> —
+    <a href="https://skills.github.com/">skills.github.com</a>. GitHub'ning o'zida,
+    haqiqiy repo ichida bajariladigan kurslar. «Introduction to GitHub» bilan
+    boshlang (20 daqiqa).</li>
+    <li><b>Learn Git Branching</b> —
+    <a href="https://learngitbranching.js.org/">learngitbranching.js.org</a>.
+    Branch va merge'ni o'yin sifatida mustahkamlaydi. Bizda o'tilmagan
+    <code>rebase</code>ni ham shu yerda ko'rasiz.</li>
+    <li><b>Real loyihaga hissa qo'shing.</b> Yoqqan o'zbekcha yoki open-source
+    loyihani toping, kichik narsani tuzating (imlo xatosi ham bo'ladi!) va PR
+    oching. Birinchi PR'ingiz — eng katta qadam.</li>
+  </ol>
+
+  <div class="callout note">
+    <span class="label">🤝 Jamoaga qo'shiling — bilim shu yerda mahoratga aylanadi</span>
+    <p>Savol berish va boshqalarning muammosini o'qish — o'rganishning eng tez yo'li.
+    Tanlang:</p>
+    <ul>
+      <li><a href="https://stackoverflow.com/questions/tagged/git">Stack Overflow —
+      <code>git</code> tegi</a>: aniq xato bo'yicha javob izlash uchun
+      (avval <b>qidiring</b> — ehtimol javob bor).</li>
+      <li><a href="https://www.reddit.com/r/git/">r/git</a>: workflow maslahati,
+      «shunday qilsam to'g'rimi?» degan savollar uchun.</li>
+      <li><a href="https://community.uzbekcoders.uz/">Uzbek Coders</a> va
+      <a href="https://github.com/doniyor2109/awesome-telegram-dev-groups-uz">o'zbek dev
+      Telegram guruhlari</a>: o'zbekcha so'rash uchun.</li>
+    </ul>
+    <p>Boshlash uchun oson yo'l: shu kursda tushunmagan bir narsangizni tanlang va
+    o'sha jamoada so'rang. Birinchi savol eng qiyini.</p>
+  </div>
+
+  <h3>Kursdan tashqarida qolgan mavzular</h3>
+  <p>Bular <b>keyingi bosqich</b> — poydevoringiz mustahkam bo'lgani uchun endi
+  ularni o'zingiz ham o'zlashtira olasiz:</p>
+  <ul>
+    <li><code>git stash</code> — yarim ishni vaqtincha yig'ib qo'yish (juda foydali,
+    keyingi o'rganadiganingiz shu bo'lsin);</li>
+    <li><code>git rebase</code> — tarixni tekislash (kuchli, lekin ehtiyot talab qiladi);</li>
+    <li><code>git reflog</code> — «hammasini yo'qotdim» degan holatdagi qutqaruv kamari;</li>
+    <li>GitHub Actions — testlarni avtomatik ishga tushirish (CI/CD).</li>
+  </ul>
+
+  <div class="callout tip">
+    <span class="label">Men shu yerdaman</span>
+    <p>Kurs tugadi, lekin men tugamadim. Ishda biror Git holatiga duch kelsangiz —
+    xato, g'alati chiqish, «bu jamoada nega bunday qilinadi?» degan savol —
+    bemalol yozing. Kerak bo'lsa yangi dars ham qo'shamiz: <code>stash</code>,
+    <code>rebase</code> yoki ish joyingizdagi tartib bo'yicha.</p>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 2.2 — <a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Ignoring Files</a>
+    · Tayyor shablonlar: <a href="https://github.com/github/gitignore">github.com/github/gitignore</a>.<br>
+    <b>Commit izohi bo'yicha klassik maqola:</b>
+    <a href="https://cbea.ms/git-commit/">How to Write a Git Commit Message</a> —
+    qisqa, aniq va ko'p jamoada mezon sifatida ishlatiladi.<br>
+    <b>GitHub Docs</b> — <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes">About READMEs</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Oxirgi darsni tugatganingiz bilan tabriklayman!</b> 🎉 Endi eng foydali
+    narsa — o'rganganingizni <b>haqiqiy loyihada</b> ishlatish. Qaysi loyihadan
+    boshlashni bilmasangiz, ayting — birga tanlaymiz. Va yodda tuting: chalkashsangiz
+    <code>git status</code>, keyin menga yozing.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0010-kundalik-jamoa-ritmi.html">Oldingi: Kundalik jamoa ritmi</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Git hujjatlari — <a href="https://git-scm.com/docs/gitignore">gitignore</a>
+      · Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository">Ignoring Files</a>.</li>
+      <li id="fn2">Chris Beams — <a href="https://cbea.ms/git-commit/">How to Write a Git Commit Message</a>.</li>
+      <li id="fn3">GitHub Docs — <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes">About READMEs</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

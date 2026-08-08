@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 18 — GitHub Actions: PR'dagi yashil va qizil belgilar</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 18 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1>GitHub Actions: PR'dagi yashil va qizil belgilar</h1>
+  <p class="lead">Bu darsdan keyin siz PR'dagi ✓ va ✗ belgilar nima ekanini bilasiz —
+  va o'z repongizga <b>ishlaydigan avtomatik tekshiruv</b> qo'shasiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 18 daqiqa</span>
+    <span>Kerak: <a href="0009-pull-request.html">Dars 09</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Ochilmagan savol</span>
+    <p><a href="0009-pull-request.html">9-darsda</a> PR sahifasining to'rt bo'limini
+    ko'rgandik va <span class="ui">Checks</span> haqida shunday deb qo'ygandim:
+    «avtomatik testlar — kursimizda yo'q, ish joyingizda ehtimol bo'ladi».</p>
+    <p>Mana shu dars o'sha bo'limni ochadi. Ish joyingizda PR ochganingizda pastda
+    yashil ✓ yoki qizil ✗ chiqadi — nima ekanini bilishingiz kerak.</p>
+  </div>
+
+  <h2>CI nima — bir jumlada</h2>
+  <div class="callout win">
+    <span class="label">Asosiy g'oya</span>
+    <p><b>Har safar kod jo'natilganda, robot uni tekshirib chiqadi.</b> Testlar
+    ishlaydimi? Kod uslubi to'g'rimi? Loyiha yig'iladimi? Javob — PR sahifasida
+    yashil yoki qizil belgi bo'lib chiqadi.</p>
+  </div>
+
+  <p>Buni <b>CI</b> deyishadi — <i>continuous integration</i>, «uzluksiz
+  birlashtirish». GitHub'dagi vositasi esa <b>GitHub Actions</b>.<a class="cite" href="#fn1">1</a></p>
+
+  <p>Nega jamoalar buni ishlatadi:</p>
+  <ul>
+    <li><b>Buzuq kod <code>main</code>ga yetib bormaydi.</b> Test yiqilsa, PR
+    qizil bo'ladi va merge tugmasi ogohlantirish beradi.</li>
+    <li><b>«Menda ishlayapti-ku» tugaydi.</b> Robot har doim toza muhitda tekshiradi.</li>
+    <li><b>Ko'rib chiquvchi vaqti tejaladi.</b> Mayda narsalarni robot topadi, odam
+    esa mantiqqa qaraydi.</li>
+  </ul>
+
+  <h2>Workflow fayli qayerda turadi</h2>
+  <p>GitHub bitta aniq joyga qaraydi:</p>
+  <div class="cmd" data-cmd="ls .github/workflows/">.github/workflows/tekshiruv.yml</div>
+  <p>Shu papkadagi har bir <code>.yml</code> fayl — bitta <b>workflow</b>, ya'ni
+  «qachon nima qilinsin» degan reja. Papka nomi aynan shunday bo'lishi shart,
+  aks holda GitHub uni ko'rmaydi.</p>
+
+  <div class="callout note">
+    <span class="label">YAML haqida qisqacha</span>
+    <p><code>.yml</code> — sozlama fayllari formati. Uning yagona qat'iy qoidasi:
+    <b>bo'sh joylar (indent) muhim</b>. Tab emas, <b>probel</b> ishlatiladi va
+    har daraja odatda 2 probel. Nusxa olganingizda bo'sh joylarni buzmang.</p>
+  </div>
+
+  <h2>Workflow tuzilishi</h2>
+  <p>Mana amaliyotda yozadigan faylimiz — atigi 9 qator:</p>
+
+  <div class="conflict">
+    <div class="cf-file">.github/workflows/tekshiruv.yml</div>
+    <div class="cf-line done">name: Tekshiruv<span class="cf-note">nomi</span></div>
+    <div class="cf-line"> </div>
+    <div class="cf-line theirs">on: [push, pull_request]<span class="cf-note">qachon</span></div>
+    <div class="cf-line"> </div>
+    <div class="cf-line">jobs:</div>
+    <div class="cf-line">  kirill:<span class="cf-note">ish nomi</span></div>
+    <div class="cf-line theirs">    runs-on: ubuntu-latest<span class="cf-note">qayerda</span></div>
+    <div class="cf-line">    steps:</div>
+    <div class="cf-line done">      - uses: actions/checkout@v4<span class="cf-note">tayyor amal</span></div>
+    <div class="cf-line done">      - run: python3 .github/tekshir.py<span class="cf-note">o'z buyrug'im</span></div>
+  </div>
+
+  <table class="sheet">
+    <thead><tr><th>Kalit</th><th>Ma'nosi</th></tr></thead>
+    <tbody>
+      <tr><td><code>name</code></td>
+          <td>Workflow nomi — GitHub'da shu ko'rinadi.</td></tr>
+      <tr><td><code>on</code></td>
+          <td><b>Qachon ishga tushsin.</b> <code>push</code> — har jo'natishda,
+          <code>pull_request</code> — har PR'da.</td></tr>
+      <tr><td><code>jobs</code></td>
+          <td>Bajariladigan ishlar ro'yxati. Bitta yoki bir nechta bo'lishi mumkin.</td></tr>
+      <tr><td><code>runs-on</code></td>
+          <td><b>Qayerda ishlasin.</b> <code>ubuntu-latest</code> — GitHub bepul
+          beradigan toza Linux mashinasi.
+          <span class="note-cell">Har safar noldan yaratiladi — ya'ni «menda ishlayapti»
+          bahonasi yo'q.</span></td></tr>
+      <tr><td><code>steps</code></td>
+          <td>Ketma-ket bajariladigan qadamlar.</td></tr>
+      <tr><td><code>uses:</code></td>
+          <td><b>Tayyor amal</b> ishlatish. <code>actions/checkout@v4</code> —
+          kodingizni o'sha mashinaga yuklaydi. <span class="note-cell">Deyarli har
+          workflow shundan boshlanadi.</span></td></tr>
+      <tr><td><code>run:</code></td>
+          <td><b>O'z buyrug'ingiz</b> — terminalda yozgandek.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">YAML'ni yupqa saqlang</span>
+    <p>Mantiqni YAML ichiga tiqishtirmang — alohida skriptga chiqaring
+    (bizda: <code>.github/tekshir.py</code>). Sabab: YAML'da indent xatosi juda
+    oson bo'ladi, skriptni esa kompyuteringizda ham sinab ko'ra olasiz.</p>
+  </div>
+
+  <h2>Robot qanday «yiqiladi»</h2>
+  <p>Bu — CI'ning yuragi va juda sodda qoida:</p>
+
+  <div class="callout win">
+    <span class="label">Chiqish kodi</span>
+    <p>Har bir buyruq tugaganda <b>raqam</b> qaytaradi. <code>0</code> — hammasi
+    yaxshi. <b>Noldan farqli</b> har qanday raqam — xato.</p>
+    <p>Qadam xato qaytarsa, workflow <b>to'xtaydi</b> va PR'da <b>qizil ✗</b> chiqadi.</p>
+  </div>
+
+  <p>Shuning uchun bizning skriptimiz oxirida shunday yozilgan:</p>
+  <div class="cmd" data-cmd="sys.exit(1 if xato else 0)">sys.exit(1 if xato else 0)</div>
+  <p>Ya'ni: xato topilsa <code>1</code> qaytar (robot yiqilsin), toza bo'lsa
+  <code>0</code>.</p>
+
+  <h2>Natijani o'qish</h2>
+  <table class="sheet">
+    <thead><tr><th>Belgi</th><th>Ma'nosi</th></tr></thead>
+    <tbody>
+      <tr><td>🟡 sariq doira</td><td>Hali ishlayapti — kuting.</td></tr>
+      <tr><td>✅ yashil belgi</td><td>Hamma tekshiruv o'tdi.</td></tr>
+      <tr><td>❌ qizil belgi</td><td>Biror qadam yiqildi.
+      <span class="note-cell"><b>Vahima qilmang</b> — logni o'qing.</span></td></tr>
+    </tbody>
+  </table>
+
+  <p><b>Qizil bo'lsa nima qilasiz:</b> PR'da <span class="ui">Details</span> ni bosasiz →
+  yiqilgan qadamni ochasiz → logning <b>oxiriga</b> qaraysiz. Xato sababi deyarli
+  har doim o'sha yerda yozilgan bo'ladi.</p>
+
+  <div class="callout note">
+    <span class="label">Public repo uchun bepul</span>
+    <p>GitHub Actions <b>ochiq repolarda cheklovsiz bepul</b>. Sizning kurs
+    repongiz public, ya'ni hech qanday xarajat yo'q.<a class="cite" href="#fn2">2</a></p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: repongizga haqiqiy tekshiruv qo'shamiz</h2>
+
+    <div class="callout win">
+      <span class="label">Bu foydali ish — o'yinchoq emas</span>
+      <p>Biz men har dars yozgandan keyin <b>qo'lda</b> bajaradigan tekshiruvni
+      avtomatlashtiramiz: darslarda lotin harflari orasiga kirill harfi tushib
+      qolmaganini tekshirish. Bu haqiqiy muammo edi —
+      <a href="0002-uch-hudud-va-commit.html">2-darsda</a> 8 joyda uchragan.</p>
+      <p>Bundan keyin robot buni siz uchun har push'da tekshiradi.</p>
+    </div>
+
+    <p>Ishni <a href="0010-kundalik-jamoa-ritmi.html">kundalik ritm</a> bo'yicha
+    qilamiz — ya'ni branch va PR bilan.</p>
+
+    <h3>A qism — workflow yaratish</h3>
+    <ol class="steps">
+      <li>
+        <p>Toza holatdan boshlang</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git && git switch main && git pull && git switch -c actions-qoshish">cd ~/Projects/Learn/Git &amp;&amp; git switch main &amp;&amp; git pull &amp;&amp; git switch -c actions-qoshish</div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi branch.</p>
+      </li>
+
+      <li>
+        <p>Papkani yarating</p>
+        <p class="why-step">Nomi <b>aynan shunday</b> bo'lishi shart — GitHub shu
+        joyga qaraydi.</p>
+        <div class="cmd" data-cmd="mkdir -p .github/workflows && ls -a .github">mkdir -p .github/workflows &amp;&amp; ls -a .github</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>workflows</code> papkasi
+        ko'rinadi.</p>
+      </li>
+
+      <li>
+        <p>Tekshiruv skriptini yozing</p>
+        <p class="why-step">8 qator. Mantiq shu yerda — YAML'da emas.</p>
+        <div class="cmd" data-cmd='cat > .github/tekshir.py << "EOF"
+import re, glob, pathlib, sys
+xato = 0
+for f in sorted(glob.glob("**/*.html", recursive=True)):
+    for n, q in enumerate(pathlib.Path(f).read_text(encoding="utf-8").split("\n"), 1):
+        if re.search(r"[&#1024;-&#1279;]", q):
+            print(f"XATO {f}:{n} — kirill harfi")
+            xato += 1
+print("Hammasi toza" if not xato else f"{xato} ta xato topildi")
+sys.exit(1 if xato else 0)
+EOF'>cat &gt; .github/tekshir.py &lt;&lt; "EOF"
+<span class="cm">import re, glob, pathlib, sys</span>
+<span class="cm">... (8 qator — Copy tugmasida to'liq)</span>
+EOF</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik.
+        <b>Agar terminal <code>&gt;</code> bilan kutib qolsa:</b> <code>EOF</code>
+        deb yozib <kbd>Enter</kbd> bosing.</p>
+      </li>
+
+      <li>
+        <p>Skriptni <b>kompyuteringizda</b> sinab ko'ring</p>
+        <p class="why-step">Muhim odat: GitHub'ga jo'natishdan oldin mahalliy
+        sinang. Aks holda har tuzatish uchun push qilib kutasiz.</p>
+        <div class="cmd" data-cmd="python3 .github/tekshir.py; echo &quot;chiqish kodi: $?&quot;">python3 .github/tekshir.py; echo "chiqish kodi: $?"
+<span class="out">Hammasi toza</span>
+<span class="out">chiqish kodi: 0</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Hammasi toza» va
+        <b>chiqish kodi 0</b>. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Workflow faylini yozing</p>
+        <p class="why-step">9 qator YAML. Bo'sh joylarni buzmang — Copy tugmasidan
+        foydalaning.</p>
+        <div class="cmd" data-cmd='cat > .github/workflows/tekshiruv.yml << "EOF"
+name: Tekshiruv
+
+on: [push, pull_request]
+
+jobs:
+  kirill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/tekshir.py
+EOF'>cat &gt; .github/workflows/tekshiruv.yml &lt;&lt; "EOF"
+<span class="cm">name: Tekshiruv</span>
+<span class="cm">... (9 qator — Copy tugmasida to'liq)</span>
+EOF</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik.
+        <code>cat .github/workflows/tekshiruv.yml</code> bilan tekshiring.</p>
+      </li>
+
+      <li>
+        <p>Commit qilib, forkga emas — o'z repongizga push qiling</p>
+        <div class="cmd" data-cmd='git add .github && git commit -m "Kirill harflarini tekshiruvchi workflow qo&apos;shildi" && git push -u origin actions-qoshish'>git add .github &amp;&amp; git commit -m "Kirill harflarini tekshiruvchi workflow qo'shildi" &amp;&amp; git push -u origin actions-qoshish</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>2 files changed</code> va
+        «[new branch]».</p>
+      </li>
+    </ol>
+
+    <h3>B qism — robotni ishda ko'ring</h3>
+    <ol class="steps web">
+      <li>
+        <p>PR oching</p>
+        <div class="cmd" data-cmd="xdg-open https://github.com/Shamuratov098/git-kursim">xdg-open https://github.com/Shamuratov098/git-kursim</div>
+        <p class="expect"><b>Bajaring:</b> <span class="ui">Compare &amp; pull request</span>
+        → <span class="ui">Create pull request</span>.</p>
+      </li>
+
+      <li>
+        <p>🤖 Robotni kuzating</p>
+        <p class="why-step">Mana o'sha 9-darsda ochilmagan qism.</p>
+        <p class="expect"><b>Kutilgan natija:</b> PR sahifasining pastida
+        <b>Tekshiruv</b> nomli qator paydo bo'ladi. Avval 🟡 <b>sariq</b>
+        (ishlayapti), keyin 20–40 soniyada ✅ <b>yashil</b>.
+        <b>2-g'alaba — birinchi CI'ingiz ishladi!</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Logni ochib ko'ring</p>
+        <p class="why-step">Robot nima qilganini o'z ko'zingiz bilan ko'rasiz.</p>
+        <p class="expect"><b>Bajaring:</b> <span class="ui">Details</span> ni bosing →
+        qadamlar ro'yxati ochiladi → <code>Run python3 .github/tekshir.py</code>
+        qatorini bosing.<br>
+        <b>Kutilgan natija:</b> «Hammasi toza» — sizning skriptingizning chiqishi,
+        GitHub serverida ishlagan.</p>
+      </li>
+    </ol>
+
+    <h3>C qism — ataylab buzib, qizil belgini ko'ring</h3>
+    <ol class="steps">
+      <li>
+        <p>Kirill harfi qo'shing</p>
+        <p class="why-step">Aynan robot topishi kerak bo'lgan xato.</p>
+        <div class="cmd" data-cmd='echo "&lt;!-- &#1090;&#1077;&#1089;&#1090; --&gt;" >> index.html && python3 .github/tekshir.py; echo "chiqish kodi: $?"'>echo "&lt;!-- &#1090;&#1077;&#1089;&#1090; --&gt;" &gt;&gt; index.html &amp;&amp; python3 .github/tekshir.py; echo "chiqish kodi: $?"
+<span class="out">XATO index.html:122 — kirill harfi</span>
+<span class="out">1 ta xato topildi</span>
+<span class="out">chiqish kodi: 1</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> xato topildi va
+        <b>chiqish kodi 1</b> — ya'ni robot ham yiqiladi.</p>
+      </li>
+
+      <li>
+        <p>Push qiling va qizil belgini ko'ring</p>
+        <div class="cmd" data-cmd='git commit -am "Ataylab xato (CI sinovi)" && git push'>git commit -am "Ataylab xato (CI sinovi)" &amp;&amp; git push</div>
+        <p class="expect"><b>Kutilgan natija:</b> PR sahifasida bir necha soniyadan
+        keyin ❌ <b>qizil</b> belgi. <span class="ui">Details</span> ni oching —
+        logda aynan qaysi fayl va qaysi qator ekani yozilgan.
+        <b>3-g'alaba — robot xatoni tutdi!</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Tuzatib, yashilga qaytaring</p>
+        <p class="why-step"><code>sed</code> oxirgi qatorni o'chiradi. Yoki faylni
+        muharrirda ochib qo'lda o'chiring.</p>
+        <div class="cmd" data-cmd='sed -i "$ d" index.html && python3 .github/tekshir.py && git commit -am "Ataylab qilingan xato tuzatildi" && git push'>sed -i "$ d" index.html &amp;&amp; python3 .github/tekshir.py &amp;&amp; git commit -am "Ataylab qilingan xato tuzatildi" &amp;&amp; git push</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Hammasi toza», keyin push.
+        PR'da belgi yana ✅ <b>yashil</b> bo'ladi. <b>4-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>PR'ni merge qilib, aylanani yoping</p>
+        <p class="why-step">Endi har push'da robot ishlaydi — men uchun ham,
+        siz uchun ham.</p>
+        <div class="cmd" data-cmd="git switch main && git pull && git branch -d actions-qoshish">git switch main &amp;&amp; git pull &amp;&amp; git branch -d actions-qoshish</div>
+        <p class="expect"><b>Avval GitHub'da:</b> <span class="ui">Merge pull request</span>
+        → <span class="ui">Delete branch</span>. Keyin yuqoridagi buyruq.<br>
+        <b>Kutilgan natija:</b> workflow endi <code>main</code>da.</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d18c1"><label for="d18c1">Workflow'lar <code>.github/workflows/*.yml</code> da turadi</label></li>
+      <li><input type="checkbox" id="d18c2"><label for="d18c2"><code>on</code> = qachon · <code>runs-on</code> = qayerda · <code>steps</code> = nima</label></li>
+      <li><input type="checkbox" id="d18c3"><label for="d18c3"><code>uses</code> = tayyor amal · <code>run</code> = o'z buyrug'im</label></li>
+      <li><input type="checkbox" id="d18c4"><label for="d18c4">Chiqish kodi <b>0 = yaxshi</b>, noldan farqli = xato</label></li>
+      <li><input type="checkbox" id="d18c5"><label for="d18c5">Push'dan oldin skriptni mahalliy sinayman</label></li>
+      <li><input type="checkbox" id="d18c6"><label for="d18c6">Yashil va qizil belgilarni o'z ko'zim bilan ko'rdim 🎉</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda va brauzerda</span>
+    <p>Amaliyotda repongizga <b>haqiqiy foydali tekshiruv</b> qo'shasiz — darslarda
+    kirill harfi tushib qolmaganini tekshiradigan robot (bu haqiqiy muammo edi!).
+    Keyin PR ochib 🟡 → ✅ o'tishini kuzatasiz, ataylab xato qilib ❌ qizil belgini
+    ko'rasiz, logni o'qib tuzatasiz. 13 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Workflow fayli qayerda turishi kerak?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>.github/workflows/</code> papkasida, <code>.yml</code> fayl</button></li>
+      <li><button class="quiz-option">Repo ildizida, nomi <code>actions.yml</code> bo'lishi shart</button></li>
+      <li><button class="quiz-option">Istalgan papkada — GitHub o'zi topib oladi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. GitHub aynan shu papkaga qaraydi. Nomi noto'g'ri
+    bo'lsa, workflow umuman ishga tushmaydi — va hech qanday xato ham chiqmaydi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Robot qachon «yiqiladi» (qizil bo'ladi)?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Qadam noldan farqli chiqish kodi qaytarganda</button></li>
+      <li><button class="quiz-option">Log'da «error» so'zi uchraganda</button></li>
+      <li><button class="quiz-option">Ish 60 soniyadan uzoq davom etganda</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — qoida shunchaki: <code>0</code> = yaxshi,
+    boshqa har qanday raqam = xato. Shuning uchun skriptimizda
+    <code>sys.exit(1)</code> yozilgan.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> <code>uses</code> va <code>run</code> farqi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>uses</code> — tayyor amal, <code>run</code> — o'z buyrug'ingiz</button></li>
+      <li><button class="quiz-option"><code>uses</code> — bir marta, <code>run</code> — har safar ishlaydi</button></li>
+      <li><button class="quiz-option"><code>uses</code> — public repolarda, <code>run</code> — private'da</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. <code>actions/checkout@v4</code> — boshqalar
+    yozgan tayyor amal (kodni yuklaydi). <code>run</code> esa terminalda yozgandek
+    o'z buyruq'ingiz.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> PR qizil bo'ldi. Birinchi nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><span class="ui">Details</span> ni bosib, log'ning oxirini o'qiyman</button></li>
+      <li><button class="quiz-option">PR'ni yopib, yangisini ochaman</button></li>
+      <li><button class="quiz-option">Workflow faylini o'chirib qo'yaman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Qizil belgi — <b>ma'lumot</b>, jazo emas.
+    Sabab deyarli har doim log'ning oxirida yozilgan bo'ladi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>CI nima — bir jumlada?</summary>
+      <div class="answer"><p>Har safar kod jo'natilganda <b>robot uni tekshirib
+      chiqadi</b> — testlar, uslub, yig'ilish. Natija PR'da yashil yoki qizil
+      belgi bo'lib chiqadi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Workflow faylining to'rt asosiy kaliti?</summary>
+      <div class="answer"><p><code>on</code> (qachon) · <code>jobs</code> (nima ishlar) ·
+      <code>runs-on</code> (qaysi mashinada) · <code>steps</code> (qadamlar).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Robot qanday «yiqiladi»?</summary>
+      <div class="answer"><p>Qadam <b>noldan farqli chiqish kodi</b> qaytarsa.
+      <code>0</code> = hammasi yaxshi, boshqasi = xato.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Nega mantiqni YAML'ga emas, skriptga yozamiz?</summary>
+      <div class="answer"><p>YAML'da indent xatosi oson bo'ladi, va skriptni
+      <b>kompyuteringizda sinab</b> ko'ra olasiz — har tuzatish uchun push qilib
+      kutmaysiz.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: PR sahifasining to'rt bo'limi?</summary>
+      <div class="answer"><p>Conversation · Commits · <b>Files changed</b> (review
+      shu yerda) · <b>Checks</b> (mana shu dars).
+      (<a href="0009-pull-request.html">Dars 09</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>CI</b> = har push'da robot kodni tekshiradi. GitHub'da: <b>Actions</b>.</li>
+      <li>Joyi: <code>.github/workflows/*.yml</code> — nomi aynan shunday bo'lsin.</li>
+      <li>Kalitlar: <code>on</code> (qachon) · <code>jobs</code> · <code>runs-on</code>
+      (qaysi mashina) · <code>steps</code>.</li>
+      <li><code>uses:</code> = tayyor amal (<code>actions/checkout@v4</code>) ·
+      <code>run:</code> = o'z buyrug'ingiz.</li>
+      <li><b>Chiqish kodi:</b> <code>0</code> = ✅ · noldan farqli = ❌.</li>
+      <li>Mantiqni <b>alohida skriptga</b> chiqaring — mahalliy sinash uchun.</li>
+      <li>Qizil bo'lsa: <span class="ui">Details</span> → log'ning <b>oxiri</b>.</li>
+      <li>Public repolarda <b>bepul</b>.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>GitHub Docs</b> —
+    <a href="https://docs.github.com/en/actions/writing-workflows/quickstart">Actions quickstart</a>
+    (15 daqiqalik amaliy boshlanish) va
+    <a href="https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions">Workflow syntax</a>
+    (barcha kalitlar ma'lumotnomasi).<br>
+    <b>GitHub Skills</b> — <a href="https://skills.github.com/">«Hello GitHub Actions»</a>
+    interaktiv kursi: real repo ichida bajariladi.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Workflow ishga tushmasa yoki qizil bo'lib qolsa — menga yozing.</b>
+    Eng ko'p uchraydigan sabablar: papka nomi noto'g'ri, YAML'da indent buzilgan,
+    yoki fayl yo'li xato. Log'ning oxirgi 10 qatorini ko'chirib tashlang —
+    birga topamiz. Ish joyingizdagi workflow'ni tushunish kerak bo'lsa ham ayting.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0017-rebase-interactive.html">Oldingi: rebase -i</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">GitHub Docs — <a href="https://docs.github.com/en/actions/about-github-actions/understanding-github-actions">Understanding GitHub Actions</a>.</li>
+      <li id="fn2">GitHub Docs — <a href="https://docs.github.com/en/billing/managing-billing-for-your-products/managing-billing-for-github-actions/about-billing-for-github-actions">About billing for GitHub Actions</a>
+      (public repolar uchun bepul).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

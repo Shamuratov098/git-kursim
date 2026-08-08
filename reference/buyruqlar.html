@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a>, <a href="../lessons/0017-rebase-interactive.html">17</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a>, <a href="../lessons/0017-rebase-interactive.html">17</a>, <a href="../lessons/0018-github-actions.html">18</a></span>
   </p>
 
   <div class="callout tip">
@@ -889,11 +889,43 @@
     <kbd>Ctrl</kbd>+<kbd>X</kbd>.</p>
   </div>
 
+  <h2>19. GitHub Actions — avtomatik tekshiruv (Dars 18)</h2>
+  <p>Har push'da robot kodni tekshiradi. Natija PR'da ✅ yoki ❌ bo'lib chiqadi.</p>
+  <table class="sheet">
+    <thead><tr><th>Element</th><th>Ma'nosi</th></tr></thead>
+    <tbody>
+      <tr><td><code>.github/workflows/*.yml</code></td>
+          <td>Workflow fayllari <b>faqat shu joyda</b> ishlaydi.
+          <span class="note-cell">Papka nomi noto'g'ri bo'lsa — jimgina ishlamaydi.</span></td></tr>
+      <tr><td><code>on: [push, pull_request]</code></td><td><b>Qachon</b> ishga tushsin.</td></tr>
+      <tr><td><code>runs-on: ubuntu-latest</code></td>
+          <td><b>Qayerda</b> — GitHub beradigan toza Linux mashinasi.</td></tr>
+      <tr><td><code>uses: actions/checkout@v4</code></td>
+          <td><b>Tayyor amal</b> — kodni mashinaga yuklaydi (deyarli har doim birinchi qadam).</td></tr>
+      <tr><td><code>run: python3 skript.py</code></td><td><b>O'z buyrug'ingiz</b>.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Robot qanday yiqiladi</span>
+    <p><b>Chiqish kodi:</b> <code>0</code> = ✅ yaxshi · <b>noldan farqli</b> = ❌ xato.
+    Skriptda: <code>sys.exit(1 if xato else 0)</code>.</p>
+    <p>Qizil bo'lsa: <b>Details</b> → yiqilgan qadam → <b>log'ning oxiri</b>.
+    YAML'da indent (bo'sh joy) muhim — tab emas, probel.</p>
+  </div>
+
+  <div class="callout tip">
+    <span class="label">Ikkita foydali odat</span>
+    <p><b>1.</b> Mantiqni YAML'ga emas, <b>alohida skriptga</b> yozing —
+    kompyuteringizda sinab ko'ra olasiz.<br>
+    <b>2.</b> Push'dan <b>oldin</b> skriptni mahalliy ishlatib ko'ring.</p>
+  </div>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–17) barcha
-    buyruqlari bor. Hali qo'shilmagan mavzular: GitHub Actions,
-    <code>git tag</code>, <code>bisect</code> — kerak bo'lsa ayting, dars qo'shamiz.
+    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–18) barcha
+    buyruqlari bor. Hali qo'shilmagan: <code>git tag</code> (relizlar),
+    <code>bisect</code> — kerak bo'lsa ayting.
     <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 

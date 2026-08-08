@@ -264,46 +264,47 @@
     <h3>B qism — README yozamiz</h3>
     <ol class="steps">
       <li>
-        <p>Kichik README yarating</p>
-        <p class="why-step">Avval qisqasini yozamiz — keyingi qadamda kengaytirasiz.
-        Bu buyruq bir necha qatorli, shuning uchun <b>Copy tugmasidan foydalaning</b>
-        va terminalga bir marta qo'ying.</p>
-        <div class="cmd" data-cmd="cat > README.md << 'EOF'
-# Git va GitHub — shaxsiy kursim
+        <p>Mavjud README'ga o'z bo'limingizni qo'shing</p>
+        <p class="why-step">Repongizda README allaqachon bor — men yozib qo'yganman.
+        Haqiqiy ishda ham ko'pincha shunday bo'ladi: noldan yozmaysiz, <b>mavjudini
+        to'ldirasiz</b>. <code>&gt;&gt;</code> (ikkita) — oxiriga qo'shadi,
+        ichidagini <b>o'chirmaydi</b>. <b>Copy tugmasidan foydalaning.</b></p>
+        <div class="cmd" data-cmd="cat >> README.md << 'EOF'
 
-O'zbekcha kurs: Git'ni 0 dan jamoada ishlash darajasigacha.
-4 modul, 11 dars.
+## Mening natijalarim
 
-**Sayt:** https://shamuratov098.github.io/git-kursim/
-EOF">cat &gt; README.md &lt;&lt; 'EOF'
-<span class="cm"># Git va GitHub — shaxsiy kursim</span>
-<span class="cm">(4 qator matn — Copy tugmasida to'liq)</span>
+Bu kursni men o'zim o'tayapman. Shu paytgacha o'rgandim:
+
+- Commit qilish va xatoni ortga qaytarish
+- Branch, merge va merge conflict
+- Pull request va kundalik jamoa ritmi
+EOF">cat &gt;&gt; README.md &lt;&lt; 'EOF'
+<span class="cm">## Mening natijalarim</span>
+<span class="cm">(bir necha qator — Copy tugmasida to'liq)</span>
 EOF</div>
-        <p class="expect"><b>Kutilgan natija:</b> jimlik. <code>cat README.md</code>
-        bilan tekshiring — 6 qatorli fayl chiqishi kerak.<br>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik. <code>tail -8 README.md</code>
+        deng — yangi bo'lim faylning <b>oxirida</b> paydo bo'ldi, eskisi joyida.<br>
         <b>Agar terminal <code>&gt;</code> belgisi bilan kutib qolsa:</b> oxirgi
         <code>EOF</code> qatori tushmagan. <code>EOF</code> deb yozib
         <kbd>Enter</kbd> bosing.</p>
       </li>
 
       <li>
-        <p>Matn muharririda kengaytiring (ixtiyoriy, lekin tavsiya qilaman)</p>
+        <p>Matn muharririda o'zingizga moslang (ixtiyoriy, lekin tavsiya qilaman)</p>
         <p class="why-step">Uzun matnni terminalga emas, muharrirga yozgan qulay.
         VS Code'da: <code>code README.md</code>, yoki fayl menejeridan oching.</p>
-        <p class="expect"><b>Quyidagicha bo'limlar qo'shing</b> (Markdown belgilarini
-        yuqoridagi jadvaldan qarang):</p>
+        <p class="expect"><b>Qo'shgan bo'limingizni o'zgartiring</b> — Markdown
+        belgilarini yuqoridagi jadvaldan qarang. Masalan:</p>
         <div class="conflict">
-          <div class="cf-file">README.md — kengaytirilgan namuna</div>
-          <div class="cf-line mark">## Qanday ishlatiladi</div>
-          <div class="cf-line">Kurs ikki rejimda ishlaydi:</div>
-          <div class="cf-line">- **O'qish** — telefonda, tushunchani egallash uchun</div>
-          <div class="cf-line">- **Amaliyot** — kompyuterda, terminal yonida</div>
-          <div class="cf-line mark">## Nimalar o'rganildi</div>
-          <div class="cf-line">- Git sozlash, commit, xatoni ortga qaytarish</div>
-          <div class="cf-line">- GitHub: push, clone, pull</div>
-          <div class="cf-line">- Branch, merge va merge conflict</div>
-          <div class="cf-line">- Pull request va kundalik jamoa ritmi</div>
+          <div class="cf-file">README.md — o'z bo'limingiz</div>
+          <div class="cf-line mark">## Mening natijalarim</div>
+          <div class="cf-line">Kursni **2026-yil avgustda** boshladim.</div>
+          <div class="cf-line">- Eng qiyin bo'lgani: `merge conflict`</div>
+          <div class="cf-line">- Eng foydali bo'lgani: `git reflog`</div>
+          <div class="cf-line">- Keyingi maqsad: real loyihaga birinchi PR</div>
         </div>
+        <p class="expect">Bu — <b>sizning</b> repongiz. README'da o'z ovozingiz
+        bo'lgani yaxshi.</p>
       </li>
 
       <li>

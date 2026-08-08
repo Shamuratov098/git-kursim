@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 19 — git tag va relizlar: versiyani belgilash</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 19 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1><code>git tag</code> va relizlar: versiyani belgilash</h1>
+  <p class="lead">Bu darsdan keyin siz tarixning muhim nuqtalariga <b>doimiy
+  yorliq</b> qo'yasiz — «bu <code>v1.0.0</code>» deb — va GitHub'da haqiqiy
+  reliz chiqarasiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 7 daqiqa</span>
+    <span>💻 Amaliyot ≈ 12 daqiqa</span>
+    <span>Kerak: <a href="0006-branch.html">Dars 06</a>,
+    <a href="0004-remote-va-push.html">04</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu kerak</span>
+    <p>Ish joyida muqarrar savollar tug'iladi: «<b>serverda qaysi versiya turibdi?</b>»,
+    «<b>o'tgan haftagi ishlaydigan holatga qaytaraylik</b>», «<b>mijozga qaysi
+    versiyani berdik?</b>»</p>
+    <p>Commit hash (<code>a1b2c3d</code>) bu savollarga javob bera olmaydi — uni
+    hech kim eslay olmaydi. <code>v1.4.2</code> esa aytadi.</p>
+  </div>
+
+  <h2>Tag nima — branch bilan taqqoslab</h2>
+  <p><a href="0006-branch.html">6-darsda</a> branch — <b>ko'chib yuruvchi yorliq</b>
+  deb o'rgangandik. Tag esa uning aksi:</p>
+
+  <table class="sheet">
+    <thead><tr><th></th><th><a href="0006-branch.html">branch</a></th><th>tag</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Harakati</b></td>
+        <td>Har commitda <b>oldinga siljiydi</b></td>
+        <td><b>Qimirlamaydi</b> — bir commitga mixlangan</td>
+      </tr>
+      <tr>
+        <td><b>Maqsadi</b></td>
+        <td>«Bu yerda <b>ishlayapman</b>»</td>
+        <td>«Bu <b>muhim nuqta</b> edi»</td>
+      </tr>
+      <tr>
+        <td><b>Misol</b></td>
+        <td><code>main</code>, <code>login-sahifasi</code></td>
+        <td><code>v1.0.0</code>, <code>v2.3.1</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout win">
+    <span class="label">Bir jumlada</span>
+    <p><b>Branch — harakatlanadigan yorliq, tag — doimiy yorliq.</b> Tag qo'yilgan
+    commit hech qachon «adashib qolmaydi»: bir yildan keyin ham
+    <code>v1.0.0</code> deb o'sha nuqtani topasiz.</p>
+  </div>
+
+  <h2>Versiya raqami qanday o'qiladi</h2>
+  <p>Eng keng tarqalgan tartib — <b>semantik versiyalash</b> (semver):
+  <code>v<b>MAJOR</b>.<b>MINOR</b>.<b>PATCH</b></code><a class="cite" href="#fn1">1</a></p>
+
+  <table class="sheet">
+    <thead><tr><th>Qism</th><th>Qachon oshadi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>v<b>2</b>.0.0</code> — MAJOR</td>
+        <td><b>Buzuvchi o'zgarish.</b> Eski kod endi ishlamaydi.
+        <span class="note-cell">Ishlatuvchilar diqqat bilan yangilaydi.</span></td>
+      </tr>
+      <tr>
+        <td><code>v1.<b>3</b>.0</code> — MINOR</td>
+        <td><b>Yangi imkoniyat</b> qo'shildi, eskisi buzilmadi.</td>
+      </tr>
+      <tr>
+        <td><code>v1.2.<b>5</b></code> — PATCH</td>
+        <td><b>Xato tuzatildi</b>, boshqa hech narsa o'zgarmadi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Ya'ni <code>v1.2.5</code> dan <code>v2.0.0</code> ga o'tish — ehtiyot bo'lish
+  kerak degan <b>ogohlantirish</b>. Bu shunchaki raqam emas, <b>xabar</b>.</p>
+
+  <h2>Ikki xil tag — biri yetarli</h2>
+  <table class="sheet">
+    <thead><tr><th>Turi</th><th>Qachon</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Annotated</b><br><code>git tag -a v1.0.0 -m "..."</code></td>
+        <td>✅ <b>Relizlar uchun shuni ishlating.</b> Kim, qachon va nega qo'yganini
+        saqlaydi — xuddi commit kabi.</td>
+      </tr>
+      <tr>
+        <td><b>Lightweight</b><br><code>git tag v1.0.0</code></td>
+        <td>Shunchaki yorliq, hech qanday ma'lumotsiz.
+        <span class="note-cell">Vaqtinchalik shaxsiy belgilar uchun.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Qoida sodda</span>
+    <p>Boshqalar ko'radigan har qanday tag — <b>annotated</b> (<code>-a</code>)
+    bo'lsin. Farqni eslab qolish qiyin bo'lsa: shunchaki har doim <code>-a -m</code>
+    yozing.</p>
+  </div>
+
+  <h2>⚠️ Eng katta tuzoq: teglar push qilinmaydi</h2>
+  <div class="callout warning">
+    <span class="label">Oddiy <code>git push</code> teglarni jo'natmaydi</span>
+    <p>Tag yaratib, <code>git push</code> qilsangiz — tag <b>kompyuteringizda
+    qoladi</b>. GitHub'da hech narsa ko'rinmaydi va hech qanday xato ham chiqmaydi.</p>
+    <p>Tegni <b>alohida</b> jo'natasiz:</p>
+    <div class="cmd" data-cmd="git push origin v1.0.0">git push origin v1.0.0</div>
+    <p>Yoki hammasini birdan: <code>git push --tags</code>.</p>
+  </div>
+
+  <h2>Buyruqlar</h2>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr><td><code>git tag</code></td><td>Teglar ro'yxati.</td></tr>
+      <tr><td><code>git tag -a v1.0.0 -m "izoh"</code></td>
+          <td><b>Hozirgi commitga</b> tag qo'yadi.</td></tr>
+      <tr><td><code>git tag -a v1.0.0 &lt;hash&gt; -m "izoh"</code></td>
+          <td><b>Eski commitga</b> tag qo'yadi — unutib qolgan bo'lsangiz.</td></tr>
+      <tr><td><code>git show v1.0.0</code></td>
+          <td>Tag ma'lumoti va o'sha commit.</td></tr>
+      <tr><td><code>git push origin v1.0.0</code></td>
+          <td>Tegni GitHub'ga jo'natadi. <span class="note-cell">⚠️ Alohida qilinadi!</span></td></tr>
+      <tr><td><code>git tag -d v1.0.0</code></td>
+          <td>Mahalliy tegni o'chiradi.</td></tr>
+      <tr><td><code>git push origin --delete v1.0.0</code></td>
+          <td>GitHub'dagisini ham o'chiradi.
+          <span class="note-cell">Ikkalasi alohida — bu ham tuzoq.</span></td></tr>
+      <tr><td><code>git switch --detach v1.0.0</code></td>
+          <td>O'sha versiyaning kodini ko'rish uchun vaqtincha o'tish.
+          <span class="note-cell">Qaytish: <code>git switch main</code></span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>GitHub Release — tegning ko'rinadigan yuzi</h2>
+  <p>Tag GitHub'ga yetib borgach, undan <b>Release</b> yasash mumkin. Release —
+  bu tegning ustiga qurilgan sahifa:<a class="cite" href="#fn2">2</a></p>
+  <ul>
+    <li><b>Izoh (release notes)</b> — bu versiyada nima o'zgargani;</li>
+    <li><b>Avtomatik arxiv</b> — GitHub o'zi <code>.zip</code> va
+    <code>.tar.gz</code> yaratib qo'yadi;</li>
+    <li><b>Doimiy havola</b> — «bizga <code>v1.2.0</code> ni bering» deyish oson.</li>
+  </ul>
+
+  <div class="callout note">
+    <span class="label">Tag ≠ Release</span>
+    <p><b>Tag</b> — Git tushunchasi, kompyuteringizda ham bor.
+    <b>Release</b> — GitHub tushunchasi, tegning ustiga qo'shiladi.
+    Xuddi <a href="0009-pull-request.html">PR</a> kabi: Git buyrug'i emas, sayt
+    imkoniyati.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: kursingizni <code>v1.0.0</code> qilib chiqaramiz</h2>
+
+    <div class="callout win">
+      <span class="label">Bu munosib payt</span>
+      <p>Kursingizda endi 19 ta dars bor: 11 asosiy + 8 qo'shimcha. README yozilgan,
+      CI ishlab turibdi. Bu — <b>haqiqiy <code>v1.0.0</code></b>.</p>
+    </div>
+
+    <h3>A qism — tag qo'yish</h3>
+    <ol class="steps">
+      <li>
+        <p>Toza va yangi holatda ekaningizni tekshiring</p>
+        <p class="why-step">Tag <b>hozirgi commitga</b> qo'yiladi — shuning uchun
+        avval to'g'ri joyda turganingizga ishonch hosil qiling.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git && git switch main && git pull && git log --oneline -1">cd ~/Projects/Learn/Git &amp;&amp; git switch main &amp;&amp; git pull &amp;&amp; git log --oneline -1</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Already up to date» va oxirgi
+        commit ko'rinadi. Shu commit <code>v1.0.0</code> bo'ladi.</p>
+      </li>
+
+      <li>
+        <p>Annotated tag qo'ying</p>
+        <p class="why-step"><code>-a</code> = annotated, <code>-m</code> = izoh.
+        Izoh bu versiyada nima borligini aytsin.</p>
+        <div class="cmd" data-cmd='git tag -a v1.0.0 -m "Birinchi to&apos;liq versiya: 11 asosiy + 8 qo&apos;shimcha dars, README va CI"'>git tag -a v1.0.0 -m "Birinchi to'liq versiya: 11 asosiy + 8 qo'shimcha dars, README va CI"</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik (= muvaffaqiyat).</p>
+      </li>
+
+      <li>
+        <p>Tekshiring</p>
+        <div class="cmd" data-cmd="git tag && git show v1.0.0 | head -6">git tag &amp;&amp; git show v1.0.0 | head -6
+<span class="out">v1.0.0</span>
+<span class="out">tag v1.0.0</span>
+<span class="out">Tagger: dostonbek &lt;...&gt;</span>
+<span class="out">Birinchi to'liq versiya: ...</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> tag nomi, kim qo'ygani, sanasi va
+        izohi. Chiqish: <kbd>q</kbd>. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>🪤 Tuzoqni o'z ko'zingiz bilan ko'ring</p>
+        <p class="why-step">Oddiy push teglarni olib ketmasligini isbotlaymiz.</p>
+        <div class="cmd" data-cmd="git push && git ls-remote --tags origin">git push &amp;&amp; git ls-remote --tags origin</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Everything up-to-date» va
+        <code>ls-remote</code> chiqishi <b>bo'sh</b> — ya'ni GitHub'da tag
+        <b>yo'q</b>. Mana o'sha tuzoq.</p>
+      </li>
+
+      <li>
+        <p>Endi tegni alohida jo'nating</p>
+        <div class="cmd" data-cmd="git push origin v1.0.0 && git ls-remote --tags origin">git push origin v1.0.0 &amp;&amp; git ls-remote --tags origin
+<span class="out"> * [new tag]  v1.0.0 -&gt; v1.0.0</span>
+<span class="out">... refs/tags/v1.0.0</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «[new tag]» va endi
+        <code>ls-remote</code> tegni ko'rsatadi. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — GitHub'da Release yasash</h3>
+    <ol class="steps web">
+      <li>
+        <p>Relizlar sahifasini oching</p>
+        <div class="cmd" data-cmd="xdg-open https://github.com/Shamuratov098/git-kursim/releases/new">xdg-open https://github.com/Shamuratov098/git-kursim/releases/new</div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi reliz yaratish sahifasi.</p>
+      </li>
+
+      <li>
+        <p>Tegni tanlang va reliz yozing</p>
+        <p class="why-step">Tag allaqachon GitHub'da — shunchaki tanlaysiz.</p>
+        <p class="expect"><b>Bajaring:</b><br>
+        <b>1.</b> <span class="ui">Choose a tag</span> → ro'yxatdan
+        <code>v1.0.0</code> ni tanlang<br>
+        <b>2.</b> Sarlavha: <code>v1.0.0 — birinchi to'liq versiya</code><br>
+        <b>3.</b> Tavsifga nima borligini yozing, masalan:<br>
+        <code>- 11 ta asosiy dars (Git asoslaridan pull request'gacha)</code><br>
+        <code>- 8 ta qo'shimcha dars (stash, rebase, reflog, cherry-pick...)</code><br>
+        <code>- Ikki rejim: telefonda o'qish, kompyuterda amaliyot</code><br>
+        <b>4.</b> <span class="ui">Publish release</span></p>
+      </li>
+
+      <li>
+        <p>Natijani ko'ring</p>
+        <p class="why-step">Endi loyihangizda rasmiy versiya bor.</p>
+        <p class="expect"><b>Kutilgan natija:</b> reliz sahifasi ochiladi va pastda
+        GitHub o'zi yaratgan <b>Source code (zip)</b> va <b>(tar.gz)</b> havolalari
+        turadi. Repo bosh sahifasining o'ng tomonida ham <b>Releases</b> bo'limi
+        paydo bo'ladi. <b>3-g'alaba.</b> 🎉🎉</p>
+      </li>
+    </ol>
+
+    <h3>C qism — eski versiyaga qarash</h3>
+    <ol class="steps">
+      <li>
+        <p>Tag'dagi kodni ko'rish</p>
+        <p class="why-step">«O'sha versiyada nima bor edi?» degan savolga javob.
+        <code>--detach</code> — «vaqtincha qarayman, ishlamayman» degani.</p>
+        <div class="cmd" data-cmd="git switch --detach v1.0.0 && git log --oneline -1">git switch --detach v1.0.0 &amp;&amp; git log --oneline -1</div>
+        <p class="expect"><b>Kutilgan natija:</b> Git ogohlantiradi
+        («detached HEAD») — bu <b>normal</b>, siz shunchaki tarixning bir nuqtasiga
+        qarab turibsiz.</p>
+      </li>
+
+      <li>
+        <p>Ishga qayting</p>
+        <p class="why-step">Bu qadamni unutmang — aks holda «detached» holatda
+        qolib ketasiz.</p>
+        <div class="cmd" data-cmd="git switch main && git status -sb | head -1">git switch main &amp;&amp; git status -sb | head -1</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>## main...origin/main</code> —
+        odatdagi holatga qaytdingiz. <b>4-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d19c1"><label for="d19c1">Branch <b>siljiydi</b>, tag <b>qimirlamaydi</b></label></li>
+      <li><input type="checkbox" id="d19c2"><label for="d19c2">Relizlar uchun har doim <code>-a</code> (annotated)</label></li>
+      <li><input type="checkbox" id="d19c3"><label for="d19c3">⚠️ <code>git push</code> teglarni <b>jo'natmaydi</b> — alohida kerak</label></li>
+      <li><input type="checkbox" id="d19c4"><label for="d19c4">semver: MAJOR = buzuvchi · MINOR = yangi · PATCH = tuzatish</label></li>
+      <li><input type="checkbox" id="d19c5"><label for="d19c5">Kursimni <code>v1.0.0</code> qilib chiqardim 🎉</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda va brauzerda</span>
+    <p>Amaliyotda <b>o'z kursingizni <code>v1.0.0</code> qilib chiqarasiz</b>:
+    annotated tag qo'yasiz, oddiy <code>git push</code> tegni <b>olib ketmasligini</b>
+    o'z ko'zingiz bilan ko'rasiz, keyin alohida jo'natasiz va GitHub'da haqiqiy
+    Release yaratasiz. Oxirida eski versiyaga qarab qaytishni ham o'rganasiz.
+    10 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Tag va branch farqi nimada?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Branch siljiydi, tag bir commitda qimirlamay qoladi</button></li>
+      <li><button class="quiz-option">Tag faqat GitHub'da, branch faqat kompyuterda bo'ladi</button></li>
+      <li><button class="quiz-option">Tag fayllarni saqlaydi, branch esa faqat izohlarni</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Branch — «bu yerda ishlayapman» (siljiydi),
+    tag — «bu muhim nuqta edi» (qotib qoladi).</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Tag yaratib <code>git push</code> qildingiz. GitHub'da tag bormi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Yo'q — teglar alohida jo'natiladi</button></li>
+      <li><button class="quiz-option">Ha — push hamma narsani jo'natadi</button></li>
+      <li><button class="quiz-option">Ha, lekin faqat annotated bo'lsa</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri, va bu eng katta tuzoq: Git xato ham bermaydi.
+    <code>git push origin v1.0.0</code> yoki <code>git push --tags</code> kerak.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Kodda buzuvchi o'zgarish qildingiz. Qaysi raqam oshadi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">MAJOR — <code>v1.4.2</code> → <code>v2.0.0</code></button></li>
+      <li><button class="quiz-option">MINOR — <code>v1.4.2</code> → <code>v1.5.0</code></button></li>
+      <li><button class="quiz-option">PATCH — <code>v1.4.2</code> → <code>v1.4.3</code></button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. MAJOR oshishi — «ehtiyot bo'ling, eski kod
+    ishlamasligi mumkin» degan <b>xabar</b>.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Reliz uchun qaysi turdagi tag ishlatiladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Annotated (<code>-a</code>) — kim, qachon, nega saqlanadi</button></li>
+      <li><button class="quiz-option">Lightweight — u tezroq va joy kamroq oladi</button></li>
+      <li><button class="quiz-option">Farqi yo'q — GitHub ikkalasini bir xil ko'radi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Boshqalar ko'radigan har qanday tag —
+    annotated bo'lsin. Oson qoida: har doim <code>-a -m</code> yozing.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>Tag va branch — bir jumlada farqi?</summary>
+      <div class="answer"><p><b>Branch — harakatlanadigan yorliq</b> («bu yerda
+      ishlayapman»), <b>tag — doimiy yorliq</b> («bu muhim nuqta edi»).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>v2.3.1</code> — har bir raqam nimani bildiradi?</summary>
+      <div class="answer"><p><b>2</b> = MAJOR (buzuvchi o'zgarish) ·
+      <b>3</b> = MINOR (yangi imkoniyat) · <b>1</b> = PATCH (xato tuzatildi).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Eng katta tuzoq nima edi?</summary>
+      <div class="answer"><p><code>git push</code> <b>teglarni jo'natmaydi</b> va
+      xato ham bermaydi. <code>git push origin v1.0.0</code> yoki
+      <code>git push --tags</code> kerak.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Tag va Release farqi?</summary>
+      <div class="answer"><p><b>Tag</b> — Git tushunchasi (kompyuteringizda ham bor).
+      <b>Release</b> — GitHub sahifasi: izoh, avtomatik zip arxivi, doimiy havola.
+      Xuddi PR kabi — sayt imkoniyati.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: branch nima edi?</summary>
+      <div class="answer"><p>Bitta commitga ishora qiluvchi <b>ko'chib yuruvchi
+      yorliq</b>. (<a href="0006-branch.html">Dars 06</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Tag = doimiy yorliq</b> (branch esa siljiydi).</li>
+      <li><b>semver:</b> <code>v</code>MAJOR.MINOR.PATCH — buzuvchi / yangi / tuzatish.</li>
+      <li>Relizlar uchun <b>annotated</b>:
+      <code>git tag -a v1.0.0 -m "izoh"</code>.</li>
+      <li>⚠️ <b><code>git push</code> teglarni jo'natmaydi</b> →
+      <code>git push origin v1.0.0</code> (yoki <code>--tags</code>).</li>
+      <li>O'chirish ham ikki joyda: <code>git tag -d</code> +
+      <code>git push origin --delete v1.0.0</code>.</li>
+      <li>Ko'rish: <code>git tag</code> · <code>git show v1.0.0</code> ·
+      <code>git switch --detach v1.0.0</code> (qaytish: <code>git switch main</code>).</li>
+      <li><b>Release</b> — GitHub'da tegning ustiga qurilgan sahifa: izoh + avtomatik zip.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 2.6-bo'lim — "Tagging":
+    <a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging">git-scm.com/book</a>.<br>
+    <b>Semantik versiyalash</b> — <a href="https://semver.org/lang/ru/">semver.org</a>
+    (qoidalarning rasmiy ta'rifi).<br>
+    <b>GitHub Docs</b> —
+    <a href="https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases">About releases</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Noto'g'ri commitga tag qo'yib qo'ysangiz — tuzatiladi.</b>
+    <code>git tag -d</code> bilan mahalliy, <code>git push origin --delete</code>
+    bilan GitHub'dagisini o'chiramiz, keyin to'g'ri joyga qayta qo'yamiz. Menga
+    yozing. «Ish joyimizda versiya raqamlari boshqacha» — bu ham normal, birga
+    ko'rib chiqamiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0018-github-actions.html">Oldingi: GitHub Actions</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Semantic Versioning — <a href="https://semver.org/">semver.org</a>.</li>
+      <li id="fn2">GitHub Docs — <a href="https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases">About releases</a>
+      · Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Basics-Tagging">Git Basics: Tagging</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

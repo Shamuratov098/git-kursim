@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a>, <a href="../lessons/0017-rebase-interactive.html">17</a>, <a href="../lessons/0018-github-actions.html">18</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a>, <a href="../lessons/0017-rebase-interactive.html">17</a>, <a href="../lessons/0018-github-actions.html">18</a>, <a href="../lessons/0019-git-tag-va-release.html">19</a></span>
   </p>
 
   <div class="callout tip">
@@ -921,11 +921,43 @@
     <b>2.</b> Push'dan <b>oldin</b> skriptni mahalliy ishlatib ko'ring.</p>
   </div>
 
+  <h2>20. <code>git tag</code> — versiya belgilash (Dars 19)</h2>
+  <p><b>Branch siljiydi, tag qimirlamaydi.</b> Muhim nuqtalarga doimiy yorliq.
+  Nomlash: <code>v</code>MAJOR.MINOR.PATCH (buzuvchi / yangi / tuzatish).</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr><td><code>git tag</code></td><td>Teglar ro'yxati.</td></tr>
+      <tr><td><code>git tag -a v1.0.0 -m "izoh"</code></td>
+          <td>Hozirgi commitga tag. <span class="note-cell">Relizlar uchun
+          <b>har doim <code>-a</code></b> (annotated).</span></td></tr>
+      <tr><td><code>git tag -a v1.0.0 &lt;hash&gt; -m "izoh"</code></td>
+          <td>Eski commitga tag qo'yish.</td></tr>
+      <tr><td><code>git show v1.0.0</code></td><td>Tag ma'lumoti va commit.</td></tr>
+      <tr><td><code>git push origin v1.0.0</code></td>
+          <td>⚠️ <b>Teglar oddiy <code>git push</code> bilan ketmaydi!</b>
+          <span class="note-cell">Hammasi birdan: <code>git push --tags</code></span></td></tr>
+      <tr><td><code>git tag -d v1.0.0</code></td><td>Mahalliy o'chirish.</td></tr>
+      <tr><td><code>git push origin --delete v1.0.0</code></td>
+          <td>GitHub'dagisini o'chirish (alohida qadam).</td></tr>
+      <tr><td><code>git switch --detach v1.0.0</code></td>
+          <td>O'sha versiya kodini ko'rish. <span class="note-cell">Qaytish:
+          <code>git switch main</code></span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Tag va Release</span>
+    <p><b>Tag</b> — Git tushunchasi. <b>Release</b> — GitHub sahifasi: izoh,
+    avtomatik <code>.zip</code> arxivi, doimiy havola. Tag GitHub'ga yetgach
+    <b>Releases → Draft a new release</b> orqali yasaladi.</p>
+  </div>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–18) barcha
-    buyruqlari bor. Hali qo'shilmagan: <code>git tag</code> (relizlar),
-    <code>bisect</code> — kerak bo'lsa ayting.
+    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–19) barcha
+    buyruqlari bor. Hali qo'shilmagan: <code>git bisect</code> (xatoni ikkiga
+    bo'lib qidirish) va Git internals — kerak bo'lsa ayting.
     <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 

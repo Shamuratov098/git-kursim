@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 47 ta</span>
+    <span>Atamalar: 49 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -54,6 +54,8 @@
     <li><a href="#fork">fork</a></li>
     <li><a href="#upstream-remote">upstream (remote)</a></li>
     <li><a href="#gitignore">.gitignore</a></li>
+    <li><a href="#tag">tag</a></li>
+    <li><a href="#release">release</a></li>
     <li><a href="#ci">CI / GitHub Actions</a></li>
     <li><a href="#squash">squash</a></li>
     <li><a href="#cherry-pick">cherry-pick</a></li>
@@ -290,6 +292,23 @@
       ⚠️ <b>Allaqachon commit qilingan faylga ta'sir qilmaydi</b> — avval
       <code>git rm --cached fayl</code>.
       <span class="eg">*.log · .env · node_modules/</span></dd>
+    </div>
+
+    <div class="term" id="tag">
+      <dt>tag <span class="uz">— doimiy yorliq / versiya</span></dt>
+      <dd><a href="#branch">Branch</a>ning aksi: <b>qimirlamaydi</b>, bir
+      <a href="#commit">commit</a>ga mixlanadi. Relizlarni belgilash uchun:
+      <code>v1.0.0</code>. Nomlash — <b>semver</b>: MAJOR (buzuvchi) . MINOR (yangi) .
+      PATCH (tuzatish). Relizlar uchun <b>annotated</b> (<code>-a</code>) ishlating.
+      ⚠️ Oddiy <a href="#push">push</a> teglarni <b>jo'natmaydi</b>.
+      <span class="eg">git tag -a v1.0.0 -m "..." → git push origin v1.0.0</span></dd>
+    </div>
+
+    <div class="term" id="release">
+      <dt>release <span class="uz">— GitHub relizi</span></dt>
+      <dd><a href="#tag">Tag</a>ning ustiga qurilgan GitHub sahifasi: o'zgarishlar
+      izohi, avtomatik <code>.zip</code>/<code>.tar.gz</code> arxivi va doimiy havola.
+      <a href="#pull-request">PR</a> kabi — Git buyrug'i emas, sayt imkoniyati.</dd>
     </div>
 
     <div class="term" id="ci">

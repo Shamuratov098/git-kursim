@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> (to'liq)</span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12 (stash)</a></span>
   </p>
 
   <div class="callout tip">
@@ -586,12 +586,56 @@
     </tbody>
   </table>
 
+  <h2>13. <code>git stash</code> — javon (Dars 12)</h2>
+  <p>Yarim ishni <b>commit qilmasdan</b> vaqtincha olib qo'yish. Papkangiz tozalanadi,
+  tarixingizga hech narsa yozilmaydi.</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git stash push -m "izoh"</code></td>
+        <td>O'zgarishlarni javonga qo'yadi (nom bilan — tavsiya qilinadi).
+        <span class="note-cell">Qisqa shakli: <code>git stash</code></span></td>
+      </tr>
+      <tr>
+        <td><code>git stash push -u -m "izoh"</code></td>
+        <td><code>-u</code> = <b>untracked</b> (yangi) fayllarni ham qo'shadi.
+        <span class="note-cell">Usiz yangi fayllar javonga tushmaydi.</span></td>
+      </tr>
+      <tr><td><code>git stash list</code></td>
+          <td>Javondagilar ro'yxati: <code>stash@{0}</code>, <code>stash@{1}</code>…</td></tr>
+      <tr><td><code>git stash show -p</code></td>
+          <td>Oxirgi stash ichida nima borligini satrma-satr ko'rsatadi.</td></tr>
+      <tr><td><code>git stash pop</code></td>
+          <td>Qaytaradi <b>va</b> javondan o'chiradi. Odatda shu kerak.</td></tr>
+      <tr><td><code>git stash apply</code></td>
+          <td>Qaytaradi, lekin javonda <b>qoldiradi</b>.</td></tr>
+      <tr><td><code>git stash drop</code></td>
+          <td>Qaytarmasdan o'chiradi.</td></tr>
+      <tr><td><code>git stash clear</code></td>
+          <td>⚠️ Javonni butunlay bo'shatadi — qaytarib bo'lmaydi.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Eng foydali stsenariy: noto'g'ri branch'da ishlab qo'yish</span>
+    <p><code>git stash</code> → <code>git switch -c to-g-ri-branch</code> →
+    <code>git stash pop</code>. Ishlaydi, chunki stash <b>branch'ga bog'lanmagan</b>.</p>
+  </div>
+
+  <div class="callout warning">
+    <span class="label">Stash — zaxira nusxa EMAS</span>
+    <p>U faqat kompyuteringizda turadi va <b>hech qachon push qilinmaydi</b>.
+    Bir necha soatlik javon — ombor emas. Muhim yoki uzoq ish uchun
+    <b>branch ochib commit qiling</b>.</p>
+  </div>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada endi 11 ta darsning barcha buyruqlari bor.
-    Keyingi bosqich mavzulari (<code>stash</code>, <code>rebase</code>,
-    <code>reflog</code>, GitHub Actions) kursdan tashqarida — kerak bo'lsa
-    alohida qo'shamiz. <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
+    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning barcha buyruqlari bor.
+    Hali qo'shilmagan mavzular: <code>rebase</code>, <code>cherry-pick</code>,
+    <code>reflog</code>, GitHub Actions — kerak bo'lsa ayting, dars qo'shamiz.
+    <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 
   <div class="ask-teacher">

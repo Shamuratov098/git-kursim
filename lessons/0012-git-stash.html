@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 12 — git stash: yarim ishni vaqtincha yig'ib qo'yish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 12 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1><code>git stash</code>: yarim ishni vaqtincha yig'ib qo'yish</h1>
+  <p class="lead">Bu darsdan keyin siz tugallanmagan ishni <b>commit qilmasdan</b>
+  xavfsiz yig'ib qo'yasiz, boshqa ish bilan shug'ullanasiz va keyin uni joyiga
+  qaytarasiz — hech narsa yo'qotmasdan.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 14 daqiqa</span>
+    <span>Kerak: <a href="0011-professional-odatlar.html">11 darslik asosiy kurs</a></span>
+  </p>
+
+  <div class="callout note">
+    <span class="label">Bu — kursdan keyingi birinchi dars</span>
+    <p>Asosiy 11 dars <a href="../reference/yol-xaritasi.html">missiyangizni</a> to'liq
+    qopladi. <code>stash</code> esa <b>qulaylik</b> asbobi: usiz ham ishlash mumkin,
+    lekin u bilan ancha yengil. <a href="0011-professional-odatlar.html">11-darsda</a>
+    «keyingi o'rganadiganingiz shu bo'lsin» deganim — mana shu.</p>
+  </div>
+
+  <h2>Muammo: siz allaqachon uchratgansiz</h2>
+  <p>Ikki holatni eslang:</p>
+  <ul>
+    <li><a href="0006-branch.html">6-darsda</a>: «<b>Branch almashishdan oldin ishingizni
+    commit qiling</b>» — chunki saqlanmagan o'zgarish bo'lsa, Git almashishga ruxsat
+    bermasligi mumkin.</li>
+    <li><a href="0010-kundalik-jamoa-ritmi.html">10-darsda</a>: «kun boshi
+    <code>git pull</code>» — lekin qo'lingizda yarim ish tursa, <code>pull</code> ham
+    to'sqinlikka uchraydi.</li>
+  </ul>
+
+  <p>Ikkalasida ham yechim bir xil edi: <b>commit qiling</b>. Lekin nima qilasiz, agar
+  ishingiz commit qilishga <b>hali tayyor bo'lmasa</b>?</p>
+
+  <div class="callout why">
+    <span class="label">Odatdagi vaziyat</span>
+    <p>Siz yangi funksiya ustida ishlayapsiz — yarmi yozilgan, hali ishlamaydi.
+    Shu payt hamkasbingiz yozadi: «saytda shoshilinch xato bor, tuzatib yuborasanmi?»</p>
+    <p>Endi tanlov: yarim ishni <code>wip</code> degan <b>axlat commit</b> qilib
+    tarixni ifloslantirasizmi, yoki o'zgarishlarni yo'qotasizmi?
+    <b>Uchinchi yo'l bor — <code>stash</code>.</b></p>
+  </div>
+
+  <h2><code>stash</code> nima — restoran metaforasida</h2>
+  <p><a href="0002-uch-hudud-va-commit.html">2-darsdagi</a> restoran esingizdami?
+  Oshxona = ish papkasi, podnos = saralash joyi, mijoz stoli = tarix.</p>
+
+  <div class="callout win">
+    <span class="label">Stash = sovutgich 🧊</span>
+    <p>Yarim pishgan taomni <b>sovutgichga</b> qo'yasiz. Oshxona bo'shaydi —
+    shoshilinch buyurtmani bemalol bajarasiz. Keyin sovutgichdan qaytarib olib,
+    qolgan joyidan davom etasiz.</p>
+    <p>Muhimi: sovutgich <b>buyurtmalar oqimidan tashqarida</b>. Mijozga hech narsa
+    berilmadi — ya'ni <b>tarixingizga hech narsa yozilmaydi</b>.</p>
+  </div>
+
+  <p>Texnik tilda: <code>git stash</code> ish papkangiz va saralash joyidagi
+  o'zgarishlarni <b>olib qo'yadi</b> va alohida saqlaydi. Papkangiz oxirgi commit
+  holatiga qaytadi — toza bo'ladi.<a class="cite" href="#fn1">1</a></p>
+
+  <div class="areas">
+    <div class="area">
+      <h4>Ish papkangiz</h4>
+      <span class="en">Working Directory</span>
+      <div class="desc">Yarim tugagan ish</div>
+    </div>
+    <div class="area-arrow both">
+      <span class="sym">→</span><span class="lbl">git stash</span>
+      <span class="sym">←</span><span class="lbl">git stash pop</span>
+    </div>
+    <div class="area">
+      <h4>Javon</h4>
+      <span class="en">Stash</span>
+      <div class="desc">Vaqtincha turadigan joy</div>
+    </div>
+  </div>
+
+  <h2>Buyruqlar</h2>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git stash</code></td>
+        <td>O'zgarishlarni javonga qo'yadi, papkangiz tozalanadi.</td>
+      </tr>
+      <tr>
+        <td><code>git stash push -m "izoh"</code></td>
+        <td>Xuddi shu, lekin <b>nom bilan</b>.
+        <span class="note-cell">Bir nechta stash bo'lganda qaysi biri nima ekanini
+        eslashga yordam beradi. Tavsiya qilaman.</span></td>
+      </tr>
+      <tr>
+        <td><code>git stash list</code></td>
+        <td>Javonda nima borligini ko'rsatadi.
+        <span class="note-cell">✓ Xavfsiz, faqat ko'rsatadi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git stash show -p</code></td>
+        <td>Oxirgi stash ichida <b>nima borligini</b> satrma-satr ko'rsatadi
+        (<a href="0003-xatoni-qaytarish.html"><code>git diff</code></a> kabi).</td>
+      </tr>
+      <tr>
+        <td><code>git stash pop</code></td>
+        <td>Oxirgisini qaytaradi <b>va javondan olib tashlaydi</b>.
+        <span class="note-cell">Eng ko'p ishlatiladigan.</span></td>
+      </tr>
+      <tr>
+        <td><code>git stash apply</code></td>
+        <td>Qaytaradi, lekin <b>javonda ham qoldiradi</b>.</td>
+      </tr>
+      <tr>
+        <td><code>git stash drop</code></td>
+        <td>Oxirgisini qaytarmasdan <b>o'chiradi</b>.</td>
+      </tr>
+      <tr>
+        <td><code>git stash clear</code></td>
+        <td>⚠️ Javonni <b>butunlay bo'shatadi</b>. Qaytarib bo'lmaydi — ehtiyot bo'ling.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3><code>pop</code> va <code>apply</code> farqi</h3>
+  <p>Bu — eng ko'p chalkashtiriladigan juftlik. Farqi bitta narsada:</p>
+  <ul>
+    <li><b><code>pop</code></b> = <i>olib qo'yish</i>. Ishingiz qaytadi, javon bo'shaydi.
+    Odatda shu kerak.</li>
+    <li><b><code>apply</code></b> = <i>nusxa olish</i>. Ishingiz qaytadi, lekin javonda
+    ham qoladi. Bir xil o'zgarishni <b>ikki xil branch'ga</b> qo'llamoqchi bo'lsangiz
+    yoki «ehtiyot uchun» nusxa qoldirmoqchi bo'lsangiz foydali.</li>
+  </ul>
+
+  <div class="callout tip">
+    <span class="label">Javon — bu tartiblangan ro'yxat</span>
+    <p>Bir nechta stash qilsangiz, ular raqamlanadi: eng oxirgisi
+    <code>stash@{0}</code>, undan oldingisi <code>stash@{1}</code> va hokazo.
+    Aniq birini olish uchun: <code>git stash pop stash@{1}</code>.</p>
+  </div>
+
+  <h2>Eng foydali stsenariy: noto'g'ri branch'da ishlab qo'yish</h2>
+  <p><a href="0010-kundalik-jamoa-ritmi.html">10-darsda</a> «<code>main</code>da adashib
+  <b>commit</b> qilib qo'ydim» holatini ko'rgan edik — u yerda
+  <code>reset --hard</code> kerak bo'lgandi.</p>
+  <p>Agar hali <b>commit qilmagan</b> bo'lsangiz, hammasi ancha oson. Uch buyruq:</p>
+
+  <div class="cmd" data-cmd="git stash">git stash                         <span class="cm"># ishni javonga qo'y</span></div>
+  <div class="cmd" data-cmd="git switch -c to-g-ri-branch">git switch -c to-g-ri-branch      <span class="cm"># to'g'ri joyga o't</span></div>
+  <div class="cmd" data-cmd="git stash pop">git stash pop                     <span class="cm"># ishni qaytarib ol</span></div>
+
+  <p>Stash <b>branch'ga bog'lanmagan</b> — ya'ni bir branch'da qo'yib, boshqasida
+  olishingiz mumkin. Aynan shu xususiyat bu stsenariyni ishlatadi.</p>
+
+  <h2>Ikkita muhim ogohlantirish</h2>
+
+  <div class="callout warning">
+    <span class="label">1. Yangi (untracked) fayllar stash qilinmaydi</span>
+    <p>Endigina yaratgan, hali hech qachon <code>git add</code> qilinmagan fayl
+    <b>javonga tushmaydi</b> — u joyida qolaveradi. Sabab: Git uni hali
+    kuzatmaydi (<a href="0002-uch-hudud-va-commit.html">2-dars</a>: <i>untracked</i>).</p>
+    <p>Ularni ham qo'shmoqchi bo'lsangiz — <code>-u</code> qo'shing:</p>
+    <div class="cmd" data-cmd='git stash -u -m "yangi fayllar bilan"'>git stash -u -m "yangi fayllar bilan"</div>
+  </div>
+
+  <div class="callout warning">
+    <span class="label">2. Stash — zaxira nusxa EMAS</span>
+    <p>U faqat <b>sizning kompyuteringizda</b> turadi. Hech qachon push qilinmaydi,
+    GitHub'da ko'rinmaydi, hamkasbingizga yetib bormaydi.</p>
+    <p>Shuning uchun qoida: <b>stash — bir necha soatlik javon, bir haftalik ombor emas.</b>
+    Ish muhim bo'lsa yoki uzoqqa cho'zilsa — <b>branch ochib commit qiling</b>
+    (<a href="0006-branch.html">6-dars</a>). Commit qilingan narsa xavfsiz
+    (<a href="0003-xatoni-qaytarish.html">oltin qoida</a>), stashdagi narsa esa
+    unutilib ketishga moyil.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: javonni ishlatib ko'ramiz</h2>
+    <p>Mashq <b>nusxa papkada</b> (<code>~/Projects/Learn/Git-nusxa</code>) —
+    bu bizning xavfsiz mashq maydonimiz. Push yo'q, hammasi mahalliy.</p>
+
+    <div class="callout note">
+      <span class="label">Nusxa papkangiz yo'qmi?</span>
+      <p><a href="0005-clone-va-pull.html">5-darsning</a> 1–2-qadamini bajaring
+      (bitta <code>git clone</code>). Yoki menga ayting.</p>
+    </div>
+
+    <h3>A qism — asosiy aylana</h3>
+    <ol class="steps">
+      <li>
+        <p>Tayyorgarlik: kuzatiladigan fayl yarating</p>
+        <p class="why-step">Stash <b>kuzatilayotgan</b> fayllar bilan ishlaydi,
+        shuning uchun avval commit qilamiz.</p>
+        <div class="cmd" data-cmd='cd ~/Projects/Learn/Git-nusxa && git switch main && echo "Birinchi qator." > ish.txt && git add ish.txt && git commit -m "Ish fayli qo&apos;shildi"'>cd ~/Projects/Learn/Git-nusxa &amp;&amp; git switch main &amp;&amp; echo "Birinchi qator." &gt; ish.txt &amp;&amp; git add ish.txt &amp;&amp; git commit -m "Ish fayli qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>1 file changed</code>.</p>
+      </li>
+
+      <li>
+        <p>«Yarim ish» qiling</p>
+        <p class="why-step">Bu — tugallanmagan, commit qilishga tayyor bo'lmagan ish.</p>
+        <div class="cmd" data-cmd='echo "Yarim tugagan ish..." >> ish.txt && git status --short'>echo "Yarim tugagan ish..." &gt;&gt; ish.txt &amp;&amp; git status --short
+<span class="out"> M ish.txt</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code> M ish.txt</code> —
+        o'zgargan, lekin commit qilinmagan.</p>
+      </li>
+
+      <li>
+        <p>🧊 Javonga qo'ying</p>
+        <p class="why-step">Nom bilan qo'yish yaxshi odat.</p>
+        <div class="cmd" data-cmd='git stash push -m "yarim ish"'>git stash push -m "yarim ish"
+<span class="out">Saved working directory and index state On main: yarim ish</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Saved working directory».
+        Endi <code>git status</code> deng — <b>working tree clean</b>!
+        <code>cat ish.txt</code> deng — yarim ish <b>yo'q</b>. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Javonda nima borligini ko'ring</p>
+        <div class="cmd" data-cmd="git stash list && git stash show -p">git stash list &amp;&amp; git stash show -p
+<span class="out">stash@{0}: On main: yarim ish</span>
+<span class="out">+Yarim tugagan ish...</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ro'yxatda bitta stash va uning ichidagi
+        <code>+</code> belgili qator. Chiqish: <kbd>q</kbd>.</p>
+      </li>
+
+      <li>
+        <p>«Shoshilinch ish»ni bajaring</p>
+        <p class="why-step">Papkangiz toza — bemalol boshqa ish qilasiz.</p>
+        <div class="cmd" data-cmd='echo "Shoshilinch tuzatish." > shoshilinch.txt && git add shoshilinch.txt && git commit -m "Shoshilinch xato tuzatildi"'>echo "Shoshilinch tuzatish." &gt; shoshilinch.txt &amp;&amp; git add shoshilinch.txt &amp;&amp; git commit -m "Shoshilinch xato tuzatildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit yaratildi — toza tarix,
+        hech qanday <code>wip</code> axlat commit yo'q.</p>
+      </li>
+
+      <li>
+        <p>Yarim ishni qaytarib oling</p>
+        <p class="why-step"><code>pop</code> = qaytar <b>va</b> javondan olib tashla.</p>
+        <div class="cmd" data-cmd="git stash pop">git stash pop
+<span class="out">	modified:   ish.txt</span>
+<span class="out">Dropped refs/stash@{0}</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Dropped» — javon bo'shadi.
+        <code>cat ish.txt</code> deng — yarim ishingiz <b>qaytdi</b>.
+        <code>git stash list</code> — bo'sh. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — noto'g'ri branch'dan qutqarish</h3>
+    <p>Eng foydali stsenariy. Hozir siz <code>main</code>dasiz va qo'lingizda
+    commit qilinmagan ish bor — aslida u branch'da bo'lishi kerak edi.</p>
+
+    <ol class="steps">
+      <li>
+        <p>Holatni tasdiqlang</p>
+        <p class="why-step">«Voy, men <code>main</code>da ishlab yuribman!»</p>
+        <div class="cmd" data-cmd="git branch --show-current && git status --short">git branch --show-current &amp;&amp; git status --short
+<span class="out">main</span>
+<span class="out"> M ish.txt</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>main</code> va o'zgargan fayl.
+        Aynan tuzatiladigan holat.</p>
+      </li>
+
+      <li>
+        <p>Javonga qo'ying</p>
+        <div class="cmd" data-cmd='git stash push -m "branchga ko&apos;chiriladigan ish"'>git stash push -m "branchga ko'chiriladigan ish"</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Saved...». <code>main</code> toza.</p>
+      </li>
+
+      <li>
+        <p>To'g'ri branch oching</p>
+        <div class="cmd" data-cmd="git switch -c ish-branchi">git switch -c ish-branchi
+<span class="out">Switched to a new branch 'ish-branchi'</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi branch. Hozircha bo'sh.</p>
+      </li>
+
+      <li>
+        <p>Ishni shu yerga qaytaring</p>
+        <p class="why-step">Stash branch'ga bog'lanmagan — shuning uchun bu ishlaydi.</p>
+        <div class="cmd" data-cmd="git stash pop && git status --short">git stash pop &amp;&amp; git status --short
+<span class="out"> M ish.txt</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ishingiz endi <b>to'g'ri branch'da</b>.
+        Uni bemalol commit qiling. <b>3-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>C qism — untracked tuzog'i</h3>
+    <ol class="steps">
+      <li>
+        <p>Yangi fayl yarating va oddiy stash qiling</p>
+        <p class="why-step">Bu fayl hali hech qachon <code>add</code> qilinmagan —
+        ya'ni <i>untracked</i>.</p>
+        <div class="cmd" data-cmd='echo "Yangi fayl" > yangi.txt && git stash push -m "sinov" && ls yangi.txt'>echo "Yangi fayl" &gt; yangi.txt &amp;&amp; git stash push -m "sinov" &amp;&amp; ls yangi.txt
+<span class="out">yangi.txt</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>yangi.txt</code> <b>hali ham
+        joyida</b>! Stash uni olmadi — chunki u untracked.</p>
+      </li>
+
+      <li>
+        <p>Endi <code>-u</code> bilan qiling</p>
+        <p class="why-step"><code>-u</code> = untracked fayllarni ham qo'sh.</p>
+        <div class="cmd" data-cmd='git stash push -u -m "untracked bilan" && ls yangi.txt'>git stash push -u -m "untracked bilan" &amp;&amp; ls yangi.txt
+<span class="out">ls: cannot access 'yangi.txt': No such file or directory</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> endi fayl <b>ham javonga tushdi</b> —
+        <code>ls</code> uni topa olmaydi. Bu <b>xato emas</b>, kutilgan natija.
+        Qaytarish: <code>git stash pop</code>. <b>4-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Javonni tozalab, mashqni yakunlang</p>
+        <p class="why-step">Ikkita stash qolgan — ro'yxatni ko'rib, qaytaramiz.</p>
+        <div class="cmd" data-cmd="git stash list">git stash list
+<span class="out">stash@{0}: On ish-branchi: untracked bilan</span>
+<span class="out">stash@{1}: On ish-branchi: sinov</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ikkita stash. Ikki marta
+        <code>git stash pop</code> qilsangiz — ikkalasi ham qaytadi va javon bo'shaydi.</p>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <span class="label">Mashqdan keyin</span>
+      <p>Nusxa papkangizni tartibga solmoqchi bo'lsangiz — ayting, birga qilamiz.
+      Bu papka faqat mashq uchun, shuning uchun undagi holat muhim emas.</p>
+    </div>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d12c1"><label for="d12c1"><code>git stash</code> — yarim ishni javonga qo'yish, papka tozalanadi</label></li>
+      <li><input type="checkbox" id="d12c2"><label for="d12c2"><code>pop</code> qaytaradi va o'chiradi · <code>apply</code> qaytaradi va qoldiradi</label></li>
+      <li><input type="checkbox" id="d12c3"><label for="d12c3">Noto'g'ri branch'dan qutqarish: stash → switch → pop 🔑</label></li>
+      <li><input type="checkbox" id="d12c4"><label for="d12c4">Untracked fayllar uchun <code>-u</code> kerak</label></li>
+      <li><input type="checkbox" id="d12c5"><label for="d12c5">Stash — zaxira EMAS; uzoq ish uchun branch + commit</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda «yarim ish» yaratib uni javonga qo'yasiz, papkangiz tozalanganini
+    ko'rasiz, shoshilinch ishni bajarasiz va yarim ishni qaytarib olasiz. Keyin eng
+    foydali stsenariy: <b>noto'g'ri branch'da ishlab qo'ygan</b> ishni
+    <code>stash → switch → pop</code> bilan to'g'ri joyga ko'chirasiz. Oxirida
+    untracked tuzog'ini ko'rasiz. 13 qadam, hammasi nusxa papkada.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> <code>git stash</code> qilgandan keyin ish papkangiz qanday bo'ladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Toza — oxirgi commit holatiga qaytadi</button></li>
+      <li><button class="quiz-option">O'zgarishsiz — faqat nusxasi olib qo'yiladi</button></li>
+      <li><button class="quiz-option">Bo'sh — barcha fayllar o'chib ketadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — o'zgarishlar <b>olib qo'yiladi</b> va javonda
+    saqlanadi. Shuning uchun bemalol branch almashasiz yoki <code>pull</code> qilasiz.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> <code>pop</code> va <code>apply</code> farqi nimada?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>pop</code> javondan o'chiradi, <code>apply</code> qoldiradi</button></li>
+      <li><button class="quiz-option"><code>pop</code> oxirgisini, <code>apply</code> birinchisini oladi</button></li>
+      <li><button class="quiz-option"><code>pop</code> mahalliy, <code>apply</code> GitHub'ga jo'natadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. <code>pop</code> = <i>olib qo'yish</i>,
+    <code>apply</code> = <i>nusxa olish</i>. Odatda <code>pop</code> kerak bo'ladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Endigina yaratgan yangi faylni stash qilmoqchisiz. Nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git stash -u</code> — untracked fayllarni ham qo'shadi</button></li>
+      <li><button class="quiz-option"><code>git stash</code> — u ham avtomatik qo'shiladi</button></li>
+      <li><button class="quiz-option"><code>git stash --all-files</code> bilan majburlayman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Oddiy <code>stash</code> faqat <b>kuzatilayotgan</b>
+    fayllarni oladi — yangi fayl joyida qolaveradi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Uzoq davom etadigan muhim ishni qayerda saqlaysiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Branch ochib commit qilaman — commit xavfsiz</button></li>
+      <li><button class="quiz-option">Stashda qoldiraman — u ham xuddi shunday ishonchli</button></li>
+      <li><button class="quiz-option">Stash qilib, keyin uni GitHub'ga push qilaman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Stash — <b>bir necha soatlik javon</b>, ombor emas.
+    U faqat kompyuteringizda turadi va push qilinmaydi. Muhim ish uchun —
+    branch + commit.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>Stash restoran metaforasida nima edi?</summary>
+      <div class="answer"><p><b>Sovutgich</b> 🧊 — yarim pishgan taomni qo'yib turasiz,
+      shoshilinch buyurtmani bajarasiz, keyin qaytarib olasiz. Buyurtmalar oqimidan
+      tashqarida — ya'ni <b>tarixga hech narsa yozilmaydi</b>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Stash qachon kerak bo'ladi?</summary>
+      <div class="answer"><p>Ish <b>commit qilishga tayyor emas</b>, lekin branch
+      almashish, <code>pull</code> qilish yoki shoshilinch boshqa ishni bajarish
+      kerak bo'lganda.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Noto'g'ri branch'da ishlab qo'ydingiz (commit qilmagan). Uch buyruq?</summary>
+      <div class="answer"><p><code>git stash</code> →
+      <code>git switch -c to-g-ri-branch</code> → <code>git stash pop</code>.
+      Ishlaydi, chunki stash branch'ga bog'lanmagan.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>pop</code> va <code>apply</code> — qaysi biri javonni bo'shatadi?</summary>
+      <div class="answer"><p><code>pop</code>. <code>apply</code> esa qaytaradi, lekin
+      javonda ham qoldiradi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Stash zaxira nusxa bo'la oladimi?</summary>
+      <div class="answer"><p>Yo'q. U faqat kompyuteringizda turadi, hech qachon push
+      qilinmaydi. Muhim yoki uzoq ish uchun — <b>branch ochib commit qiling</b>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: Git'ning oltin qoidasi?</summary>
+      <div class="answer"><p><b>Commit qilingan narsani yo'qotish juda qiyin</b>,
+      commit qilinmaganini esa oson — stash ham shu ikkinchi toifada.
+      (<a href="0003-xatoni-qaytarish.html">Dars 03</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Stash = javon</b> (sovutgich): yarim ishni commit qilmasdan olib qo'yadi,
+      papkangiz tozalanadi.</li>
+      <li><code>git stash push -m "izoh"</code> — nom bilan qo'yish (tavsiya) ·
+      <code>git stash list</code> — ko'rish · <code>git stash show -p</code> — ichini ko'rish.</li>
+      <li><code>pop</code> = qaytar <b>va</b> o'chir · <code>apply</code> = qaytar,
+      javonda <b>qoldir</b>.</li>
+      <li><b>Noto'g'ri branch'dan qutqarish:</b> <code>stash</code> →
+      <code>switch -c</code> → <code>stash pop</code>.</li>
+      <li>Untracked fayllar uchun <code>-u</code> shart.</li>
+      <li>⚠️ Stash <b>zaxira emas</b> — push qilinmaydi. Uzoq ish uchun branch + commit.</li>
+      <li>⚠️ <code>git stash clear</code> — javonni butunlay bo'shatadi, qaytarib bo'lmaydi.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 7.3-bo'lim — "Stashing and Cleaning":
+    <a href="https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning">git-scm.com/book</a>.
+    Bu kitobning <b>«Git Tools»</b> bobi — ya'ni asosiy kursdan keyingi bosqich.
+    Endi siz shu darajaga yetdingiz.<br>
+    Barcha imkoniyatlari: <a href="https://git-scm.com/docs/git-stash">git-stash hujjati</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Stashda adashib qolsangiz — <code>git stash list</code> va menga yozing.</b>
+    Javondagi narsa deyarli har doim qaytariladi. «Stash pop qilganda konflikt chiqdi»
+    degan holat ham bo'ladi — u <a href="0008-merge-conflict.html">8-darsdagi</a> kabi
+    hal qilinadi, birga ko'ramiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0011-professional-odatlar.html">Oldingi: Professional odatlar</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning">Git Tools: Stashing and Cleaning</a>.</li>
+      <li id="fn2">Git hujjatlari — <a href="https://git-scm.com/docs/git-stash">git-stash</a>
+      (<code>push</code>, <code>pop</code>, <code>apply</code>, <code>-u</code>).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

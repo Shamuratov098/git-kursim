@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 15 — git cherry-pick: bitta commitni tanlab olish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 15 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1><code>git cherry-pick</code>: bitta commitni tanlab olish</h1>
+  <p class="lead">Bu darsdan keyin siz butun branch'ni emas, <b>aynan kerakli
+  commitni</b> boshqa joydan olib kelasiz — shoshilinch tuzatishni tarqatish yoki
+  noto'g'ri branch'ga tushib qolgan ishni ko'chirish uchun.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 13 daqiqa</span>
+    <span>Kerak: <a href="0013-git-rebase.html">Dars 13</a>,
+    <a href="0014-git-reflog.html">14</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu kerak</span>
+    <p>Shu paytgacha ishni ko'chirishning ikki yo'lini bildingiz:
+    <a href="0007-merge.html"><code>merge</code></a> va
+    <a href="0013-git-rebase.html"><code>rebase</code></a>. Ikkalasi ham
+    <b>butun branch</b>ni olib keladi.</p>
+    <p>Lekin ba'zan sizga <b>faqat bittasi</b> kerak: hamkasbingiz uzun branch'ida
+    ishlayapti, ichida bitta <b>shoshilinch xato tuzatilgan</b> — sizga o'sha
+    kerak, qolgan yarim ishlar emas. Mana shu — <code>cherry-pick</code>ning ishi.</p>
+  </div>
+
+  <h2>Nomi ma'noni aytib turibdi</h2>
+  <p><i>Cherry-picking</i> — «gilosni tanlab uzish». Butun daraxtni emas, faqat
+  pishganini. Git'da ham xuddi shunday: butun branch'ni emas, <b>bitta commitni</b>
+  olib, o'z branch'ingizga qo'yasiz.<a class="cite" href="#fn1">1</a></p>
+
+  <div class="cgraph-svg">
+    <svg viewBox="0 0 470 150" role="img" aria-labelledby="cp1">
+      <title id="cp1">Branch'dagi ikkita commitdan faqat bittasi main'ga ko'chiriladi</title>
+      <g stroke="var(--accent)" stroke-opacity="0.4" stroke-width="2.5" fill="none">
+        <path d="M60 105 H300"/>
+        <path d="M140 105 L215 50"/>
+        <path d="M215 50 H300"/>
+      </g>
+      <path d="M215 50 C 250 50, 260 80, 296 100" stroke="var(--good)" stroke-width="2.5"
+            fill="none" stroke-dasharray="5 4"/>
+      <g fill="var(--accent)">
+        <circle cx="60" cy="105" r="7"/>
+        <circle cx="140" cy="105" r="7"/>
+        <circle cx="220" cy="105" r="7"/>
+        <circle cx="300" cy="50" r="7"/>
+      </g>
+      <circle cx="215" cy="50" r="8" fill="var(--good-bg)" stroke="var(--good)" stroke-width="3"/>
+      <circle cx="300" cy="105" r="8" fill="var(--good-bg)" stroke="var(--good)" stroke-width="3"/>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11" fill="var(--ink-soft)" text-anchor="middle">
+        <text x="60" y="127">c1</text>
+        <text x="140" y="127">c2</text>
+        <text x="220" y="127">c3</text>
+        <text x="215" y="34">tuzatish</text>
+        <text x="300" y="34">yarim ish</text>
+        <text x="300" y="131">nusxa</text>
+      </g>
+      <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+        <rect x="330" y="42" rx="9" width="52" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="356" y="56" fill="var(--good)" text-anchor="middle">ishlar</text>
+        <rect x="330" y="96" rx="9" width="48" height="20" fill="var(--good-bg)" stroke="var(--good)"/>
+        <text x="354" y="110" fill="var(--good)" text-anchor="middle">main</text>
+      </g>
+    </svg>
+  </div>
+  <p class="cgraph-cap">Faqat <b>tuzatish</b> commiti <code>main</code>ga ko'chdi —
+  «yarim ish» o'z joyida qoldi.</p>
+
+  <div class="callout note">
+    <span class="label">Nusxa — asli emas</span>
+    <p><a href="0013-git-rebase.html">Rebase</a> kabi, cherry-pick ham commitni
+    <b>ko'chirmaydi</b> — o'sha o'zgarish bilan <b>yangi commit</b> yaratadi.
+    Asl commit o'z branch'ida qolaveradi.</p>
+    <p>Odatda yangi hash chiqadi (ota-ona boshqa bo'lgani uchun). Agar ikkala branch
+    ham bir xil joydan chiqqan bo'lsa, hash bir xil ham bo'lishi mumkin — bu normal.</p>
+  </div>
+
+  <h2>Buyruqlar</h2>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git cherry-pick &lt;hash&gt;</code></td>
+        <td>O'sha commitni <b>joriy branch'ga</b> qo'shadi.
+        <span class="note-cell">Avval kerakli branch'ga o'ting — merge'dagi kabi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git cherry-pick &lt;h1&gt; &lt;h2&gt;</code></td>
+        <td>Bir nechta commitni ketma-ket qo'shadi.</td>
+      </tr>
+      <tr>
+        <td><code>git cherry-pick -x &lt;hash&gt;</code></td>
+        <td>Izohga «(cherry picked from commit …)» qatorini qo'shadi.
+        <span class="note-cell">Jamoada tavsiya qilinadi: nusxa qayerdan
+        kelganini keyin topish oson bo'ladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git cherry-pick --abort</code></td>
+        <td><b>Qochish yo'li</b> — boshlangunga qadar bo'lgan holatga qaytaradi.</td>
+      </tr>
+      <tr>
+        <td><code>git cherry-pick --continue</code></td>
+        <td>Konfliktni hal qilib <code>git add</code> qilgandan keyin davom ettiradi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Hash'ni qayerdan olaman?</h3>
+  <div class="cmd" data-cmd="git log --oneline ishlar">git log --oneline ishlar
+<span class="out">b9cd95c Yarim tugagan boshqa ish</span>
+<span class="out">2e4e07d Shoshilinch xato tuzatildi</span>   <span class="cm">← shu kerak</span></div>
+  <p>Boshqa branch'ning tarixiga qarash uchun uning nomini yozasiz. Kerakli qatorning
+  boshidagi 7 belgi — hash.</p>
+
+  <h2>Uch xil «noto'g'ri joyga ishlab qo'ydim» holati</h2>
+  <p>Endi sizda bu muammoning <b>to'liq oilasi</b> uchun yechim bor. Qaysi biri
+  kerakligini <b>ish qanday holatda</b> ekani belgilaydi:</p>
+
+  <table class="sheet">
+    <thead><tr><th>Holat</th><th>Yechim</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Hali <b>commit qilmadim</b></td>
+        <td><code>git stash</code> → <code>switch</code> → <code>git stash pop</code>
+        <span class="note-cell"><a href="0012-git-stash.html">Dars 12</a></span></td>
+      </tr>
+      <tr>
+        <td>Commit qildim, <b>hammasi</b> ko'chsin</td>
+        <td><code>git switch -c yangi-branch</code> →
+        <code>git switch main</code> → <code>git reset --hard origin/main</code>
+        <span class="note-cell"><a href="0010-kundalik-jamoa-ritmi.html">Dars 10</a></span></td>
+      </tr>
+      <tr>
+        <td>Commit qildim, <b>faqat bittasi</b> ko'chsin</td>
+        <td><code>git switch to-g-ri-branch</code> →
+        <code>git cherry-pick &lt;hash&gt;</code> → keyin asl joydan olib tashlash
+        <span class="note-cell">Shu dars</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Konflikt bo'lsa</h2>
+  <p>Bo'lishi mumkin — chunki commit boshqa muhitga qo'yilyapti. Hal qilish
+  <a href="0008-merge-conflict.html">8-darsdagi</a> kabi, faqat oxirgi buyruq boshqa:</p>
+  <ol>
+    <li>Faylni tahrirlang, belgilarni o'chiring;</li>
+    <li><code>git add &lt;fayl&gt;</code>;</li>
+    <li><code>git cherry-pick --continue</code> (<code>commit</code> emas).</li>
+  </ol>
+
+  <div class="callout win">
+    <span class="label">Yaxshi xabar: belgilar TESKARI emas</span>
+    <p><a href="0013-git-rebase.html">Rebase'da</a> belgilar teskari bo'lardi.
+    Cherry-pick'da esa hammasi <b>odatdagidek</b>:
+    <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> = <b>siz turgan branch</b>,
+    pastdagisi = <b>olib kelinayotgan commit</b>. Xuddi merge'dagidek.</p>
+  </div>
+
+  <h2>Ehtiyot bo'ling: takroriy commitlar</h2>
+  <div class="callout warning">
+    <span class="label">Cherry-pick — merge'ning o'rnini bosmaydi</span>
+    <p>Cherry-pick <b>nusxa</b> yaratadi. Ya'ni bir xil o'zgarish endi ikki joyda,
+    ikki xil commit sifatida turadi. Keyin o'sha branch'ni baribir merge qilsangiz,
+    Git chalkashishi yoki keraksiz konflikt chiqishi mumkin.</p>
+    <p><b>Qoida:</b> butun branch kerak bo'lsa — <code>merge</code>. Cherry-pick
+    faqat <b>alohida, aniq bir commit</b> kerak bo'lganda.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: gilosni tanlab uzamiz</h2>
+    <p>Mashq <b>nusxa papkada</b> (<code>~/Projects/Learn/Git-nusxa</code>),
+    push yo'q.</p>
+
+    <h3>A qism — ikkitadan bittasini olish</h3>
+    <ol class="steps">
+      <li>
+        <p>Branch yaratib, ikkita har xil commit qiling</p>
+        <p class="why-step">Biri — shoshilinch tuzatish, ikkinchisi — yarim ish.
+        Bizga faqat birinchisi kerak bo'ladi.</p>
+        <div class="cmd" data-cmd='cd ~/Projects/Learn/Git-nusxa && git switch main && git switch -c cp-ishlar && echo "muhim tuzatish" > cp-tuzatish.txt && git add cp-tuzatish.txt && git commit -m "Shoshilinch xato tuzatildi" && echo "yarim ish" > cp-yarim.txt && git add cp-yarim.txt && git commit -m "Yarim tugagan boshqa ish"'>cd ~/Projects/Learn/Git-nusxa &amp;&amp; git switch main &amp;&amp; git switch -c cp-ishlar &amp;&amp; echo "muhim tuzatish" &gt; cp-tuzatish.txt &amp;&amp; git add cp-tuzatish.txt &amp;&amp; git commit -m "Shoshilinch xato tuzatildi" &amp;&amp; echo "yarim ish" &gt; cp-yarim.txt &amp;&amp; git add cp-yarim.txt &amp;&amp; git commit -m "Yarim tugagan boshqa ish"</div>
+        <p class="expect"><b>Kutilgan natija:</b> ikkita commit yaratildi.</p>
+      </li>
+
+      <li>
+        <p>Kerakli commitning hash'ini toping</p>
+        <p class="why-step">«Shoshilinch xato tuzatildi» qatoridagi 7 belgi.</p>
+        <div class="cmd" data-cmd="git log --oneline -2">git log --oneline -2
+<span class="out">b9cd95c Yarim tugagan boshqa ish</span>
+<span class="out">2e4e07d Shoshilinch xato tuzatildi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> ikki qator.
+        <b>Ikkinchi qatordagi hash'ni yozib oling</b> — sizda boshqacha bo'ladi.</p>
+      </li>
+
+      <li>
+        <p><code>main</code>ga qaytib, u yerda ham ish qiling</p>
+        <p class="why-step">Bu ajralish yaratadi — shunda nusxaning hash'i
+        o'zgarganini ko'rasiz.</p>
+        <div class="cmd" data-cmd='git switch main && echo "main ishi" > cp-main.txt && git add cp-main.txt && git commit -m "Main da boshqa ish"'>git switch main &amp;&amp; echo "main ishi" &gt; cp-main.txt &amp;&amp; git add cp-main.txt &amp;&amp; git commit -m "Main da boshqa ish"</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit yaratildi.</p>
+      </li>
+
+      <li>
+        <p>🍒 Faqat tuzatishni oling</p>
+        <p class="why-step"><code>-x</code> — nusxa qayerdan kelganini izohga yozadi.
+        ⚠️ <code>2e4e07d</code> o'rniga <b>o'z hash'ingizni</b> yozing.</p>
+        <div class="cmd" data-cmd="git cherry-pick -x 2e4e07d">git cherry-pick -x 2e4e07d
+<span class="out">[main 4490a6b] Shoshilinch xato tuzatildi</span>
+<span class="out"> 1 file changed, 1 insertion(+)</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> commit qo'shildi va
+        <b>hash boshqa</b> (<code>2e4e07d</code> → <code>4490a6b</code>) —
+        bu <b>nusxa</b>. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Nima kelganini tekshiring</p>
+        <p class="why-step">Eng muhim tasdiq: «yarim ish» kelmagan bo'lishi kerak.</p>
+        <div class="cmd" data-cmd="ls cp-*.txt && git log -1 --format=%B">ls cp-*.txt &amp;&amp; git log -1 --format=%B
+<span class="out">cp-main.txt  cp-tuzatish.txt</span>
+<span class="out">Shoshilinch xato tuzatildi</span>
+<span class="out">(cherry picked from commit 2e4e07d...)</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>cp-tuzatish.txt</code> bor,
+        <code>cp-yarim.txt</code> <b>yo'q</b> — aynan kerakli commit keldi.
+        Va <code>-x</code> qo'shgan iz izohda ko'rinadi. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — noto'g'ri branch'ga commit qilib qo'ydim</h3>
+    <ol class="steps">
+      <li>
+        <p>Bo'sh xususiyat branch yarating</p>
+        <p class="why-step"><code>git branch</code> (switch'siz) — yaratadi, lekin
+        o'tmaydi.</p>
+        <div class="cmd" data-cmd="git branch cp-xususiyat && git branch">git branch cp-xususiyat &amp;&amp; git branch
+<span class="out">* main</span>
+<span class="out">  cp-xususiyat</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> yulduzcha hali <code>main</code>da.</p>
+      </li>
+
+      <li>
+        <p>💥 <code>main</code>da adashib commit qiling</p>
+        <p class="why-step">Bu ish aslida branch'da bo'lishi kerak edi.</p>
+        <div class="cmd" data-cmd='echo "bu branchda bolishi kerak edi" > cp-xus.txt && git add cp-xus.txt && git commit -m "Xususiyat ishi (adashib main da)" && git log --oneline -1'>echo "bu branchda bolishi kerak edi" &gt; cp-xus.txt &amp;&amp; git add cp-xus.txt &amp;&amp; git commit -m "Xususiyat ishi (adashib main da)" &amp;&amp; git log --oneline -1</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit <code>main</code>da.
+        <b>Chiqqan hash'ni yozib oling.</b></p>
+      </li>
+
+      <li>
+        <p>To'g'ri branch'ga ko'chiring</p>
+        <p class="why-step">⚠️ Hash o'rniga o'zingiznikini yozing.</p>
+        <div class="cmd" data-cmd="git switch cp-xususiyat &amp;&amp; git cherry-pick HASHNI-BU-YERGA">git switch cp-xususiyat &amp;&amp; git cherry-pick HASHNI-BU-YERGA</div>
+        <p class="expect"><b>Kutilgan natija:</b> commit branch'ga qo'shildi.
+        <code>ls cp-xus.txt</code> deng — fayl shu yerda.</p>
+      </li>
+
+      <li>
+        <p><code>main</code>dan olib tashlang</p>
+        <p class="why-step"><a href="0010-kundalik-jamoa-ritmi.html">10-darsdagi</a>
+        buyruq. Xavfsiz, chunki ish allaqachon branch'da saqlangan.</p>
+        <div class="cmd" data-cmd="git switch main && git reset --hard HEAD~1 && git log --oneline -2">git switch main &amp;&amp; git reset --hard HEAD~1 &amp;&amp; git log --oneline -2</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>main</code>da adashgan commit
+        yo'q, <code>ls cp-xus.txt</code> ham topilmaydi. Ish esa branch'da turibdi.
+        <b>3-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Xotirjamlik uchun: himoya to'ri joyidami?</p>
+        <p class="why-step"><a href="0014-git-reflog.html">14-dars</a> — adashsangiz
+        ham qaytarish mumkin.</p>
+        <div class="cmd" data-cmd="git reflog -4">git reflog -4</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>reset:</code>,
+        <code>checkout:</code>, <code>cherry-pick:</code> qatorlari — barcha
+        harakatlaringiz yozilgan.</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d15c1"><label for="d15c1">Cherry-pick — butun branch emas, <b>bitta commit</b></label></li>
+      <li><input type="checkbox" id="d15c2"><label for="d15c2">U <b>nusxa</b> yaratadi — asl commit o'z joyida qoladi</label></li>
+      <li><input type="checkbox" id="d15c3"><label for="d15c3">Avval <b>qabul qiluvchi</b> branch'ga o'taman</label></li>
+      <li><input type="checkbox" id="d15c4"><label for="d15c4">Jamoada <code>-x</code> ishlataman (iz qoladi)</label></li>
+      <li><input type="checkbox" id="d15c5"><label for="d15c5">Butun branch kerak bo'lsa — cherry-pick emas, <code>merge</code></label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda branch'da ikkita commit yaratasiz va <code>main</code>ga
+    <b>faqat bittasini</b> olasiz — ikkinchisi kelmaganini o'z ko'zingiz bilan
+    tekshirasiz. Keyin klassik holat: <code>main</code>ga adashib qilingan commitni
+    to'g'ri branch'ga ko'chirib, asl joydan olib tashlaysiz. 10 qadam, nusxa papkada.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Cherry-pick <code>merge</code>dan nimasi bilan farq qiladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Butun branch emas, tanlangan bitta commitni oladi</button></li>
+      <li><button class="quiz-option">Hech qanday yangi commit yaratmaydi — faqat ko'chiradi</button></li>
+      <li><button class="quiz-option">Faqat GitHub'da ishlaydi — mahalliy Git'da yo'q</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Merge butun branch'ni olib keladi, cherry-pick
+    esa <b>aniq bir commitni</b>. Nomi ham shundan: gilosni tanlab uzish.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Cherry-pick'dan keyin asl commitga nima bo'ladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">O'z branch'ida qolaveradi — bu <b>nusxa</b> edi</button></li>
+      <li><button class="quiz-option">O'chiriladi — commit yangi joyga ko'chadi</button></li>
+      <li><button class="quiz-option">Ikkala joyda ham bir xil hash bilan turadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Cherry-pick <b>nusxa</b> yaratadi. Aynan
+    shuning uchun keyinchalik takroriy commitlar chalkashlik keltirishi mumkin.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Qaysi branch'da turib cherry-pick qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Commit <b>kelishi kerak bo'lgan</b> branch'da</button></li>
+      <li><button class="quiz-option">Commit <b>joylashgan</b> branch'da</button></li>
+      <li><button class="quiz-option">Har doim <code>main</code>da — Git o'zi topadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <a href="0007-merge.html">merge'dagi</a> kabi:
+    qabul qiluvchi branch'ga o'tib, keyin manba commitning hash'ini yozasiz.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Hamkasbingizning butun branch'i sizga kerak. Nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>merge</code> — cherry-pick bitta commit uchun</button></li>
+      <li><button class="quiz-option">Har bir commitni navbat bilan cherry-pick qilaman</button></li>
+      <li><button class="quiz-option"><code>cherry-pick</code> branch nomi bilan ishlatiladi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Butun branch kerak bo'lsa — <code>merge</code>.
+    Hammasini cherry-pick qilish takroriy commitlar yaratadi va keyin chalkashlik
+    keltiradi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>Cherry-pick bir jumlada nima qiladi?</summary>
+      <div class="answer"><p>Boshqa branch'dagi <b>bitta commitni</b> olib, joriy
+      branch'ga <b>nusxa</b> sifatida qo'shadi. Asl commit o'z joyida qoladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Qaysi branch'da turasiz — va hash kimniki?</summary>
+      <div class="answer"><p><b>Qabul qiluvchi</b> branch'da turasiz, hash esa
+      <b>manba</b> commitniki. Merge'dagi yo'nalish qoidasi bilan bir xil.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>-x</code> nima uchun kerak?</summary>
+      <div class="answer"><p>Izohga «(cherry picked from commit …)» qatorini qo'shadi —
+      nusxa qayerdan kelgani keyin ma'lum bo'ladi. Jamoada tavsiya qilinadi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Konfliktda belgilar rebase'dagidek teskarimi?</summary>
+      <div class="answer"><p>Yo'q — <b>odatdagidek</b>: <code>HEAD</code> = siz turgan
+      branch, pastdagisi = olib kelinayotgan commit. Xuddi
+      <a href="0008-merge-conflict.html">merge'dagidek</a>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Uch xil «noto'g'ri joyda ishlab qo'ydim» — yechimlari?</summary>
+      <div class="answer"><p>Commit qilmagan → <code>stash</code> (Dars 12) ·
+      Commit qilingan, hammasi ko'chsin → <code>switch -c</code> +
+      <code>reset --hard</code> (Dars 10) · Faqat bittasi ko'chsin →
+      <code>cherry-pick</code> (shu dars).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: adashsangiz nima sizni qutqaradi?</summary>
+      <div class="answer"><p><code>git reflog</code> — barcha harakatlaringiz
+      yozilgan. (<a href="0014-git-reflog.html">Dars 14</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Cherry-pick</b> = boshqa branch'dan <b>bitta commitni</b> tanlab olish.</li>
+      <li>Yangi <b>nusxa</b> yaratadi — asl commit o'z branch'ida qolaveradi.</li>
+      <li>Avval <b>qabul qiluvchi</b> branch'ga o'ting, keyin manba hash'ini yozing.</li>
+      <li><code>git cherry-pick -x &lt;hash&gt;</code> — jamoada, iz qolishi uchun.</li>
+      <li>Konflikt: <code>add</code> → <code>git cherry-pick --continue</code> ·
+      qochish: <code>--abort</code>. Belgilar <b>odatdagidek</b> (teskari emas).</li>
+      <li>⚠️ Butun branch kerak bo'lsa — <b><code>merge</code></b>. Cherry-pick
+      takroriy commitlar yaratadi.</li>
+      <li>Hash'ni ko'rish: <code>git log --oneline &lt;branch-nomi&gt;</code>.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 5.3-bo'lim — "Rebasing and Cherry-Picking Workflows":
+    <a href="https://git-scm.com/book/en/v2/Distributed-Git-Maintaining-a-Project">git-scm.com/book</a>.
+    Loyihani boshqaruvchi nuqtai nazaridan — hissalarni tanlab qabul qilish.<br>
+    Barcha imkoniyatlari:
+    <a href="https://git-scm.com/docs/git-cherry-pick">git-cherry-pick hujjati</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Cherry-pick'da konflikt chiqsa yoki noto'g'ri commitni olib qo'ysangiz —
+    menga yozing.</b> Birinchi qadam har doim bir xil:
+    <code>git cherry-pick --abort</code>, keyin <code>git reflog</code>. Ish joyingizda
+    «bu tuzatishni release branch'ga ham oling» degan vazifa tushsa — aynan shu dars
+    kerak bo'ladi, birga qilamiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0014-git-reflog.html">Oldingi: git reflog</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Git hujjatlari — <a href="https://git-scm.com/docs/git-cherry-pick">git-cherry-pick</a>.</li>
+      <li id="fn2">Pro Git — <a href="https://git-scm.com/book/en/v2/Distributed-Git-Maintaining-a-Project">Distributed Git: Maintaining a Project</a>
+      (Rebasing and Cherry-Picking Workflows).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

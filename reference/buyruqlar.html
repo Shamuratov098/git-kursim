@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a></span>
   </p>
 
   <div class="callout tip">
@@ -735,12 +735,67 @@
     <b>Haqiqiy zaxira — <code>git push</code>.</b></p>
   </div>
 
+  <h2>16. <code>git cherry-pick</code> — bitta commitni olish (Dars 15)</h2>
+  <p>Butun branch emas, <b>aynan bir commitni</b> joriy branch'ga <b>nusxa</b> qilib
+  qo'shadi. Asl commit o'z joyida qolaveradi.</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git log --oneline &lt;branch&gt;</code></td>
+        <td>Boshqa branch tarixini ko'rish — kerakli <b>hash'ni topish</b> uchun.</td>
+      </tr>
+      <tr>
+        <td><code>git cherry-pick &lt;hash&gt;</code></td>
+        <td>O'sha commitni joriy branch'ga qo'shadi.
+        <span class="note-cell">Avval <b>qabul qiluvchi</b> branch'ga o'ting.</span></td>
+      </tr>
+      <tr>
+        <td><code>git cherry-pick -x &lt;hash&gt;</code></td>
+        <td>Izohga «(cherry picked from commit …)» qo'shadi.
+        <span class="note-cell">Jamoada tavsiya qilinadi — iz qoladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git cherry-pick --continue</code></td>
+        <td>Konfliktni hal qilib <code>git add</code> qilgandan keyin davom ettiradi.</td>
+      </tr>
+      <tr>
+        <td><code>git cherry-pick --abort</code></td>
+        <td><b>Qochish yo'li</b> — boshlangunga qadar bo'lgan holatga qaytaradi.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Cherry-pick merge'ning o'rnini bosmaydi</span>
+    <p>U <b>nusxa</b> yaratadi — bir xil o'zgarish ikki joyda, ikki hash bilan turadi.
+    Keyin o'sha branch'ni merge qilsangiz chalkashlik chiqishi mumkin.
+    <b>Butun branch kerak bo'lsa — <code>merge</code>.</b></p>
+    <p>Konfliktda belgilar <b>odatdagidek</b> (rebase'dagidek teskari emas):
+    <code>HEAD</code> = siz turgan branch.</p>
+  </div>
+
+  <h3>«Noto'g'ri joyda ishlab qo'ydim» — uch holat</h3>
+  <table class="sheet">
+    <thead><tr><th>Holat</th><th>Yechim</th></tr></thead>
+    <tbody>
+      <tr><td>Hali commit qilmadim</td>
+          <td><code>git stash</code> → <code>switch</code> → <code>stash pop</code> (Dars 12)</td></tr>
+      <tr><td>Commit qildim, <b>hammasi</b> ko'chsin</td>
+          <td><code>switch -c yangi</code> → <code>switch main</code> →
+          <code>reset --hard origin/main</code> (Dars 10)</td></tr>
+      <tr><td>Commit qildim, <b>bittasi</b> ko'chsin</td>
+          <td><code>switch to-g-ri</code> → <code>cherry-pick &lt;hash&gt;</code> →
+          asl joyda <code>reset --hard HEAD~1</code> (Dars 15)</td></tr>
+    </tbody>
+  </table>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–14) barcha
-    buyruqlari bor. Hali qo'shilmagan mavzular: <code>cherry-pick</code>,
-    <code>rebase -i</code> (commitlarni birlashtirish), <code>bisect</code>,
-    GitHub Actions — kerak bo'lsa ayting, dars qo'shamiz.
+    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–15) barcha
+    buyruqlari bor. Hali qo'shilmagan mavzular: <code>rebase -i</code>
+    (commitlarni birlashtirish), <code>bisect</code>, GitHub Actions —
+    kerak bo'lsa ayting, dars qo'shamiz.
     <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 

@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0009-pull-request.html">09</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0010-kundalik-jamoa-ritmi.html">10</a></span>
   </p>
 
   <div class="callout tip">
@@ -69,6 +69,12 @@
       <tr>
         <td><code>git config --global init.defaultBranch main</code></td>
         <td>Yangi repolarda asosiy branch nomi <code>main</code> bo'lsin.</td>
+      </tr>
+      <tr>
+        <td><code>git config --global pull.rebase false</code></td>
+        <td><code>git pull</code> ajralgan branch'larda merge ishlatsin.
+        <span class="note-cell">Bu bo'lmasa pull «Need to specify how to reconcile
+        divergent branches» deb to'xtaydi (Dars 10).</span></td>
       </tr>
       <tr>
         <td><code>git config --global --list</code></td>
@@ -454,6 +460,69 @@
     bering, kod haqida gapiring — odam haqida emas.</p>
   </div>
 
+  <h2>11. Kundalik jamoa ritmi (Dars 10)</h2>
+  <p><b>Aylana:</b> pull → branch → ishla+commit → push → PR → merge → pull…</p>
+  <table class="sheet">
+    <thead><tr><th>Qachon</th><th>Buyruq</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>☀️ Kun boshi</td>
+        <td><code>git switch main &amp;&amp; git pull</code>
+        <span class="note-cell">Keyin darhol: <code>git switch -c ish-nomi</code></span></td>
+      </tr>
+      <tr>
+        <td>🛠️ Ish davomida</td>
+        <td><code>git add . &amp;&amp; git commit -m "..."</code>
+        <span class="note-cell">Kichik commitlar; kuniga kamida bir marta <code>git push</code>.</span></td>
+      </tr>
+      <tr>
+        <td>🌙 Ish tugagach</td>
+        <td><code>git push</code> → GitHub'da PR → merge →
+        <code>git switch main &amp;&amp; git pull &amp;&amp; git branch -d ish-nomi</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Muammo → yechim</h3>
+  <table class="sheet">
+    <thead><tr><th>Ko'rgan narsangiz</th><th>Nima qilasiz</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>! [rejected] (fetch first)</code></td>
+        <td>Sizdan oldin kimdir push qilgan (bu <b>himoya</b>).<br>
+        <code>git pull</code> → <code>git push</code>.</td>
+      </tr>
+      <tr>
+        <td><code>Need to specify how to reconcile divergent branches</code></td>
+        <td>Git «merge bilanmi yoki rebase bilanmi?» deb so'rayapti. Bir martalik sozlama:
+        <code>git config --global pull.rebase false</code>
+        <span class="note-cell">Keyin <code>git pull</code> har doim ishlaydi.</span></td>
+      </tr>
+      <tr>
+        <td>Branch eskirib qoldi</td>
+        <td><code>git switch main &amp;&amp; git pull</code> →
+        <code>git switch mening-branchim &amp;&amp; git merge main --no-edit</code>
+        <span class="note-cell">Yo'nalish teskari: main'ni <b>o'zingizga</b> olasiz.
+        Har kuni qiling — konflikt kichik qoladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>main</code>da commit qilib qo'ydim (push qilmagan)</td>
+        <td><b>1.</b> <code>git switch -c ishim-uchun-branch</code> →
+        <b>2.</b> <code>git switch main &amp;&amp; git reset --hard origin/main</code>
+        <span class="note-cell">⚠️ <code>reset --hard</code> so'ramasdan o'chiradi.
+        1-qadamsiz bajarmang. Shubha bo'lsa — so'rang.</span></td>
+      </tr>
+      <tr>
+        <td>Noto'g'ri branch'daman (commit qilmagan)</td>
+        <td><code>git switch to-g-ri-branch</code>. Git ruxsat bermasa — avval commit qiling.</td>
+      </tr>
+      <tr>
+        <td>Umuman chalkashib ketdim</td>
+        <td><code>git status</code> — va natijani o'qing (yoki menga tashlang).</td>
+      </tr>
+    </tbody>
+  </table>
+
   <h2>Yaxshi commit izohi qanday bo'ladi?</h2>
   <ul>
     <li>Buyruq shaklida va qisqa: <code>"Login sahifasi qo'shildi"</code>,
@@ -465,8 +534,8 @@
 
   <div class="callout note">
     <span class="label">Keyingi darslarda qo'shiladi</span>
-    <p>Kundalik jamoa ritmi va hamkasbning ishini olish (Dars 10) ·
-    <code>.gitignore</code> va professional odatlar (Dars 11). To'liq reja:
+    <p><code>.gitignore</code>, yaxshi commit message va README — professional odatlar
+    (Dars 11, kursning oxirgi darsi). To'liq reja:
     <a href="yol-xaritasi.html">yo'l xaritasi</a>.</p>
   </div>
 

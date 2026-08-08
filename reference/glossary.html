@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 36 ta</span>
+    <span>Atamalar: 38 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -60,6 +60,8 @@
     <li><a href="#amend">amend</a></li>
     <li><a href="#upstream">upstream</a></li>
     <li><a href="#fast-forward">fast-forward</a></li>
+    <li><a href="#github-flow">GitHub flow</a></li>
+    <li><a href="#rejected">rejected push</a></li>
   </ul>
 
   <dl>
@@ -304,6 +306,24 @@
       Bir marta <code>-u</code> bilan o'rnatiladi, keyin qisqa <code>git push</code> /
       <code>git pull</code> yetarli bo'ladi.
       <span class="eg">git push -u origin main</span></dd>
+    </div>
+
+    <div class="term" id="github-flow">
+      <dt>GitHub flow <span class="uz">— kundalik jamoa ritmi</span></dt>
+      <dd>Jamoalarda eng keng tarqalgan ish tartibi:
+      <a href="#pull">pull</a> → <a href="#branch">branch</a> → ishla va
+      <a href="#commit">commit</a> → <a href="#push">push</a> →
+      <a href="#pull-request">PR</a> → <a href="#merge">merge</a> → yana pull.
+      <code>main</code> doim ishlaydigan holatda qoladi.
+      <span class="eg">Kun boshi: git switch main &amp;&amp; git pull</span></dd>
+    </div>
+
+    <div class="term" id="rejected">
+      <dt>rejected push <span class="uz">— rad etilgan push</span></dt>
+      <dd><code>! [rejected] (fetch first)</code> — sizdan oldin kimdir
+      <a href="#push">push</a> qilgan. Xato emas, <b>himoya</b>: Git o'tkazib
+      yuborganida o'sha odamning ishi yo'qolardi. Yechim: <code>git pull</code>,
+      keyin <code>git push</code>.</dd>
     </div>
 
     <div class="term" id="fast-forward">

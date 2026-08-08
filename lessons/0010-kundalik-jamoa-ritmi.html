@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 10 — Kundalik jamoa ritmi</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 10 · MODUL D · JAMOA</p>
+  <h1>Kundalik jamoa ritmi</h1>
+  <p class="lead">Bu darsda yangi buyruq deyarli yo'q. Buning o'rniga siz o'rgangan
+  hamma narsani <b>bitta takrorlanadigan tartibga</b> bog'laymiz — va jamoada
+  chindan uchraydigan uchta vaziyatni hal qilishni o'rganamiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 9 daqiqa</span>
+    <span>💻 Amaliyot ≈ 14 daqiqa</span>
+    <span>Kerak: <a href="0009-pull-request.html">Dars 09</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu muhim</span>
+    <p>Hozirgacha har bir ko'nikmani <b>alohida</b> o'rgandingiz. Ish joyida esa ular
+    bitta oqim bo'lib keladi — va o'ylab o'tirishga vaqt bo'lmaydi. Maqsad: bu tartib
+    <b>avtomatik</b> bo'lib qolsin, xuddi mashina haydashdek. Shunda diqqatingiz Git'ga
+    emas, <b>ishingizga</b> qaratiladi.</p>
+  </div>
+
+  <h2>Aylana: bir ish, besh qadam</h2>
+  <p>Bu — GitHub'ning o'zi tavsiya qiladigan tartib, «GitHub flow» deb
+  ataladi.<a class="cite" href="#fn1">1</a> Millionlab jamoa shu bo'yicha ishlaydi:</p>
+
+  <div class="areas wide">
+    <div class="area">
+      <h4>1. Yangilan</h4>
+      <span class="en">git pull</span>
+      <div class="desc">Eng yangi <code>main</code>dan boshla</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">switch -c</span></div>
+    <div class="area">
+      <h4>2. Branch</h4>
+      <span class="en">o'z yo'ling</span>
+      <div class="desc">Har ish uchun alohida</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">add+commit</span></div>
+    <div class="area">
+      <h4>3. Ishla</h4>
+      <span class="en">kichik commitlar</span>
+      <div class="desc">Tez-tez saqlab bor</div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">push + PR</span></div>
+    <div class="area">
+      <h4>4–5. Taklif</h4>
+      <span class="en">PR → merge</span>
+      <div class="desc">Ko'rib chiqiladi va qo'shiladi</div>
+    </div>
+  </div>
+  <p class="cgraph-cap">…va merge'dan keyin yana <b>1-qadamga</b> qaytasiz:
+  <code>git switch main &amp;&amp; git pull</code>.</p>
+
+  <h2>Kunni vaqt bo'yicha ko'ramiz</h2>
+  <p>Aylanani eslab qolishning eng oson yo'li — uni <b>kun tartibiga</b> bog'lash.</p>
+
+  <h3>☀️ Kun boshi — ikki buyruq</h3>
+  <div class="cmd" data-cmd="git switch main && git pull">git switch main &amp;&amp; git pull</div>
+  <p>Har kuni, ishni boshlashdan oldin. Sabab
+  (<a href="0005-clone-va-pull.html">5-dars</a>): kecha siz uyquda bo'lganingizda
+  hamkasblaringiz ish qo'shgan bo'lishi mumkin. Eskirgan kod ustida ishlash —
+  <a href="0008-merge-conflict.html">konflikt</a>ning asosiy sababi.</p>
+
+  <p>Keyin darhol yangi ish uchun branch:</p>
+  <div class="cmd" data-cmd="git switch -c email-xatosini-tuzatish">git switch -c email-xatosini-tuzatish</div>
+
+  <h3>🛠️ Ish davomida — kichik commitlar</h3>
+  <div class="cmd" data-cmd='git add . && git commit -m "Bo&apos;sh email tekshiruvi qo&apos;shildi"'>git add . &amp;&amp; git commit -m "Bo'sh email tekshiruvi qo'shildi"</div>
+  <p>Har mantiqiy qadamdan keyin commit qiling — kunning oxirida bitta ulkan commit
+  emas. Sabab <a href="0003-xatoni-qaytarish.html">3-darsdagi oltin qoida</a>:
+  commit qilingan narsa xavfsiz.</p>
+
+  <div class="callout tip">
+    <span class="label">Kun davomida push ham qiling</span>
+    <p>Branch'ingizni GitHub'ga jo'natib turish — <b>bepul zaxira nusxa</b>.
+    Kompyuteringiz buzilsa, ishingiz internetda turadi. Birinchi marta
+    <code>git push -u origin branch-nomi</code>, keyin oddiy <code>git push</code>.</p>
+  </div>
+
+  <h3>🌙 Ish tugagach — PR</h3>
+  <div class="cmd" data-cmd="git push">git push</div>
+  <p>Keyin GitHub'da <a href="0009-pull-request.html">PR ochasiz</a>, ko'rib chiqiladi,
+  merge qilinadi. Va oxirida — <b>aylananing yopilishi</b>:</p>
+  <div class="cmd" data-cmd="git switch main && git pull && git branch -d email-xatosini-tuzatish">git switch main &amp;&amp; git pull &amp;&amp; git branch -d email-xatosini-tuzatish</div>
+
+  <h2>Jamoada chindan uchraydigan uch vaziyat</h2>
+  <p>Yolg'iz ishlaganda bular chiqmaydi. Jamoada esa — har hafta. Uchalasi ham
+  oddiy, agar oldindan bilsangiz.</p>
+
+  <h3>1️⃣ «Branch'im eskirib qoldi»</h3>
+  <p>Siz uch kun bitta branch'da ishladingiz. Shu orada <code>main</code>ga boshqalarning
+  ishi qo'shildi. Sizning branch'ingiz <b>eskirgan poydevorda</b> turibdi.</p>
+  <p>Yechim — <code>main</code>ni <b>o'z branch'ingizga</b> qo'shish:</p>
+  <div class="cmd" data-cmd="git switch main && git pull && git switch mening-branchim && git merge main --no-edit">git switch main &amp;&amp; git pull &amp;&amp; git switch mening-branchim &amp;&amp; git merge main --no-edit</div>
+
+  <p>Odatda bu <b>merge commit</b> yaratadi («Merge made by...»), chunki ikkala tomon
+  ham siljigan bo'ladi — <a href="0007-merge.html">7-darsdagi</a> ikkinchi holat.
+  <code>--no-edit</code> esa tahrirlagich ochilib qolishining oldini oladi.</p>
+
+  <div class="callout note">
+    <span class="label">Yo'nalishga e'tibor bering</span>
+    <p><a href="0007-merge.html">7-darsda</a> <code>login</code>ni <code>main</code>ga
+    qo'shgan edik. Bu safar <b>teskarisi</b>: <code>main</code>ni <code>login</code>ga
+    qo'shyapmiz. Bu — «ishimni eng yangi poydevorga ko'chirish» degani. Qoida o'zgarmadi:
+    <b>qabul qiluvchida turasiz</b>, ya'ni o'z branch'ingizda.</p>
+  </div>
+
+  <p>Buni tez-tez qiling — <b>har kuni</b> bo'lsa ideal. Sababi sodda: kichik farqlar
+  oson birlashadi, katta farqlar og'riqli konflikt beradi.</p>
+
+  <h3>2️⃣ «Push rad etildi»</h3>
+  <p>Siz push qilmoqchisiz, lekin Git rad etadi:</p>
+  <div class="cmd" data-cmd="git push">git push
+<span class="out">! [rejected]        main -&gt; main (fetch first)</span>
+<span class="out">error: failed to push some refs to '...'</span>
+<span class="out">hint: Updates were rejected because the remote contains work that you do</span>
+<span class="out">hint: not have locally.</span></div>
+
+  <div class="callout win">
+    <span class="label">Bu xato emas — himoya</span>
+    <p>Ma'nosi: <b>sizdan oldin kimdir push qilgan</b>. Agar Git sizni o'tkazib
+    yuborganida, o'sha odamning ishi yo'q bo'lardi. Shuning uchun u to'xtatadi.</p>
+  </div>
+
+  <p>Yechim ikki buyruq — avval oling, keyin jo'nating:</p>
+  <div class="cmd" data-cmd="git pull">git pull</div>
+  <div class="cmd" data-cmd="git push">git push</div>
+  <p>Agar <code>pull</code> paytida konflikt chiqsa — hal qilasiz
+  (<a href="0008-merge-conflict.html">8-dars</a>) va keyin push qilasiz. Boshqa hech
+  narsa kerak emas.</p>
+
+  <div class="callout warning">
+    <span class="label">Bir martalik sozlama — buni hozir bajaring</span>
+    <p>Shu holatda <code>git pull</code> ba'zan ishlamay, shunday yozadi:</p>
+    <div class="cmd" data-cmd="git pull">git pull
+<span class="out">fatal: Need to specify how to reconcile divergent branches.</span></div>
+    <p>Sabab: ikkala tomonda ham yangi commit bor va Git ularni <b>qanday</b>
+    birlashtirishni so'rayapti — <code>merge</code> bilanmi yoki <code>rebase</code>
+    bilanmi. Biz kurs davomida <b>merge</b> ishlatamiz, shuning uchun bir marta
+    aytib qo'yamiz:</p>
+    <div class="cmd" data-cmd="git config --global pull.rebase false">git config --global pull.rebase false</div>
+    <p>Ma'nosi: «pull qilganda merge ishlat». Bir marta yozasiz — kompyuteringizdagi
+    barcha loyihalar uchun (<a href="0001-git-nima-va-sozlash.html"><code>--global</code></a>).
+    Shundan keyin <code>git pull</code> har doim ishlaydi.<a class="cite" href="#fn3">3</a></p>
+  </div>
+
+  <h3>3️⃣ «Branch ochishni unutib, <code>main</code>da commit qilib qo'ydim»</h3>
+  <p>Juda ko'p uchraydigan holat. Yaxshi xabar: <b>hali push qilmagan bo'lsangiz</b>,
+  bu osongina tuzatiladi.</p>
+
+  <p><b>1-qadam</b> — ishingizni branch'ga «ko'chirib oling». Aslida ko'chirilmaydi:
+  shu joyda yangi yorliq yaratasiz (<a href="0006-branch.html">6-dars</a>: branch = yorliq):</p>
+  <div class="cmd" data-cmd="git switch -c ishim-uchun-branch">git switch -c ishim-uchun-branch</div>
+  <p>Endi commitlaringiz shu branch'da <b>xavfsiz</b>. Tekshiring:
+  <code>git log --oneline -3</code>.</p>
+
+  <p><b>2-qadam</b> — <code>main</code>ni GitHub'dagi holatga qaytaring:</p>
+  <div class="cmd" data-cmd="git switch main && git reset --hard origin/main">git switch main &amp;&amp; git reset --hard origin/main</div>
+
+  <div class="callout warning">
+    <span class="label">⚠️ <code>reset --hard</code> — kursdagi eng xavfli buyruq</span>
+    <p>U <b>so'ramasdan</b> o'chiradi. Uch shart:</p>
+    <p><b>1.</b> Yuqoridagi 1-qadamni <b>albatta</b> bajarib bo'lgan bo'ling —
+    aks holda commitlaringiz qoladigan joy yo'q.<br>
+    <b>2.</b> Faqat <code>main</code>da turib bajaring.<br>
+    <b>3.</b> Saqlanmagan o'zgarishlaringiz bo'lmasin (<code>git status</code> bilan tekshiring).</p>
+    <p>Shubhangiz bo'lsa — <b>bajarmang, menga yozing</b>. Birga qilamiz. Bu buyruqni
+    bilib qo'yish kerak, lekin shoshilib ishlatish kerak emas.</p>
+  </div>
+
+  <h2>Ritm bo'yicha uch maslahat</h2>
+  <ul>
+    <li><b>Branch uzoq yashamasin.</b> 1–3 kun ideal. Qancha uzoq yashasa, shuncha
+    ko'p konflikt to'planadi va PR shuncha katta bo'lib ketadi.</li>
+    <li><b>Kuniga kamida bir marta push qiling.</b> Bu zaxira nusxa; hamkasblaringiz
+    ham nima ustida ishlayotganingizni ko'radi.</li>
+    <li><b>Chalkashsangiz — <code>git status</code>.</b> Birinchi darsdan oxirgisigacha
+    o'zgarmagan yagona maslahat. U hech narsani buzmaydi va deyarli har doim keyingi
+    qadamni aytib beradi.</li>
+  </ul>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: bir ish kunini boshdan oxir o'ynaymiz</h2>
+    <p>Mashq <b>haqiqiy repongizda</b>. «Hamkasbingiz» rolini bu safar
+    <b>GitHub'ning o'zida</b> fayl tahrirlab o'ynaymiz — bu ham foydali ko'nikma.</p>
+
+    <h3>A qism — kun boshi va ish</h3>
+    <ol class="steps">
+      <li>
+        <p>Bir martalik sozlama</p>
+        <p class="why-step">Bu bo'lmasa, keyinroq <code>git pull</code>
+        «Need to specify how to reconcile divergent branches» deb to'xtab qolishi
+        mumkin. Bir marta yozasiz — umrbod yetadi.</p>
+        <div class="cmd" data-cmd="git config --global pull.rebase false">git config --global pull.rebase false</div>
+        <p class="expect"><b>Kutilgan natija:</b> jimlik (= muvaffaqiyat).
+        Tekshirish: <code>git config --global --get pull.rebase</code> →
+        <code>false</code>.</p>
+      </li>
+
+      <li>
+        <p>Kunni yangilanishdan boshlang</p>
+        <p class="why-step">Har kungi birinchi ikki buyruq.</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git && git switch main && git pull">cd ~/Projects/Learn/Git &amp;&amp; git switch main &amp;&amp; git pull
+<span class="out">Already up to date.</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Already up to date» yoki yangi
+        commitlar tushadi.</p>
+      </li>
+
+      <li>
+        <p>Ish uchun branch oching va commit qiling</p>
+        <p class="why-step">Odatiy ish boshlanishi.</p>
+        <div class="cmd" data-cmd='git switch -c kunlik-ritm-mashqi && echo "Kunlik ritm mashqi." > ritm.txt && git add ritm.txt && git commit -m "Ritm mashq fayli qo&apos;shildi"'>git switch -c kunlik-ritm-mashqi &amp;&amp; echo "Kunlik ritm mashqi." &gt; ritm.txt &amp;&amp; git add ritm.txt &amp;&amp; git commit -m "Ritm mashq fayli qo'shildi"</div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi branch va <code>1 file changed</code>.</p>
+      </li>
+
+      <li>
+        <p>Branch'ni GitHub'ga jo'nating (zaxira)</p>
+        <p class="why-step">Yangi branch — shuning uchun <code>-u</code>.</p>
+        <div class="cmd" data-cmd="git push -u origin kunlik-ritm-mashqi">git push -u origin kunlik-ritm-mashqi
+<span class="out"> * [new branch]  kunlik-ritm-mashqi -&gt; kunlik-ritm-mashqi</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «[new branch]». Ishingiz endi
+        internetda ham bor.</p>
+      </li>
+    </ol>
+
+    <h3>B qism — «hamkasbingiz» main'ga ish qo'shdi</h3>
+    <ol class="steps web">
+      <li>
+        <p>GitHub'da repongizni oching</p>
+        <div class="cmd" data-cmd="xdg-open https://github.com/Shamuratov098/git-kursim">xdg-open https://github.com/Shamuratov098/git-kursim</div>
+        <p class="expect"><b>Kutilgan natija:</b> repo sahifasi ochiladi, <code>main</code>
+        branch ko'rinib turadi.</p>
+      </li>
+
+      <li>
+        <p>Brauzerning o'zida yangi fayl yarating</p>
+        <p class="why-step">GitHub'da to'g'ridan-to'g'ri tahrirlash mumkin — kichik
+        tuzatishlar uchun juda qulay ko'nikma.</p>
+        <p class="expect"><b>Bajaring:</b> <span class="ui">Add file</span> →
+        <span class="ui">Create new file</span>. Fayl nomi: <code>hamkasb-ishi.txt</code>,
+        ichiga bir qator yozing (masalan <code>Hamkasbim qo'shgan fayl.</code>).
+        Pastga tushib <span class="ui">Commit changes</span> → yana
+        <span class="ui">Commit changes</span>.<br>
+        <b>Kutilgan natija:</b> fayl <code>main</code>da paydo bo'ldi — ya'ni GitHub'dagi
+        <code>main</code> endi sizning mahalliy nusxangizdan <b>oldinda</b>.</p>
+      </li>
+    </ol>
+
+    <h3>C qism — branch'ingizni yangilang</h3>
+    <ol class="steps">
+      <li>
+        <p>Mahalliy <code>main</code>ni yangilang</p>
+        <p class="why-step">Avval o'zingizda eng yangi <code>main</code> bo'lsin.</p>
+        <div class="cmd" data-cmd="git switch main && git pull">git switch main &amp;&amp; git pull
+<span class="out">Updating 7c8d9e0..b4c5d6e</span>
+<span class="out">Fast-forward</span>
+<span class="out"> hamkasb-ishi.txt | 1 +</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «Fast-forward» va yangi fayl tushdi.
+        <code>ls</code> bilan tekshiring. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Branch'ingizga qayting va uni ko'ring</p>
+        <p class="why-step">Bu yerda hamkasbingizning ishi hali yo'q — branch eskirgan.</p>
+        <div class="cmd" data-cmd="git switch kunlik-ritm-mashqi && ls">git switch kunlik-ritm-mashqi &amp;&amp; ls</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>hamkasb-ishi.txt</code>
+        <b>yo'q</b>. Branch'ingiz eski poydevorda turibdi.</p>
+      </li>
+
+      <li>
+        <p>🔑 <code>main</code>ni branch'ingizga qo'shing</p>
+        <p class="why-step">Darsning asosiy yangi ko'nikmasi. Diqqat: yo'nalish
+        <b>teskari</b> — main'ni o'zimizga olyapmiz. <code>--no-edit</code> —
+        tahrirlagich ochilmasin (<a href="0007-merge.html">7-dars</a>).</p>
+        <div class="cmd" data-cmd="git merge main --no-edit">git merge main --no-edit
+<span class="out">Merge made by the 'ort' strategy.</span>
+<span class="out"> hamkasb-ishi.txt | 1 +</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «<b>Merge made by...</b>» —
+        ya'ni <b>merge commit</b> yaratildi. <code>ls</code> deng:
+        <code>hamkasb-ishi.txt</code> endi branch'ingizda ham bor, va sizning
+        <code>ritm.txt</code> ham joyida. <b>2-g'alaba.</b> 🎉</p>
+        <p class="expect"><b>Nega Fast-forward emas?</b> Chunki ikkala tomon ham
+        siljigan edi: siz <code>ritm.txt</code> qo'shdingiz, «hamkasbingiz»
+        <code>hamkasb-ishi.txt</code>. Aynan <a href="0007-merge.html">7-darsdagi</a>
+        ikkinchi holat — Git yorliqni sura olmaydi, shuning uchun ikkita ota-onali
+        commit yaratadi.</p>
+      </li>
+
+      <li>
+        <p>Yangilangan branch'ni jo'nating</p>
+        <p class="why-step">Endi <code>-u</code> kerak emas — bog'lanish o'rnatilgan.</p>
+        <div class="cmd" data-cmd="git push">git push</div>
+        <p class="expect"><b>Kutilgan natija:</b> qisqa <code>git push</code> ishladi.
+        Branch GitHub'da ham yangilandi.</p>
+      </li>
+    </ol>
+
+    <h3>D qism — aylanani yoping</h3>
+    <ol class="steps">
+      <li>
+        <p>PR ochib merge qiling</p>
+        <p class="why-step"><a href="0009-pull-request.html">9-darsdagi</a> tartib —
+        bu safar o'zingiz bajarasiz.</p>
+        <p class="expect"><b>Bajaring:</b> GitHub'da <span class="ui">Compare &amp;
+        pull request</span> → sarlavha yozing → <span class="ui">Create pull request</span>
+        → <span class="ui">Merge pull request</span> → <span class="ui">Delete branch</span>.</p>
+      </li>
+
+      <li>
+        <p>Aylanani yoping</p>
+        <p class="why-step">Merge internetda bo'ldi — o'zingizga tortib olasiz va
+        tozalaysiz. Bu — ertangi kunning 1-qadami ham.</p>
+        <div class="cmd" data-cmd="git switch main && git pull && git branch -d kunlik-ritm-mashqi">git switch main &amp;&amp; git pull &amp;&amp; git branch -d kunlik-ritm-mashqi
+<span class="out">Deleted branch kunlik-ritm-mashqi (was 9f0a1b2).</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>main</code> yangilandi va
+        branch tozalandi. <b>To'liq bir ish kunini bajardingiz. 3-g'alaba!</b> 🎉🎉</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d10c1"><label for="d10c1">Kun boshi: <code>git switch main &amp;&amp; git pull</code></label></li>
+      <li><input type="checkbox" id="d10c2"><label for="d10c2">Har ish uchun alohida branch ochaman</label></li>
+      <li><input type="checkbox" id="d10c3"><label for="d10c3">Kuniga kamida bir marta push qilaman (zaxira)</label></li>
+      <li><input type="checkbox" id="d10c4"><label for="d10c4">Branch eskirsa — <code>git merge main</code> bilan yangilayman 🔑</label></li>
+      <li><input type="checkbox" id="d10c5"><label for="d10c5">Push rad etilsa — <code>git pull</code>, keyin <code>git push</code></label></li>
+      <li><input type="checkbox" id="d10c6"><label for="d10c6">Merge'dan keyin aylanani yopaman: <code>pull</code> + <code>branch -d</code></label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — amaliyot o'rniga qisqa eslatma
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda (va brauzerda)</span>
+    <p>Amaliyotda <b>bir ish kunini boshdan oxir</b> o'ynaysiz: kun boshi
+    <code>pull</code> → branch → commit → push. Keyin «hamkasbingiz» rolida
+    <b>GitHub'ning o'zida</b> fayl yaratasiz (bu ham foydali ko'nikma), branch'ingiz
+    eskirganini ko'rasiz va uni <code>git merge main</code> bilan yangilaysiz — bu
+    darsning asosiy yangi ko'nikmasi. Oxirida PR bilan aylanani yopasiz. 11 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Muammo → yechim jadvali</h2>
+  <p>Buni saqlab qo'ying — ish joyida shu uchtasi eng ko'p uchraydi.</p>
+
+  <table class="sheet">
+    <thead><tr><th>Ko'rgan narsangiz</th><th>Nima qilasiz</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>! [rejected] (fetch first)</code></td>
+        <td>Sizdan oldin kimdir push qilgan.<br>
+        <code>git pull</code> → keyin <code>git push</code>.</td>
+      </tr>
+      <tr>
+        <td><code>fatal: Need to specify how to<br>reconcile divergent branches.</code></td>
+        <td>Git «merge bilanmi yoki rebase bilanmi?» deb so'rayapti.<br>
+        Bir marta: <code>git config --global pull.rebase false</code> → keyin
+        <code>git pull</code>.</td>
+      </tr>
+      <tr>
+        <td>Branch'im eskirib qoldi</td>
+        <td><code>git switch main &amp;&amp; git pull</code> →
+        <code>git switch mening-branchim &amp;&amp; git merge main --no-edit</code>.
+        <span class="note-cell">Har kuni qilsangiz, konflikt deyarli chiqmaydi.</span></td>
+      </tr>
+      <tr>
+        <td><code>main</code>da commit qilib qo'ydim (push qilmagan)</td>
+        <td><code>git switch -c ishim-uchun-branch</code> → keyin
+        <code>git switch main &amp;&amp; git reset --hard origin/main</code>.
+        <span class="note-cell">⚠️ 1-qadamsiz 2-qadamni bajarmang.</span></td>
+      </tr>
+      <tr>
+        <td>Noto'g'ri branch'da ekanimni ko'rdim (hali commit qilmagan)</td>
+        <td>Shunchaki <code>git switch to-g-ri-branch</code>. Git ruxsat bermasa —
+        avval <code>git commit</code> qiling.</td>
+      </tr>
+      <tr>
+        <td>Umuman chalkashib ketdim</td>
+        <td><code>git status</code> — va natijani menga tashlang.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Ish kunini nimadan boshlaysiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git switch main</code> va <code>git pull</code></button></li>
+      <li><button class="quiz-option"><code>git push</code> — kechagi ishimni jo'nataman</button></li>
+      <li><button class="quiz-option"><code>git clone</code> — loyihani yangidan olaman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Kecha hamkasblaringiz ish qo'shgan bo'lishi mumkin.
+    Eskirgan kod ustida ishlash — konfliktning asosiy sababi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Branch'ingiz eskirdi — <code>main</code>ga yangi ish qo'shilgan. Nima qilasiz?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Branch'imda turib <code>git merge main</code> qilaman</button></li>
+      <li><button class="quiz-option"><code>main</code>da turib <code>git merge branch</code> qilaman</button></li>
+      <li><button class="quiz-option">Branch'ni o'chirib, yangisini boshidan ochaman</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — yo'nalish bu safar teskari: <code>main</code>ni
+    <b>o'zingizga</b> olyapsiz. Qoida esa o'zgarmadi: <b>qabul qiluvchida turasiz</b>,
+    ya'ni o'z branch'ingizda.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> <code>git push</code> «rejected» dedi. Bu nima degani?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Sizdan oldin kimdir push qilgan — avval <code>git pull</code></button></li>
+      <li><button class="quiz-option">Internetga ulanish uzilgan — qaytadan urinib ko'ring</button></li>
+      <li><button class="quiz-option">Commitingizda xato bor — uni tuzatish kerak</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri, va bu <b>himoya</b>: Git sizni o'tkazib
+    yuborganida, o'sha odamning ishi yo'q bo'lardi. Yechim: <code>git pull</code>,
+    keyin <code>git push</code>.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Nega branch uzoq yashamasligi kerak?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Qancha uzoq yashasa, shuncha ko'p konflikt to'planadi</button></li>
+      <li><button class="quiz-option">Git eski branch'larni bir haftadan keyin o'chiradi</button></li>
+      <li><button class="quiz-option">Uzoq branch repo hajmini juda kattalashtirib yuboradi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Kichik farqlar oson birlashadi, katta farqlar
+    og'riqli konflikt beradi. 1–3 kunlik branch ideal.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.
+    Oxirgi ikkitasi — oldingi darslarni takrorlash.</p>
+
+    <details class="recall">
+      <summary>Kundalik aylananing besh qadami?</summary>
+      <div class="answer"><p>1) <code>pull</code> — yangilan · 2) branch och ·
+      3) ishla + kichik commitlar · 4) <code>push</code> · 5) PR → merge.
+      Keyin yana 1-qadamga.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Kun boshidagi ikki buyruq?</summary>
+      <div class="answer"><p><code>git switch main &amp;&amp; git pull</code>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Branch eskirsa — buyruq va <b>yo'nalish</b>?</summary>
+      <div class="answer"><p>O'z branch'ingizda turib <code>git merge main</code>.
+      Ya'ni <code>main</code>ni <b>o'zingizga</b> olasiz — 7-darsdagining teskarisi.
+      Qoida esa bir xil: qabul qiluvchida turasiz.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>! [rejected]</code> ko'rsangiz nima qilasiz?</summary>
+      <div class="answer"><p><code>git pull</code>, keyin <code>git push</code>.
+      Ma'nosi: sizdan oldin kimdir push qilgan.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>main</code>da commit qilib qo'ydingiz. Birinchi qadam qaysi?</summary>
+      <div class="answer"><p><code>git switch -c ishim-uchun-branch</code> — ishingiz
+      shu yerda xavfsiz bo'ladi. <b>Faqat shundan keyin</b> <code>main</code>ni
+      <code>git reset --hard origin/main</code> bilan qaytarasiz.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: PR merge qilingandan keyin nima qilasiz?</summary>
+      <div class="answer"><p><code>git switch main &amp;&amp; git pull</code> —
+      merge internetda bo'ldi. (<a href="0009-pull-request.html">Dars 09</a>)</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: chalkashib qolsangiz birinchi buyruq?</summary>
+      <div class="answer"><p><code>git status</code> — 2-darsdan beri o'zgarmagan
+      javob. U hech narsani buzmaydi.
+      (<a href="0002-uch-hudud-va-commit.html">Dars 02</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Aylana:</b> pull → branch → ishla+commit → push → PR → merge → pull…</li>
+      <li><b>Kun boshi:</b> <code>git switch main &amp;&amp; git pull</code>.</li>
+      <li><b>Ish davomida:</b> kichik commitlar, kuniga kamida bir marta <code>push</code>.</li>
+      <li><b>Branch eskirsa:</b> o'z branch'ingizda <code>git merge main --no-edit</code>.</li>
+      <li><b>Push rad etilsa:</b> <code>git pull</code> → <code>git push</code>.</li>
+      <li><b><code>main</code>da commit qilsangiz:</b> avval <code>git switch -c ...</code>,
+      keyin <code>git reset --hard origin/main</code> ⚠️.</li>
+      <li><b>Branch 1–3 kun yashasin</b> — uzoq yashagani konflikt to'playdi.</li>
+      <li><b>Chalkashsangiz:</b> <code>git status</code>.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>GitHub Docs — «GitHub flow»</b>:
+    <a href="https://docs.github.com/en/get-started/using-github/github-flow">docs.github.com/get-started/using-github/github-flow</a>.
+    Bu — bugungi darsning rasmiy ta'rifi, qisqa va aniq (5 daqiqalik o'qish).<br>
+    <b>Pro Git</b>, 5.1-bo'lim — <a href="https://git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows">Distributed Workflows</a>
+    (jamoalar qanday tashkil bo'lishi haqida — kattaroq loyihalar uchun).</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Ish joyingizdagi tartib boshqacha bo'lishi mumkin</b> — ba'zi jamoalarda
+    <code>develop</code> branch bo'ladi, ba'zilarida <code>rebase</code> ishlatiladi.
+    Shunday holatga duch kelsangiz, menga ayting — o'sha tartibni birga o'rganamiz.
+    Va yuqoridagi uch vaziyatdan biri chiqsa, terminal chiqishini tashlang.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0009-pull-request.html">Oldingi: Pull request</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">GitHub Docs — <a href="https://docs.github.com/en/get-started/using-github/github-flow">GitHub flow</a>.</li>
+      <li id="fn2">Git hujjatlari — <a href="https://git-scm.com/docs/git-push">git-push</a>
+      (rad etish sabablari) · <a href="https://git-scm.com/docs/git-reset">git-reset</a>
+      (<code>--hard</code> — ehtiyot bo'ling).</li>
+      <li id="fn3">Git hujjatlari — <a href="https://git-scm.com/docs/git-config#Documentation/git-config.txt-pullrebase">git-config: pull.rebase</a>.
+      Git 2.27 dan beri ajralgan branch'larda strategiyani ochiq ko'rsatish talab qilinadi.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

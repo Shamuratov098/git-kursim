@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 44 ta</span>
+    <span>Atamalar: 45 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -52,6 +52,7 @@
     <li><a href="#pull-request">pull request</a></li>
     <li><a href="#review">code review</a></li>
     <li><a href="#fork">fork</a></li>
+    <li><a href="#upstream-remote">upstream (remote)</a></li>
     <li><a href="#gitignore">.gitignore</a></li>
     <li><a href="#cherry-pick">cherry-pick</a></li>
     <li><a href="#reflog">reflog</a></li>
@@ -259,8 +260,22 @@
 
     <div class="term" id="fork">
       <dt>fork <span class="uz">— o'z nusxangizga ko'chirish</span></dt>
-      <dd>Birovning GitHub repo'sini <b>o'z akkauntingizga</b> nusxalash. Open source'ga
-      hissa qo'shishda ishlatiladi.</dd>
+      <dd>Birovning GitHub repo'sini <b>o'z akkauntingizga</b> nusxalash. Kerak, chunki
+      begona repo'ga <a href="#push">push</a> qila olmaysiz: o'z nusxangizga push
+      qilib, keyin asl loyihaga <a href="#pull-request">PR</a> ochasiz.
+      ⚠️ Fork <b>o'zi yangilanmaydi</b> — <code>git fetch upstream</code> qilasiz.
+      <span class="eg">Open source'ga hissa qo'shishning standart yo'li</span></dd>
+    </div>
+
+    <div class="term" id="upstream-remote">
+      <dt>upstream (remote) <span class="uz">— asl loyiha</span></dt>
+      <dd><a href="#fork">Fork</a> qilingan loyihada ikkita <a href="#remote">remote</a>
+      bo'ladi: <code>origin</code> = <b>sizning forkingiz</b> (push qilasiz),
+      <code>upstream</code> = <b>asl loyiha</b> (faqat o'qiysiz).
+      Qo'lda qo'shiladi. <br>⚠️ Buni branch'ning
+      <a href="#upstream">upstream</a>i bilan chalkashtirmang — nomi bir xil,
+      ma'nosi boshqa.
+      <span class="eg">git remote add upstream https://github.com/asl/loyiha.git</span></dd>
     </div>
 
     <div class="term" id="gitignore">

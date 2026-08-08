@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 16 — Fork: birovning loyihasiga hissa qo'shish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 16 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1>Fork: birovning loyihasiga hissa qo'shish</h1>
+  <p class="lead">Bu darsdan keyin siz <b>o'zingizniki bo'lmagan</b> loyihaga
+  o'zgarish taklif qila olasiz — ya'ni open source'ga birinchi hissangizni
+  qo'shasiz.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 8 daqiqa</span>
+    <span>💻 Amaliyot ≈ 20 daqiqa</span>
+    <span>Kerak: <a href="0009-pull-request.html">Dars 09</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Nega bu dars qo'shildi</span>
+    <p><a href="0011-professional-odatlar.html">11-darsda</a> sizga «real loyihaga
+    birinchi PR'ingizni oching» deb tavsiya qilgandim. Lekin buning <b>yo'lini
+    o'rgatmagan ekanman</b> — bu mening kamchiligim edi. Mana shu dars o'sha
+    bo'shliqni yopadi.</p>
+  </div>
+
+  <h2>Muammo: birovning repo'siga push qila olmaysiz</h2>
+  <p><a href="0009-pull-request.html">9-darsda</a> PR ochgan edingiz —
+  lekin u <b>o'z</b> repongizda edi. U yerda sizda yozish huquqi bor.</p>
+  <p>Endi tasavvur qiling: sizga yoqqan loyihada kichik xato ko'rdingiz. Odatdagi
+  yo'l bilan boshlaysiz:</p>
+
+  <div class="cmd" data-cmd="git push origin mening-tuzatishim">git push origin mening-tuzatishim
+<span class="out">remote: Permission to boshqa-odam/loyiha.git denied to Shamuratov098.</span>
+<span class="out">fatal: unable to access ... 403</span></div>
+
+  <p>Va shu yerda to'xtaysiz. Chunki <b>o'sha repo sizniki emas</b> — hech kim
+  begonaga o'z loyihasiga yozishga ruxsat bermaydi.</p>
+
+  <div class="callout win">
+    <span class="label">Yechim: fork</span>
+    <p><b>Fork</b> — birovning repo'sidan <b>o'z GitHub akkauntingizga</b> to'liq
+    nusxa olish. Nusxa sizniki, ya'ni unga bemalol push qilasiz. Keyin asl loyiha
+    egasiga «mening nusxamdagi o'zgarishni oling» deb <a href="0009-pull-request.html">PR</a>
+    ochasiz.<a class="cite" href="#fn1">1</a></p>
+  </div>
+
+  <h2>Yangi tushuncha: ikkita remote</h2>
+  <p>Bu darsning yagona qiyin joyi shu — lekin tushunsangiz, qolgani oson.
+  Endi sizda <b>ikkita</b> internetdagi manzil bo'ladi:</p>
+
+  <div class="areas wide">
+    <div class="area">
+      <h4>Asl repo</h4>
+      <span class="en">upstream</span>
+      <div class="desc">Birovniki. Faqat <b>o'qiysiz</b></div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">Fork</span></div>
+    <div class="area">
+      <h4>Sizning nusxangiz</h4>
+      <span class="en">origin</span>
+      <div class="desc">GitHub'da, <b>siznikingiz</b></div>
+    </div>
+    <div class="area-arrow"><span class="sym">→</span><span class="lbl">git clone</span></div>
+    <div class="area">
+      <h4>Kompyuteringiz</h4>
+      <span class="en">local</span>
+      <div class="desc">Bu yerda ishlaysiz</div>
+    </div>
+  </div>
+
+  <p><a href="0004-remote-va-push.html">4-darsdan</a> <code>origin</code> tanish —
+  «asosiy manzil». Fork qilinganda esa u <b>sizning nusxangiz</b>ga ishora qiladi.
+  Asl loyiha uchun ikkinchi nom qo'shiladi: <b><code>upstream</code></b>
+  («yuqori oqim» — kelib chiqish joyi).</p>
+
+  <table class="sheet">
+    <thead><tr><th>Amal</th><th>Qayerga boradi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git push</code></td>
+        <td><b><code>origin</code></b> — sizning forkingizga.
+        <span class="note-cell">Bu yerda to'liq huquqingiz bor.</span></td>
+      </tr>
+      <tr>
+        <td><b>Pull request</b></td>
+        <td>Forkingizdan <b><code>upstream</code></b>ga — GitHub'da ochiladi.
+        <span class="note-cell">Bu «taklif», ya'ni egasi qaror qiladi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git fetch upstream</code></td>
+        <td>Asl loyihadagi yangiliklarni olib keladi.
+        <span class="note-cell">Fork o'zi yangilanmaydi — buni siz qilasiz.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <span class="label">Fork o'z-o'zidan yangilanmaydi</span>
+    <p>Bu ko'p odam adashadigan joy. Siz fork qilgan kundan boshlab asl loyiha
+    oldinga ketaveradi, sizning nusxangiz esa <b>o'sha kunda qotib qoladi</b>.</p>
+    <p>Yangi ish boshlashdan oldin har safar yangilang
+    (<a href="0010-kundalik-jamoa-ritmi.html">10-darsdagi</a> «kun boshi pull»ning
+    fork versiyasi):</p>
+    <div class="cmd" data-cmd="git switch main && git fetch upstream && git merge upstream/main">git switch main &amp;&amp; git fetch upstream &amp;&amp; git merge upstream/main</div>
+  </div>
+
+  <h2>To'liq oqim — olti qadam</h2>
+  <ol>
+    <li><b>Fork</b> — GitHub'da tugma bosasiz (bir marta);</li>
+    <li><b>Clone</b> — <b>o'z forkingizni</b> kompyuteringizga olasiz;</li>
+    <li><b><code>upstream</code> qo'shasiz</b> — asl loyihaga ulanish (bir marta);</li>
+    <li><b>Branch + ish + commit</b> — tanish qism
+    (<a href="0006-branch.html">6-dars</a>);</li>
+    <li><b>Push</b> — o'z forkingizga;</li>
+    <li><b>PR</b> — forkingizdan asl loyihaga.</li>
+  </ol>
+  <p>1–3-qadamlar har loyiha uchun <b>bir marta</b>. Keyingi hissalaringizda
+  to'g'ridan-to'g'ri 4-qadamdan boshlaysiz.</p>
+
+  <h2>Odob: hissa qo'shishning yozilmagan qoidalari</h2>
+  <p>Texnikadan muhimroq qismi shu. Loyiha egalari sizni <b>shu bo'yicha</b> baholaydi:</p>
+  <ul>
+    <li><b>Avval <code>CONTRIBUTING.md</code> ni o'qing.</b> Ko'p loyihada u bor va
+    unda «bizda qanday qilinadi» yozilgan. O'qimasdan PR ochish — hurmatsizlik
+    belgisi.</li>
+    <li><b>Kichikdan boshlang.</b> Birinchi PR'ingiz imlo xatosi tuzatishi bo'lsa —
+    bu <b>ajoyib</b>. Katta o'zgarishni hech kim begonadan qabul qilmaydi.</li>
+    <li><b>Avval issue oching yoki mavjudini toping.</b> «Men shuni tuzatsam
+    bo'ladimi?» deb so'rash — bir necha kunlik behuda ishdan saqlaydi.</li>
+    <li><b>Bitta PR = bitta narsa.</b> Xuddi commit kabi
+    (<a href="0002-uch-hudud-va-commit.html">2-dars</a>).</li>
+    <li><b>Javobni sabr bilan kuting.</b> Ko'p loyiha bepul, bo'sh vaqtda
+    yuritiladi. Bir hafta — normal.</li>
+  </ul>
+
+  <div class="callout tip">
+    <span class="label">Birinchi ishni qayerdan topaman?</span>
+    <p>GitHub'da <b><code>good first issue</code></b> degan yorliq bor — u aynan
+    yangi kelganlar uchun ajratilgan vazifalarni bildiradi. Qidiruvda:
+    <code>label:"good first issue" state:open</code>. O'zingizga tanish til yoki
+    ishlatadigan kutubxonangizdan boshlang.</p>
+  </div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: haqiqiy open source PR ochamiz</h2>
+
+    <div class="callout win">
+      <span class="label">Bu mashq emas — haqiqiy hissa</span>
+      <p>Biz <b>first-contributions</b> loyihasidan foydalanamiz
+      (<a href="https://github.com/firstcontributions/first-contributions">github.com/firstcontributions/first-contributions</a>)
+      — 55 000 yulduz, 100 000 dan ortiq fork. U <b>aynan shu maqsad uchun</b>
+      yaratilgan: yangi boshlovchilar birinchi PR'ini xotirjam mashq qilishi uchun.
+      PR'ingiz haqiqatan ko'rib chiqiladi va qabul qilinadi.</p>
+      <p>Ya'ni bu darsdan keyin sizning GitHub profilingizda <b>real open source
+      hissangiz</b> qoladi.</p>
+    </div>
+
+    <h3>A qism — fork va sozlash</h3>
+    <ol class="steps web">
+      <li>
+        <p>Loyihani oching va fork qiling</p>
+        <p class="why-step">Fork tugmasi sahifaning yuqori o'ng burchagida.</p>
+        <div class="cmd" data-cmd="xdg-open https://github.com/firstcontributions/first-contributions">xdg-open https://github.com/firstcontributions/first-contributions</div>
+        <p class="expect"><b>Bajaring:</b> yuqori o'ngdagi <span class="ui">Fork</span> →
+        <span class="ui">Create fork</span>.<br>
+        <b>Kutilgan natija:</b> brauzer <code>github.com/<b>Shamuratov098</b>/first-contributions</code>
+        ga o'tadi — endi bu <b>sizning</b> nusxangiz. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <ol class="steps">
+      <li>
+        <p>O'z forkingizni clone qiling</p>
+        <p class="why-step">Diqqat: manzilda <b>sizning</b> username'ingiz bo'lishi
+        kerak, asl egasiniki emas.</p>
+        <div class="cmd" data-cmd="cd ~/Projects && git clone https://github.com/Shamuratov098/first-contributions.git && cd first-contributions">cd ~/Projects &amp;&amp; git clone https://github.com/Shamuratov098/first-contributions.git &amp;&amp; cd first-contributions</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Cloning into...» va papka yaratildi.</p>
+      </li>
+
+      <li>
+        <p>Hozircha bitta remote borligini ko'ring</p>
+        <div class="cmd" data-cmd="git remote -v">git remote -v
+<span class="out">origin  https://github.com/Shamuratov098/first-contributions.git (fetch)</span>
+<span class="out">origin  https://github.com/Shamuratov098/first-contributions.git (push)</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> faqat <code>origin</code> —
+        va u <b>sizning forkingiz</b>. Asl loyiha hali ulanmagan.</p>
+      </li>
+
+      <li>
+        <p><code>upstream</code> qo'shing</p>
+        <p class="why-step">Asl loyihaga ulanish. Bu <b>bir marta</b> qilinadi.
+        E'tibor bering: manzilda endi <b>asl egasining</b> nomi.</p>
+        <div class="cmd" data-cmd="git remote add upstream https://github.com/firstcontributions/first-contributions.git && git remote -v">git remote add upstream https://github.com/firstcontributions/first-contributions.git &amp;&amp; git remote -v
+<span class="out">origin    https://github.com/Shamuratov098/... (fetch)</span>
+<span class="out">upstream  https://github.com/firstcontributions/... (fetch)</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> endi <b>to'rt qator</b> — ikkita
+        manzil, har biri fetch va push uchun. <b>2-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>B qism — hissangizni qo'shing</h3>
+    <ol class="steps">
+      <li>
+        <p>Branch oching</p>
+        <p class="why-step">Nom o'zingiznikiga o'zgartiring — bu odat.</p>
+        <div class="cmd" data-cmd="git switch -c ismimni-qoshish">git switch -c ismimni-qoshish</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Switched to a new branch».</p>
+      </li>
+
+      <li>
+        <p>Avval loyiha ko'rsatmasini o'qing</p>
+        <p class="why-step">Har doim shunday qiling — bu birinchi qoida edi.</p>
+        <div class="cmd" data-cmd="head -30 README.md">head -30 README.md</div>
+        <p class="expect"><b>Kutilgan natija:</b> loyiha nima qilishni tushuntiradi —
+        <code>Contributors.md</code> fayliga ismingizni qo'shish.</p>
+      </li>
+
+      <li>
+        <p>Ismingizni qo'shing</p>
+        <p class="why-step"><code>&gt;&gt;</code> — oxiriga qo'shadi, boshqalarning
+        ismini o'chirmaydi. Matnni <b>o'zingiznikiga almashtiring</b>.</p>
+        <div class="cmd" data-cmd='echo "- [Dostonbek Shamuratov](https://github.com/Shamuratov098)" >> Contributors.md && tail -3 Contributors.md'>echo "- [Dostonbek Shamuratov](https://github.com/Shamuratov098)" &gt;&gt; Contributors.md &amp;&amp; tail -3 Contributors.md</div>
+        <p class="expect"><b>Kutilgan natija:</b> faylning oxirida sizning
+        ismingiz. <code>git diff</code> bilan ham tekshiring — faqat <b>bitta
+        qator qo'shilgan</b> bo'lishi kerak.</p>
+      </li>
+
+      <li>
+        <p>Commit qiling</p>
+        <p class="why-step">Izoh aniq bo'lsin (<a href="0011-professional-odatlar.html">11-dars</a>).</p>
+        <div class="cmd" data-cmd='git add Contributors.md && git commit -m "Add Dostonbek Shamuratov to Contributors"'>git add Contributors.md &amp;&amp; git commit -m "Add Dostonbek Shamuratov to Contributors"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>1 file changed</code>.
+        <b>Diqqat:</b> xalqaro loyihada izohni <b>inglizcha</b> yozish odat.</p>
+      </li>
+
+      <li>
+        <p>O'z forkingizga push qiling</p>
+        <p class="why-step"><code>origin</code> = sizning forkingiz. Bu yerda
+        huquqingiz bor, shuning uchun ishlaydi.</p>
+        <div class="cmd" data-cmd="git push -u origin ismimni-qoshish">git push -u origin ismimni-qoshish
+<span class="out"> * [new branch]  ismimni-qoshish -&gt; ismimni-qoshish</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «[new branch]» va PR ochish uchun
+        havola. <b>3-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>C qism — PR oching</h3>
+    <ol class="steps web">
+      <li>
+        <p>Forkingizni brauzerda oching</p>
+        <div class="cmd" data-cmd="xdg-open https://github.com/Shamuratov098/first-contributions">xdg-open https://github.com/Shamuratov098/first-contributions</div>
+        <p class="expect"><b>Kutilgan natija:</b> sariq chiziq va
+        <span class="ui">Compare &amp; pull request</span> tugmasi.</p>
+      </li>
+
+      <li>
+        <p>🔑 PR yo'nalishini <b>diqqat bilan</b> tekshiring</p>
+        <p class="why-step">Bu darsdagi eng muhim tekshiruv. Odatdagi PR'dan farqi shu.</p>
+        <p class="expect"><b>Tugmani bosing va tepadagi qatorni o'qing:</b><br>
+        <code>base repository: <b>firstcontributions</b>/first-contributions</code>
+        ← asl loyiha<br>
+        <code>head repository: <b>Shamuratov098</b>/first-contributions</code>
+        ← sizning forkingiz<br>
+        Ya'ni: <b>sizning forkingizdan asl loyihaga</b>. GitHub buni odatda o'zi
+        to'g'ri qo'yadi — lekin har doim tekshiring.</p>
+      </li>
+
+      <li>
+        <p>Sarlavha va tavsif yozib, PR'ni oching</p>
+        <p class="why-step">Begona odam o'qiydi — shuning uchun aniq va xushmuomala.</p>
+        <p class="expect"><b>Yozing (inglizcha):</b><br>
+        Sarlavha: <code>Add Dostonbek Shamuratov to Contributors</code><br>
+        Tavsif: <code>Added my name to Contributors.md as part of the first
+        contribution tutorial. Thank you!</code><br>
+        Keyin <span class="ui">Create pull request</span>.<br>
+        <b>Kutilgan natija:</b> PR ochildi va raqam berildi.
+        <b>4-g'alaba — birinchi open source hissangiz!</b> 🎉🎉</p>
+      </li>
+    </ol>
+
+    <div class="callout note">
+      <span class="label">Endi nima bo'ladi?</span>
+      <p>Loyiha egalari PR'ingizni ko'rib chiqadi va qabul qiladi. Bu bir necha
+      soatdan bir necha kungacha vaqt olishi mumkin — <b>sabr qiling, eslatma
+      yozmang</b>. Merge qilinganda GitHub sizga xabar yuboradi.</p>
+      <p>Shundan keyin profilingizda «Contributed to firstcontributions/first-contributions»
+      yozuvi paydo bo'ladi.</p>
+    </div>
+
+    <h3>D qism — forkni yangilash (kelajak uchun)</h3>
+    <ol class="steps">
+      <li>
+        <p>Asl loyihadagi yangiliklarni oling</p>
+        <p class="why-step">Keyingi safar hissa qo'shishdan <b>oldin</b> shuni
+        qiling — aks holda eskirgan kod ustida ishlaysiz.</p>
+        <div class="cmd" data-cmd="git switch main && git fetch upstream && git merge upstream/main">git switch main &amp;&amp; git fetch upstream &amp;&amp; git merge upstream/main</div>
+        <p class="expect"><b>Kutilgan natija:</b> «Fast-forward» yoki «Already
+        up to date». Endi mahalliy <code>main</code> asl loyiha bilan bir xil.</p>
+      </li>
+
+      <li>
+        <p>Forkingizni GitHub'da ham yangilang</p>
+        <p class="why-step">Mahalliy yangilandi — endi internetdagi nusxangizni ham.</p>
+        <div class="cmd" data-cmd="git push origin main">git push origin main</div>
+        <p class="expect"><b>Kutilgan natija:</b> forkingiz asl loyiha bilan
+        tenglashdi. <b>5-g'alaba.</b> 🎉</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d16c1"><label for="d16c1">Birovning repo'siga push qila olmayman — avval <b>fork</b></label></li>
+      <li><input type="checkbox" id="d16c2"><label for="d16c2"><code>origin</code> = mening forkim · <code>upstream</code> = asl loyiha</label></li>
+      <li><input type="checkbox" id="d16c3"><label for="d16c3">PR yo'nalishi: <b>mening forkimdan asl loyihaga</b></label></li>
+      <li><input type="checkbox" id="d16c4"><label for="d16c4">Fork o'zi yangilanmaydi — <code>fetch upstream</code> + <code>merge</code></label></li>
+      <li><input type="checkbox" id="d16c5"><label for="d16c5">Haqiqiy open source PR ochdim 🎉</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda va brauzerda</span>
+    <p>Amaliyotda <b>haqiqiy open source PR</b> ochasiz — <code>first-contributions</code>
+    loyihasiga (u aynan boshlovchilar mashqi uchun yaratilgan, 100 000+ fork).
+    Fork qilasiz, clone qilasiz, <code>upstream</code> qo'shasiz, ismingizni
+    <code>Contributors.md</code> ga qo'shib PR ochasiz. Oxirida forkni yangilashni
+    ham o'rganasiz. 12 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> Nega birovning loyihasida fork kerak?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Uning repo'siga yozish huquqingiz yo'q — o'z nusxangizga push qilasiz</button></li>
+      <li><button class="quiz-option">Fork loyihani tezroq clone qilish imkonini beradi</button></li>
+      <li><button class="quiz-option">Fork'siz pull request ochib bo'lmaydi — bu texnik shart</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Yozish huquqi bo'lsa (masalan o'z jamoangiz
+    repo'sida) fork <b>kerak emas</b> — to'g'ridan-to'g'ri branch ochasiz
+    (<a href="0009-pull-request.html">9-dars</a>).</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Fork qilingandan keyin <code>origin</code> nimaga ishora qiladi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Sizning forkingizga — GitHub'dagi o'z nusxangizga</button></li>
+      <li><button class="quiz-option">Asl loyihaga — kelib chiqish joyiga</button></li>
+      <li><button class="quiz-option">Kompyuteringizdagi papkaga — mahalliy nusxaga</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — siz <b>o'z forkingizni</b> clone qilgansiz,
+    shuning uchun <code>origin</code> o'shanga ishora qiladi. Asl loyiha esa
+    <code>upstream</code> nomi bilan qo'lda qo'shiladi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Fork qilganingizdan bir oy o'tdi. Nusxangiz o'zi yangilandimi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Yo'q — u fork qilingan kunda qotib qolgan</button></li>
+      <li><button class="quiz-option">Ha — GitHub forklarni avtomatik yangilab turadi</button></li>
+      <li><button class="quiz-option">Ha, lekin faqat asl loyiha public bo'lsa</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri, va bu ko'p adashiladigan joy. Yangilash
+    sizning ishingiz: <code>git fetch upstream</code> → <code>git merge upstream/main</code>.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> Birinchi hissangiz qanday bo'lgani ma'qul?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Kichik — hatto imlo xatosi tuzatishi ham ajoyib</button></li>
+      <li><button class="quiz-option">Katta — jiddiy ekaningizni ko'rsatish uchun</button></li>
+      <li><button class="quiz-option">Bir nechta mavzuni qamragan — vaqtni tejash uchun</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Kichik PR tez ko'riladi va qabul qilinadi.
+    Katta o'zgarishni begonadan hech kim qabul qilmaydi — avval ishonch qozoniladi.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>Fork nima — bir jumlada?</summary>
+      <div class="answer"><p>Birovning repo'sidan <b>o'z GitHub akkauntingizga</b>
+      to'liq nusxa olish. Nusxa sizniki, shuning uchun unga push qila olasiz.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>origin</code> va <code>upstream</code> — qaysi biri kimniki?</summary>
+      <div class="answer"><p><code>origin</code> = <b>sizning forkingiz</b>
+      (push qilasiz) · <code>upstream</code> = <b>asl loyiha</b> (faqat o'qiysiz).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>PR qaysi yo'nalishda ochiladi?</summary>
+      <div class="answer"><p><b>Sizning forkingizdagi branch</b>dan
+      <b>asl loyihaning <code>main</code></b>iga. GitHub'da:
+      <code>base</code> = asl loyiha, <code>head</code> = sizning forkingiz.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Forkni qanday yangilaysiz?</summary>
+      <div class="answer"><p><code>git fetch upstream</code> →
+      <code>git merge upstream/main</code> → <code>git push origin main</code>.
+      Fork <b>o'zi yangilanmaydi</b>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>PR ochishdan oldin qaysi faylni o'qiysiz?</summary>
+      <div class="answer"><p><code>CONTRIBUTING.md</code> — loyihaning o'z qoidalari.
+      Bo'lmasa, <code>README.md</code>.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: o'z jamoangiz repo'sida fork kerakmi?</summary>
+      <div class="answer"><p>Yo'q — u yerda yozish huquqingiz bor, to'g'ridan-to'g'ri
+      branch ochasiz. (<a href="0009-pull-request.html">Dars 09</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Fork</b> = birovning repo'sidan o'z akkauntingizga nusxa. Yozish huquqi
+      yo'q joyda ishlash uchun.</li>
+      <li><b>Ikki remote:</b> <code>origin</code> = mening forkim (push) ·
+      <code>upstream</code> = asl loyiha (faqat o'qish).</li>
+      <li>Bir marta: <code>git remote add upstream &lt;asl-url&gt;</code></li>
+      <li>Oqim: fork → clone → upstream qo'sh → branch + commit →
+      <code>push origin</code> → PR.</li>
+      <li><b>PR yo'nalishi:</b> mening forkimdan asl loyihaga. Har doim tekshiring.</li>
+      <li>⚠️ Fork <b>o'zi yangilanmaydi</b>:
+      <code>fetch upstream</code> → <code>merge upstream/main</code>.</li>
+      <li><b>Odob:</b> CONTRIBUTING.md ni o'qing · kichikdan boshlang ·
+      bitta PR = bitta narsa · sabr qiling.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>GitHub Docs</b> — <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks">About forks</a>
+    va <a href="https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project">Contributing to a project</a>.<br>
+    <b>Mashq loyihasi:</b> <a href="https://github.com/firstcontributions/first-contributions">first-contributions</a> —
+    bu darsda ishlatgan repo, 40+ tilda yo'riqnomasi bor.<br>
+    <b>Birinchi ish qidirish:</b> <a href="https://github.com/topics/good-first-issue">good-first-issue</a>
+    yorlig'i bo'yicha loyihalar.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Birinchi PR'ingizni ochganingizdan keyin menga ayting</b> — birga
+    ko'rib chiqamiz. Agar loyiha egasi «Request changes» qo'ysa yoki savol bersa,
+    javobini birga yozamiz: bu bosqichda odatda til emas, ishonch qiyinlik qiladi.
+    «Qaysi loyihaga hissa qo'shsam bo'ladi?» — bu ham yaxshi savol, birga tanlaymiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0015-git-cherry-pick.html">Oldingi: git cherry-pick</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">GitHub Docs — <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks">About forks</a>.</li>
+      <li id="fn2">GitHub Docs — <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork">Syncing a fork</a>.</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

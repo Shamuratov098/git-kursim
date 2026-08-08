@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a></span>
   </p>
 
   <div class="callout tip">
@@ -790,12 +790,54 @@
     </tbody>
   </table>
 
+  <h2>17. Fork — birovning loyihasiga hissa (Dars 16)</h2>
+  <p>Yozish huquqingiz <b>yo'q</b> repo'da ishlash uchun. Ikkita remote paydo bo'ladi.</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq / amal</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>GitHub: <b>Fork</b></td>
+        <td>Birovning repo'sidan o'z akkauntingizga nusxa (bir marta).</td>
+      </tr>
+      <tr>
+        <td><code>git clone &lt;forkim-url&gt;</code></td>
+        <td>⚠️ <b>O'z forkingizni</b> clone qiling — asl repo'ni emas.
+        <span class="note-cell">Shunda <code>origin</code> = sizning forkingiz.</span></td>
+      </tr>
+      <tr>
+        <td><code>git remote add upstream &lt;asl-url&gt;</code></td>
+        <td>Asl loyihaga ulanish (bir marta).</td>
+      </tr>
+      <tr>
+        <td><code>git push origin &lt;branch&gt;</code></td>
+        <td>O'z forkingizga jo'natasiz — bu yerda huquqingiz bor.</td>
+      </tr>
+      <tr>
+        <td>GitHub: <b>Pull request</b></td>
+        <td>Forkingizdagi branch'dan <b>asl loyihaga</b>.
+        <span class="note-cell">Yo'nalishni tekshiring: base = asl, head = fork.</span></td>
+      </tr>
+      <tr>
+        <td><code>git fetch upstream &amp;&amp;<br>git merge upstream/main</code></td>
+        <td>Forkni yangilash. <span class="note-cell">⚠️ Fork <b>o'zi
+        yangilanmaydi</b> — buni siz qilasiz.</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Ikki remote</span>
+    <p><code>origin</code> = <b>mening forkim</b> (push qilaman) ·
+    <code>upstream</code> = <b>asl loyiha</b> (faqat o'qiyman).<br>
+    O'z jamoangiz repo'sida fork <b>kerak emas</b> — u yerda huquqingiz bor.</p>
+  </div>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–15) barcha
+    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–16) barcha
     buyruqlari bor. Hali qo'shilmagan mavzular: <code>rebase -i</code>
-    (commitlarni birlashtirish), <code>bisect</code>, GitHub Actions —
-    kerak bo'lsa ayting, dars qo'shamiz.
+    (commitlarni birlashtirish), GitHub Actions, <code>git tag</code>,
+    <code>bisect</code> — kerak bo'lsa ayting, dars qo'shamiz.
     <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 

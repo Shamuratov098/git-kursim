@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>DARS 20 — git bisect: xatoni kiritgan commitni topish</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <script defer src="../assets/app.js"></script>
+</head>
+<body>
+<main class="lesson">
+
+  <p class="kicker">DARS 20 · QO'SHIMCHA · KURSDAN KEYIN</p>
+  <h1><code>git bisect</code>: xatoni kiritgan commitni topish</h1>
+  <p class="lead">Bu darsdan keyin siz «o'tgan hafta ishlayotgan edi, endi buzuq»
+  degan holatda <b>aynan qaysi commit</b> aybdor ekanini bir necha daqiqada
+  topasiz — yuzlab commit bo'lsa ham.</p>
+
+  <p class="lesson-meta">
+    <span>📱 O'qish ≈ 7 daqiqa</span>
+    <span>💻 Amaliyot ≈ 14 daqiqa</span>
+    <span>Kerak: <a href="0002-uch-hudud-va-commit.html">Dars 02</a>,
+    <a href="0018-github-actions.html">18</a></span>
+  </p>
+
+  <div class="callout why">
+    <span class="label">Tanish holat</span>
+    <p>Dushanba kuni dastur ishlayotgan edi. Juma kuni mijoz «ishlamayapti» deb
+    yozdi. Shu orada jamoangiz <b>200 ta commit</b> qilgan.</p>
+    <p>Qaysi biri buzdi? Birma-bir tekshirsangiz — 200 marta sinov. Bir kunlik ish.</p>
+  </div>
+
+  <h2>Yechim: har safar yarmini tashlab yuborish</h2>
+  <p><code>bisect</code> — «ikkiga bo'lish» degani. G'oya juda sodda: o'rtadagi
+  commitni sinaysiz. Agar u <b>yaxshi</b> bo'lsa — xato undan <b>keyin</b> kiritilgan,
+  ya'ni birinchi yarmini butunlay tashlaysiz. Yomon bo'lsa — <b>oldin</b>.</p>
+
+  <p>Har qadamda qidiruv maydoni <b>ikki barobar kichrayadi</b>:</p>
+
+  <table class="sheet">
+    <thead><tr><th>Qadam</th><th>Qolgan commitlar</th></tr></thead>
+    <tbody>
+      <tr><td>Boshlanish</td><td><b>1000</b></td></tr>
+      <tr><td>1-sinov</td><td>500</td></tr>
+      <tr><td>2-sinov</td><td>250</td></tr>
+      <tr><td>3-sinov</td><td>125</td></tr>
+      <tr><td>…</td><td>…</td></tr>
+      <tr><td><b>10-sinov</b></td><td><b>1</b> — topildi</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout win">
+    <span class="label">Mana shu — butun sehr</span>
+    <p><b>1000 ta commit → atigi 10 ta sinov.</b> 200 ta commit → 8 ta sinov.
+    Git o'zi hisoblab, har safar sizni to'g'ri joyga olib boradi.</p>
+  </div>
+
+  <h2>Bitta shart: «buzuqmi?» degan savolga javob bera olishingiz kerak</h2>
+  <p><code>bisect</code> siz uchun commitlarni almashtirib beradi, lekin
+  <b>tekshirishni siz qilasiz</b>. Shuning uchun oldindan aniq bilishingiz kerak:</p>
+  <ul>
+    <li>Qanday tekshiraman? (dasturni ishga tushirish, testni yurgizish, sahifani ochish)</li>
+    <li>Natija <b>qanday bo'lsa yaxshi</b>, qanday bo'lsa yomon?</li>
+  </ul>
+  <p>Javob noaniq bo'lsa, bisect ham noaniq natija beradi. Tekshiruv
+  <b>takrorlanadigan</b> bo'lsin.</p>
+
+  <h2>Qo'lda: besh buyruq</h2>
+
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>git bisect start</code></td>
+        <td>Qidiruvni boshlaydi.</td>
+      </tr>
+      <tr>
+        <td><code>git bisect bad</code></td>
+        <td>«Hozirgi holat <b>buzuq</b>» — odatda birinchi shuni aytasiz.</td>
+      </tr>
+      <tr>
+        <td><code>git bisect good &lt;hash&gt;</code></td>
+        <td>«Bu eski commit <b>ishlagan</b>» — ishonchingiz komil bo'lgan nuqta.
+        <span class="note-cell">Shundan keyin Git sizni o'rtaga olib boradi.</span></td>
+      </tr>
+      <tr>
+        <td><code>git bisect good</code> / <code>bad</code></td>
+        <td>Har sinovdan keyin javobingiz. Git keyingi commitga o'tkazadi.</td>
+      </tr>
+      <tr>
+        <td><code>git bisect reset</code></td>
+        <td>⚠️ <b>Qidiruvni tugatib, odatdagi holatga qaytaradi.</b>
+        <span class="note-cell">Buni unutmang!</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Git har qadamda yo'l ko'rsatib turadi</h3>
+  <div class="cmd" data-cmd="git bisect good">git bisect good
+<span class="out">Bisecting: 2 revisions left to test after this (roughly 2 steps)</span>
+<span class="out">[a31fb9c] O'zgarish 9</span></div>
+  <p>Ya'ni: «yana taxminan 2 qadam qoldi, hozir 9-commitdasiz». Adashib qolmaysiz.</p>
+
+  <p>Oxirida esa javob:</p>
+  <div class="cmd" data-cmd="git bisect bad">git bisect bad
+<span class="out">cd500ab... is the first bad commit</span>
+<span class="out">    O'zgarish 8</span></div>
+
+  <div class="callout warning">
+    <span class="label"><code>git bisect reset</code> ni unutmang</span>
+    <p>Bisect paytida Git sizni tarixning turli nuqtalariga olib yuradi — ya'ni
+    <b>detached HEAD</b> holatida bo'lasiz (<a href="0019-git-tag-va-release.html">19-darsda</a>
+    ko'rgandik). <code>reset</code> qilmasangiz o'sha yerda qolib ketasiz va
+    yangi ishingiz adashadi.</p>
+    <p>Chalkashsangiz ham xuddi shu buyruq — u har doim xavfsiz orqaga qaytaradi.</p>
+  </div>
+
+  <h2>Avtomatik: <code>bisect run</code></h2>
+  <p>Agar tekshiruvni <b>skript</b> qila olsa, butun jarayonni Git o'zi bajaradi:</p>
+  <div class="cmd" data-cmd="git bisect run ./sinov.sh">git bisect run ./sinov.sh</div>
+  <p>Siz choy ichib turasiz, Git esa 10 qadamni bir necha soniyada bosib o'tadi.</p>
+
+  <div class="callout win">
+    <span class="label">Qoida tanish bo'lishi kerak</span>
+    <p>Skript <b>chiqish kodi</b> bilan javob beradi: <code>0</code> = yaxshi,
+    <b>noldan farqli</b> = yomon.</p>
+    <p>Bu aynan <a href="0018-github-actions.html">18-darsdagi</a> qoida —
+    GitHub Actions ham shunday ishlaydi. Bir marta o'rgangan narsangiz ikkinchi
+    joyda ishlayapti.</p>
+  </div>
+
+  <p>Loyihangizda test bo'lsa, skript ham kerak emas:</p>
+  <div class="cmd" data-cmd="git bisect run npm test">git bisect run npm test</div>
+  <div class="cmd" data-cmd="git bisect run pytest">git bisect run pytest</div>
+
+  <!-- ====================================================================
+       AMALIYOT — faqat 💻 rejimda
+       ==================================================================== -->
+  <div data-mode="do">
+    <h2>Amaliyot: yashiringan xatoni ovlaymiz</h2>
+    <p>Mashq <b>nusxa papkada</b>. 12 ta commitlik tarix yaratamiz va ulardan
+    birida xato bo'ladi — <b>qaysi birida ekanini bilmagandek</b> qidiramiz.</p>
+
+    <h3>A qism — «buzuq» tarix yaratish</h3>
+    <ol class="steps">
+      <li>
+        <p>Toza branch oching</p>
+        <div class="cmd" data-cmd="cd ~/Projects/Learn/Git-nusxa && git switch main && git switch -c bisect-mashqi">cd ~/Projects/Learn/Git-nusxa &amp;&amp; git switch main &amp;&amp; git switch -c bisect-mashqi</div>
+        <p class="expect"><b>Kutilgan natija:</b> yangi branch.</p>
+      </li>
+
+      <li>
+        <p>12 ta commit yarating</p>
+        <p class="why-step">Skript <code>hisob.py</code> ni yaratadi. Boshida
+        u <code>4</code> chiqaradi, keyin «kimdir» buzadi.
+        <b>Qaysi commitda ekanini o'zingiz ham ko'rmang</b> — mashq shirin bo'lsin.</p>
+        <div class="cmd" data-cmd='for i in $(seq 1 12); do if [ $i -lt 8 ]; then echo "print(2 + 2)" > hisob.py; else echo "print(2 + 3)" > hisob.py; fi; echo "qator $i" >> jurnal.txt; git add hisob.py jurnal.txt; git commit -q -m "O&apos;zgarish $i"; done && git log --oneline | head -3'>for i in $(seq 1 12); do if [ $i -lt 8 ]; then echo "print(2 + 2)" &gt; hisob.py; else echo "print(2 + 3)" &gt; hisob.py; fi; echo "qator $i" &gt;&gt; jurnal.txt; git add hisob.py jurnal.txt; git commit -q -m "O'zgarish $i"; done &amp;&amp; git log --oneline | head -3</div>
+        <p class="expect"><b>Kutilgan natija:</b> «O'zgarish 12», «11», «10»
+        commitlari ko'rinadi.</p>
+      </li>
+
+      <li>
+        <p>Xatoni tasdiqlang</p>
+        <p class="why-step">Tekshiruvimiz shu: <b>4 chiqsa yaxshi, 5 chiqsa buzuq</b>.</p>
+        <div class="cmd" data-cmd="python3 hisob.py">python3 hisob.py
+<span class="out">5</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>5</code> — ya'ni buzuq.
+        4 bo'lishi kerak edi.</p>
+      </li>
+
+      <li>
+        <p>Eng eski commitning hash'ini oling</p>
+        <p class="why-step">Bu bizning «ishonchli yaxshi» nuqtamiz bo'ladi.</p>
+        <div class="cmd" data-cmd="git log --oneline | tail -1">git log --oneline | tail -1</div>
+        <p class="expect"><b>Kutilgan natija:</b> eng eski commit.
+        <b>Uning hash'ini yozib oling</b> — keyingi qadamda kerak.</p>
+      </li>
+    </ol>
+
+    <h3>B qism — qo'lda ovlash</h3>
+    <ol class="steps">
+      <li>
+        <p>Qidiruvni boshlang</p>
+        <p class="why-step">⚠️ <code>ESKI-HASH</code> o'rniga oldingi qadamdagi
+        hash'ni yozing.</p>
+        <div class="cmd" data-cmd="git bisect start && git bisect bad && git bisect good ESKI-HASH">git bisect start &amp;&amp; git bisect bad &amp;&amp; git bisect good ESKI-HASH
+<span class="out">Bisecting: 5 revisions left to test after this (roughly 3 steps)</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> «roughly 3 steps» — Git 12 ta
+        commitni <b>3 qadamda</b> qidirib beradi. <b>1-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>Sinang va javob bering</p>
+        <p class="why-step">Git sizni o'rtadagi commitga olib keldi. Endi
+        tekshirasiz.</p>
+        <div class="cmd" data-cmd="python3 hisob.py">python3 hisob.py</div>
+        <p class="expect"><b>Bajaring:</b> natijaga qarab bittasini yozing —<br>
+        <code>4</code> chiqsa → <code>git bisect good</code><br>
+        <code>5</code> chiqsa → <code>git bisect bad</code><br>
+        <b>Kutilgan natija:</b> Git keyingi commitga o'tkazadi va necha qadam
+        qolganini aytadi.</p>
+      </li>
+
+      <li>
+        <p>Takrorlang — Git «topildi» degunicha</p>
+        <p class="why-step">Har safar: <code>python3 hisob.py</code> → natijaga
+        qarab <code>good</code> yoki <code>bad</code>. Bor-yo'g'i 3–4 marta.</p>
+        <div class="cmd" data-cmd="python3 hisob.py">python3 hisob.py
+<span class="cm"># keyin: git bisect good  yoki  git bisect bad</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> oxirida shunday chiqadi:<br>
+        <code>... is the first bad commit</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;O'zgarish 8</code><br>
+        <b>Aybdor topildi — 8-commit.</b> <b>2-g'alaba.</b> 🎉</p>
+      </li>
+
+      <li>
+        <p>⚠️ Qidiruvni yoping</p>
+        <p class="why-step">Eng ko'p unutiladigan qadam. Busiz «detached HEAD»da
+        qolib ketasiz.</p>
+        <div class="cmd" data-cmd="git bisect reset && git log --oneline -1">git bisect reset &amp;&amp; git log --oneline -1
+<span class="out">Switched to branch 'bisect-mashqi'</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> branch'ingizga qaytdingiz va
+        <code>python3 hisob.py</code> yana <code>5</code> chiqaradi (oxirgi holat).</p>
+      </li>
+    </ol>
+
+    <h3>C qism — avtomatik ovlash</h3>
+    <ol class="steps">
+      <li>
+        <p>Tekshiruv skriptini yozing</p>
+        <p class="why-step">Skript <b>hech narsa chop etmaydi</b> — faqat chiqish
+        kodi bilan javob beradi: 4 bo'lsa 0, aks holda 1.</p>
+        <div class="cmd" data-cmd='cat > sinov.sh << "EOF"
+#!/bin/sh
+[ "$(python3 hisob.py)" = "4" ]
+EOF
+chmod +x sinov.sh && ./sinov.sh; echo "chiqish kodi: $?"'>cat &gt; sinov.sh &lt;&lt; "EOF"
+<span class="cm">#!/bin/sh</span>
+<span class="cm">[ "$(python3 hisob.py)" = "4" ]</span>
+EOF
+chmod +x sinov.sh &amp;&amp; ./sinov.sh; echo "chiqish kodi: $?"</div>
+        <p class="expect"><b>Kutilgan natija:</b> <code>chiqish kodi: 1</code> —
+        hozir buzuq, ya'ni skript to'g'ri ishlayapti.</p>
+      </li>
+
+      <li>
+        <p>🤖 Git o'zi topsin</p>
+        <p class="why-step">Endi hech narsa yozmaysiz — faqat kuzatasiz.</p>
+        <div class="cmd" data-cmd="git bisect start && git bisect bad && git bisect good ESKI-HASH && git bisect run ./sinov.sh">git bisect start &amp;&amp; git bisect bad &amp;&amp; git bisect good ESKI-HASH &amp;&amp; git bisect run ./sinov.sh
+<span class="out">running  './sinov.sh'</span>
+<span class="out">...</span>
+<span class="out">bisect found first bad commit</span></div>
+        <p class="expect"><b>Kutilgan natija:</b> Git bir necha soniyada
+        <b>o'sha 8-commitni</b> topadi — qo'lda qilganingiz bilan bir xil javob.
+        <b>3-g'alaba.</b> 🎉🎉</p>
+      </li>
+
+      <li>
+        <p>Yoping va tozalang</p>
+        <div class="cmd" data-cmd="git bisect reset && git switch main && git branch -D bisect-mashqi">git bisect reset &amp;&amp; git switch main &amp;&amp; git branch -D bisect-mashqi</div>
+        <p class="expect"><b>Kutilgan natija:</b> mashq branch o'chirildi.
+        <code>-D</code> ishlatildi, chunki u merge qilinmagan
+        (<a href="0014-git-reflog.html">14-dars</a>). Kerak bo'lsa reflog qaytaradi.</p>
+      </li>
+    </ol>
+
+    <h3>Yodda tuting (checklist)</h3>
+    <ul class="checklist">
+      <li><input type="checkbox" id="d20c1"><label for="d20c1">Bisect har qadamda qidiruvni <b>ikki barobar</b> kichraytiradi</label></li>
+      <li><input type="checkbox" id="d20c2"><label for="d20c2">Boshlash: <code>start</code> → <code>bad</code> → <code>good &lt;eski-hash&gt;</code></label></li>
+      <li><input type="checkbox" id="d20c3"><label for="d20c3">⚠️ Oxirida <b>har doim</b> <code>git bisect reset</code></label></li>
+      <li><input type="checkbox" id="d20c4"><label for="d20c4">Avtomatik: <code>git bisect run</code> — 0 = yaxshi, boshqa = yomon</label></li>
+      <li><input type="checkbox" id="d20c5"><label for="d20c5">Xatoni kiritgan commitni o'zim topdim 🎉</label></li>
+    </ul>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI
+       ==================================================================== -->
+  <div class="mode-hint" data-mode="read">
+    <span class="mode-hint-title">💻 Amaliy qism kompyuterda</span>
+    <p>Amaliyotda 12 ta commitlik «buzuq» tarix yaratasiz va aybdorni ikki xil
+    usulda topasiz: <b>qo'lda</b> (Git sizni har safar o'rtaga olib boradi, siz
+    <code>good</code>/<code>bad</code> deysiz — atigi 3–4 qadam) va <b>avtomatik</b>
+    (<code>git bisect run</code> bilan — Git o'zi bajaradi). 11 qadam.</p>
+    <button type="button" class="modebtn" data-set-mode="do">💻 Amaliyot rejimini ko'rish</button>
+  </div>
+
+  <h2>Tekshirib ko'ramiz (quiz)</h2>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 1</span> 1000 ta commit bor. Bisect necha sinovda topadi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Taxminan 10 ta — har qadamda yarmi tashlanadi</button></li>
+      <li><button class="quiz-option">Taxminan 500 ta — o'rtacha yarmini tekshiradi</button></li>
+      <li><button class="quiz-option">Taxminan 1000 ta — hammasini ko'rib chiqadi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — bu <b>butun sehr</b>. Har sinov qidiruv
+    maydonini ikki barobar kichraytiradi: 1000 → 500 → 250 → … → 1.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 2</span> Bisect ishlashi uchun nima shart?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">«Buzuqmi?» degan savolga aniq javob bera olish</button></li>
+      <li><button class="quiz-option">Loyihada avtomatik testlar bo'lishi shart</button></li>
+      <li><button class="quiz-option">Barcha commitlar bir xil odam tomonidan qilingani</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Test bo'lsa yaxshi (avtomatlashtirasiz), lekin
+    shart emas — qo'lda ham tekshirish mumkin. Muhimi: tekshiruv
+    <b>takrorlanadigan</b> bo'lsin.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 3</span> Bisect tugagach nima qilish shart?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true"><code>git bisect reset</code> — odatdagi holatga qaytish</button></li>
+      <li><button class="quiz-option"><code>git commit</code> — natijani saqlash</button></li>
+      <li><button class="quiz-option">Hech narsa — Git o'zi qaytaradi</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri. Bisect paytida <b>detached HEAD</b>dasiz.
+    <code>reset</code> qilmasangiz o'sha yerda qolib ketasiz. Chalkashsangiz ham
+    xuddi shu buyruq qutqaradi.</div>
+  </div>
+
+  <div class="quiz">
+    <p class="quiz-q"><span class="num">SAVOL 4</span> <code>git bisect run</code> skriptdan nimani kutadi?</p>
+    <ul class="quiz-options">
+      <li><button class="quiz-option" data-correct="true">Chiqish kodi: <code>0</code> = yaxshi, noldan farqli = yomon</button></li>
+      <li><button class="quiz-option">Ekranga «good» yoki «bad» so'zini chop etishini</button></li>
+      <li><button class="quiz-option">Natijani faylga yozib qo'yishini</button></li>
+    </ul>
+    <div class="quiz-explain">To'g'ri — <a href="0018-github-actions.html">18-darsdagi</a>
+    GitHub Actions bilan <b>aynan bir xil qoida</b>. Bir marta o'rgangan tushuncha
+    ikkinchi joyda ishlayapti.</div>
+  </div>
+
+  <!-- ====================================================================
+       O'QISH REJIMI — eslab-aytish kartalari
+       ==================================================================== -->
+  <div data-mode="read">
+    <h2>Eslab ayting (o'zingizni sinang)</h2>
+    <p class="recall-intro">Avval o'zingiz javob bering, keyin ochib tekshiring.</p>
+
+    <details class="recall">
+      <summary>Bisect'ning asosiy g'oyasi?</summary>
+      <div class="answer"><p>Har sinovda qidiruv maydonining <b>yarmini tashlab
+      yuborish</b>. Shuning uchun 1000 ta commit atigi ~10 ta sinovda tekshiriladi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Boshlashning uch buyrug'i?</summary>
+      <div class="answer"><p><code>git bisect start</code> →
+      <code>git bisect bad</code> (hozirgi buzuq) →
+      <code>git bisect good &lt;eski-hash&gt;</code> (ishlagan nuqta).</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>Eng ko'p unutiladigan qadam?</summary>
+      <div class="answer"><p><code>git bisect reset</code> — busiz
+      <b>detached HEAD</b>da qolib ketasiz. U chalkashganda ham xavfsiz
+      qutqaruv buyrug'i.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary><code>bisect run</code> skriptdan nimani kutadi?</summary>
+      <div class="answer"><p><b>Chiqish kodini</b>: <code>0</code> = yaxshi,
+      noldan farqli = yomon. Xuddi
+      <a href="0018-github-actions.html">GitHub Actions</a>dagi kabi.</p></div>
+    </details>
+
+    <details class="recall">
+      <summary>↩︎ Takrorlash: aybdor commitni topdingiz. Endi uni qanday o'rganasiz?</summary>
+      <div class="answer"><p><code>git show &lt;hash&gt;</code> — o'sha commitda
+      aynan nima o'zgarganini satrma-satr ko'rsatadi.
+      (<a href="0003-xatoni-qaytarish.html">Dars 03</a>)</p></div>
+    </details>
+  </div>
+
+  <div class="recap">
+    <span class="label">Cho'ntak xulosasi</span>
+    <ul>
+      <li><b>Bisect</b> = ikkiga bo'lib qidirish. 1000 commit → ~10 sinov.</li>
+      <li>Shart: «buzuqmi?» degan savolga <b>takrorlanadigan</b> javob.</li>
+      <li>Boshlash: <code>git bisect start</code> → <code>bad</code> →
+      <code>good &lt;eski-hash&gt;</code>.</li>
+      <li>Har sinovdan keyin: <code>git bisect good</code> yoki <code>bad</code>.
+      Git necha qadam qolganini aytib turadi.</li>
+      <li>Javob: <code>... is the first bad commit</code>.</li>
+      <li>⚠️ <b>Oxirida har doim <code>git bisect reset</code></b> — aks holda
+      detached HEAD'da qolasiz.</li>
+      <li>Avtomatik: <code>git bisect run ./sinov.sh</code> (yoki
+      <code>npm test</code>, <code>pytest</code>) — <b>0 = yaxshi</b>,
+      noldan farqli = yomon.</li>
+      <li>Topilgach: <code>git show &lt;hash&gt;</code> bilan nima o'zgarganini ko'ring.</li>
+    </ul>
+  </div>
+
+  <div class="primary-source">
+    <span class="label">Asosiy manba</span>
+    <p><b>Pro Git</b>, 7.10-bo'lim — "Debugging with Git → Binary Search":
+    <a href="https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git">git-scm.com/book</a>.<br>
+    Barcha imkoniyatlari (jumladan <code>skip</code> — sinab bo'lmaydigan commitni
+    o'tkazib yuborish): <a href="https://git-scm.com/docs/git-bisect">git-bisect hujjati</a>.</p>
+  </div>
+
+  <div class="ask-teacher">
+    📣 <b>Bisect o'rtasida chalkashsangiz — <code>git bisect reset</code>, keyin
+    menga yozing.</b> Bu buyruq har doim xavfsiz orqaga qaytaradi. «Bu commitni
+    sinab bo'lmayapti (umuman ishga tushmaydi)» degan holat ham bo'ladi — unda
+    <code>git bisect skip</code> ishlatiladi, birga ko'ramiz. Ishda haqiqiy xato
+    qidirish kerak bo'lsa ham ayting — birga o'tkazamiz.
+  </div>
+
+  <nav class="lesson-nav">
+    <a class="prev" href="0019-git-tag-va-release.html">Oldingi: git tag va relizlar</a>
+    <a href="../index.html">Kurs bosh sahifasi</a>
+    <a href="../reference/yol-xaritasi.html">Yo'l xaritasi</a>
+    <a href="../reference/buyruqlar.html">Buyruqlar varaqasi</a>
+  </nav>
+
+  <section class="footnotes">
+    <ol>
+      <li id="fn1">Pro Git — <a href="https://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git">Git Tools: Debugging with Git</a>.</li>
+      <li id="fn2">Git hujjatlari — <a href="https://git-scm.com/docs/git-bisect">git-bisect</a>
+      (<code>run</code>, <code>skip</code>, <code>log</code>, <code>replay</code>).</li>
+    </ol>
+  </section>
+
+</main>
+</body>
+</html>

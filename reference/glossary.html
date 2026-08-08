@@ -18,7 +18,7 @@
 
   <p class="lesson-meta">
     <span>📱 Telefonda o'qishga mos</span>
-    <span>Atamalar: 49 ta</span>
+    <span>Atamalar: 50 ta</span>
     <span>Yonida: <a href="buyruqlar.html">Buyruqlar varaqasi</a></span>
     <span><a href="yol-xaritasi.html">Yo'l xaritasi</a></span>
   </p>
@@ -54,6 +54,7 @@
     <li><a href="#fork">fork</a></li>
     <li><a href="#upstream-remote">upstream (remote)</a></li>
     <li><a href="#gitignore">.gitignore</a></li>
+    <li><a href="#bisect">bisect</a></li>
     <li><a href="#tag">tag</a></li>
     <li><a href="#release">release</a></li>
     <li><a href="#ci">CI / GitHub Actions</a></li>
@@ -292,6 +293,15 @@
       ⚠️ <b>Allaqachon commit qilingan faylga ta'sir qilmaydi</b> — avval
       <code>git rm --cached fayl</code>.
       <span class="eg">*.log · .env · node_modules/</span></dd>
+    </div>
+
+    <div class="term" id="bisect">
+      <dt>bisect <span class="uz">— ikkiga bo'lib qidirish</span></dt>
+      <dd>Xatoni qaysi <a href="#commit">commit</a> kiritganini topish usuli:
+      har sinovda qidiruv maydonining <b>yarmi tashlanadi</b> (1000 commit → ~10 sinov).
+      Siz faqat «yaxshi»/«yomon» deb javob berasiz, Git commitlarni almashtirib
+      boradi. ⚠️ Oxirida <b><code>git bisect reset</code></b> shart.
+      <span class="eg">git bisect start → bad → good &lt;hash&gt; → … → reset</span></dd>
     </div>
 
     <div class="term" id="tag">

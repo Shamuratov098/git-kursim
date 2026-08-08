@@ -19,7 +19,7 @@
   <p class="lesson-meta">
     <span>💻 Amaliyot yonida ochib turing</span>
     <span>🖨️ Bosib olsa ham bo'ladi</span>
-    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a>, <a href="../lessons/0017-rebase-interactive.html">17</a>, <a href="../lessons/0018-github-actions.html">18</a>, <a href="../lessons/0019-git-tag-va-release.html">19</a></span>
+    <span>Qamrov: <a href="../lessons/0001-git-nima-va-sozlash.html">Dars 01</a>–<a href="../lessons/0011-professional-odatlar.html">11</a> + <a href="../lessons/0012-git-stash.html">12</a>, <a href="../lessons/0013-git-rebase.html">13</a>, <a href="../lessons/0014-git-reflog.html">14</a>, <a href="../lessons/0015-git-cherry-pick.html">15</a>, <a href="../lessons/0016-fork-va-open-source.html">16</a>, <a href="../lessons/0017-rebase-interactive.html">17</a>, <a href="../lessons/0018-github-actions.html">18</a>, <a href="../lessons/0019-git-tag-va-release.html">19</a>, <a href="../lessons/0020-git-bisect.html">20</a></span>
   </p>
 
   <div class="callout tip">
@@ -953,12 +953,44 @@
     <b>Releases → Draft a new release</b> orqali yasaladi.</p>
   </div>
 
+  <h2>21. <code>git bisect</code> — aybdor commitni topish (Dars 20)</h2>
+  <p>Ikkiga bo'lib qidirish: har sinovda maydon <b>ikki barobar</b> kichrayadi.
+  1000 commit → ~10 sinov.</p>
+  <table class="sheet">
+    <thead><tr><th>Buyruq</th><th>Nima qiladi</th></tr></thead>
+    <tbody>
+      <tr><td><code>git bisect start</code></td><td>Qidiruvni boshlaydi.</td></tr>
+      <tr><td><code>git bisect bad</code></td><td>«Hozirgi holat buzuq».</td></tr>
+      <tr><td><code>git bisect good &lt;hash&gt;</code></td>
+          <td>«Bu eski commit ishlagan». <span class="note-cell">Shundan keyin Git
+          sizni o'rtaga olib boradi.</span></td></tr>
+      <tr><td><code>git bisect good</code> / <code>bad</code></td>
+          <td>Har sinovdan keyingi javobingiz. Git necha qadam qolganini aytadi.</td></tr>
+      <tr><td><code>git bisect skip</code></td>
+          <td>Bu commitni sinab bo'lmaydi — o'tkazib yuboradi.</td></tr>
+      <tr><td><code>git bisect reset</code></td>
+          <td>⚠️ <b>Qidiruvni yopadi va odatdagi holatga qaytaradi.</b>
+          <span class="note-cell">Unutmang — busiz detached HEAD'da qolasiz.
+          Chalkashsangiz ham shu buyruq.</span></td></tr>
+      <tr><td><code>git bisect run ./sinov.sh</code></td>
+          <td><b>Avtomatik</b> — Git o'zi bajaradi.
+          <span class="note-cell">Skript: <code>0</code> = yaxshi, noldan farqli =
+          yomon (Dars 18 dagi qoida). <code>npm test</code>, <code>pytest</code> ham
+          bo'ladi.</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout tip">
+    <span class="label">Topilgach</span>
+    <p><code>git show &lt;hash&gt;</code> — o'sha commitda aynan nima o'zgarganini
+    satrma-satr ko'rsatadi.</p>
+  </div>
+
   <div class="callout win">
     <span class="label">🎓 Kurs to'liq qamrab olindi</span>
-    <p>Bu varaqada 11 ta asosiy dars va qo'shimcha darslarning (12–19) barcha
-    buyruqlari bor. Hali qo'shilmagan: <code>git bisect</code> (xatoni ikkiga
-    bo'lib qidirish) va Git internals — kerak bo'lsa ayting.
-    <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
+    <p>Bu varaqada <b>20 ta darsning</b> barcha buyruqlari bor: 11 asosiy +
+    9 qo'shimcha. Amaliy bo'shliq qolmadi. Yangi mavzu kerak bo'lsa ayting —
+    dars qo'shamiz. <a href="yol-xaritasi.html">Yo'l xaritasi</a>.</p>
   </div>
 
   <div class="ask-teacher">
